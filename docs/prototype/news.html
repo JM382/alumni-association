@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>校友服务小程序 - 资讯列表原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#e6f5ff",
+                100: "#cce9ff",
+                500: "#0052d9",
+                600: "#003fac",
+              },
+            },
+            boxShadow: {
+              tdesign: "0 4px 12px rgba(0, 0, 0, 0.06)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background: radial-gradient(circle at top, #e6f0ff 0, #f5f7fb 45%, #f3f4f6 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center py-6">
+    <div
+      class="relative w-[390px] max-w-full bg-white rounded-[32px] shadow-2xl border border-slate-200 overflow-hidden"
+    >
+      <!-- 状态栏 -->
+      <div class="h-6 bg-slate-50 flex items-center justify-between px-4 text-[10px] text-slate-500">
+        <span>9:41</span>
+        <span class="flex items-center gap-1">
+          <span class="w-8 h-2 bg-slate-200 rounded-full inline-block"></span>
+          <span class="w-2 h-2 bg-slate-300 rounded-full inline-block"></span>
+        </span>
+      </div>
+
+      <!-- 顶部导航 -->
+      <header
+        class="px-4 pt-2 pb-3 bg-white border-b border-slate-100 flex items-center justify-between"
+      >
+        <div>
+          <div class="text-[11px] text-slate-400">资讯中心</div>
+          <div class="text-lg font-semibold text-slate-900">新闻资讯</div>
+        </div>
+        <button
+          class="px-3 py-1 text-[11px] rounded-full bg-primary-50 text-primary-600 border border-primary-100"
+        >
+          发布资讯
+        </button>
+      </header>
+
+      <!-- 内容 -->
+      <main class="px-4 pb-4 pt-3 bg-slate-50">
+        <!-- 分类 Tab -->
+        <section class="mb-3">
+          <div class="flex gap-1.5 text-[11px] overflow-x-auto no-scrollbar">
+            <button
+              class="px-3 py-1.5 rounded-full bg-primary-500 text-white font-medium shrink-0"
+            >
+              全部新闻
+            </button>
+            <button
+              class="px-3 py-1.5 rounded-full bg-white text-slate-700 border border-slate-100 shrink-0"
+            >
+              母校新闻
+            </button>
+            <button
+              class="px-3 py-1.5 rounded-full bg-white text-slate-700 border border-slate-100 shrink-0"
+            >
+              校友会通知
+            </button>
+            <button
+              class="px-3 py-1.5 rounded-full bg-white text-slate-700 border border-slate-100 shrink-0"
+            >
+              行业动态
+            </button>
+            <button
+              class="px-3 py-1.5 rounded-full bg-white text-slate-700 border border-slate-100 shrink-0"
+            >
+              校友故事
+            </button>
+            <button
+              class="px-3 py-1.5 rounded-full bg-white text-slate-700 border border-slate-100 shrink-0"
+            >
+              政策资讯
+            </button>
+          </div>
+        </section>
+
+        <!-- 新闻列表 -->
+        <section class="space-y-2.5">
+          <!-- 新闻卡片 1 -->
+          <article class="bg-white rounded-xl shadow-tdesign p-2.5 flex gap-2.5">
+            <div
+              class="w-20 h-20 rounded-lg bg-gradient-to-br from-primary-500 to-indigo-500 flex items-center justify-center text-[11px] text-white"
+            >
+              校园
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="space-y-1">
+                <h3 class="text-[13px] font-medium text-slate-900 leading-snug">
+                  母校入选“双一流”建设高校，全新发展规划发布
+                </h3>
+                <p class="text-[11px] text-slate-500 line-clamp-2">
+                  学校发布新一轮事业发展规划，聚焦学科建设、人才培养、科研创新和国际合作多维度。
+                </p>
+              </div>
+              <div class="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
+                <span>母校新闻 · 2026-03-01</span>
+                <span>浏览 3,245 · 评论 48</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 新闻卡片 2 -->
+          <article class="bg-white rounded-xl shadow-tdesign p-2.5 flex gap-2.5">
+            <div
+              class="w-20 h-20 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-[11px] text-white"
+            >
+              校友故事
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="space-y-1">
+                <h3 class="text-[13px] font-medium text-slate-900 leading-snug">
+                  “从实验室到创业板” · 物理学院 2008 级校友专访
+                </h3>
+                <p class="text-[11px] text-slate-500 line-clamp-2">
+                  他用十年时间将实验室科研成果转化为上市公司，分享创新与坚持的故事。
+                </p>
+              </div>
+              <div class="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
+                <span>校友故事 · 2026-02-25</span>
+                <span>浏览 1,023 · 点赞 320</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 新闻卡片 3 -->
+          <article class="bg-white rounded-xl shadow-tdesign p-2.5 flex gap-2.5">
+            <div
+              class="w-20 h-20 rounded-lg bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-[11px] text-white"
+            >
+              通知
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="space-y-1">
+                <h3 class="text-[13px] font-medium text-slate-900 leading-snug">
+                  校友会 2026 年年会通知 · 全国理事会议程发布
+                </h3>
+                <p class="text-[11px] text-slate-500 line-clamp-2">
+                  年会议程包括工作报告、分论坛交流、校友企业展示等内容，欢迎各地校友参加。
+                </p>
+              </div>
+              <div class="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
+                <span>校友会通知 · 2026-02-20</span>
+                <span>报名 568 · 分享 120</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 新闻卡片 4 -->
+          <article class="bg-white rounded-xl shadow-tdesign p-2.5 flex gap-2.5">
+            <div
+              class="w-20 h-20 rounded-lg bg-gradient-to-br from-sky-400 to-blue-500 flex items-center justify-center text-[11px] text-white"
+            >
+              行业
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="space-y-1">
+                <h3 class="text-[13px] font-medium text-slate-900 leading-snug">
+                  科技产业发展趋势 · 多位校友受邀参与行业报告编写
+                </h3>
+                <p class="text-[11px] text-slate-500 line-clamp-2">
+                  聚焦人工智能、新能源、生命科学等热门领域，呈现最新产业发展图景。
+                </p>
+              </div>
+              <div class="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
+                <span>行业动态 · 2026-02-18</span>
+                <span>浏览 2,108 · 收藏 210</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
+

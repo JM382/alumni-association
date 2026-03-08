@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>校友服务小程序 - 新闻详情原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#e6f5ff",
+                100: "#cce9ff",
+                500: "#0052d9",
+                600: "#003fac",
+              },
+            },
+            boxShadow: {
+              tdesign: "0 4px 12px rgba(0, 0, 0, 0.06)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background: radial-gradient(circle at top, #e6f0ff 0, #f5f7fb 45%, #f3f4f6 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center py-6">
+    <div
+      class="relative w-[390px] max-w-full bg-white rounded-[32px] shadow-2xl border border-slate-200 overflow-hidden"
+    >
+      <!-- 状态栏 -->
+      <div class="h-6 bg-slate-50 flex items-center justify-between px-4 text-[10px] text-slate-500">
+        <span>9:41</span>
+        <span class="flex items-center gap-1">
+          <span class="w-8 h-2 bg-slate-200 rounded-full inline-block"></span>
+          <span class="w-2 h-2 bg-slate-300 rounded-full inline-block"></span>
+        </span>
+      </div>
+
+      <!-- 顶部导航 -->
+      <header
+        class="px-4 py-2.5 bg-white border-b border-slate-100 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full bg-slate-100"></div>
+          <span class="text-sm font-medium text-slate-900">新闻详情</span>
+        </div>
+        <button
+          class="px-3 py-1 text-[11px] rounded-full bg-primary-50 text-primary-600 border border-primary-100"
+        >
+          分享
+        </button>
+      </header>
+
+      <!-- 内容 -->
+      <main class="px-4 pb-4 pt-3 bg-slate-50">
+        <article class="bg-white rounded-xl shadow-tdesign p-3 max-h-[540px] overflow-y-auto">
+          <!-- 标题与基础信息 -->
+          <header class="mb-3">
+            <h1 class="text-base font-semibold text-slate-900 leading-snug">
+              母校发布新一轮发展规划：聚焦“双一流”建设与校友协同发展
+            </h1>
+            <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+              <span>母校新闻 · 校党委宣传部</span>
+              <span>2026-03-01 10:20</span>
+            </div>
+          </header>
+
+          <!-- 配图 -->
+          <section class="mb-3">
+            <div
+              class="w-full h-36 rounded-lg bg-gradient-to-br from-primary-500 to-indigo-500 flex items-center justify-center text-[11px] text-white"
+            >
+              新闻头图 / 校园风光占位
+            </div>
+          </section>
+
+          <!-- 正文（字体 16px，行距 1.5） -->
+          <section
+            class="mb-4 text-[16px] leading-[1.5] text-slate-800 space-y-3 text-justify"
+          >
+            <p>
+              为全面贯彻落实国家“双一流”建设要求，学校正式发布新一轮事业发展规划，提出以“学科引领、人才强校、科研创新、开放办学、校友协同”为核心的发展路径，加快推进高水平大学建设。
+            </p>
+            <p>
+              规划明确提出，将进一步优化学科布局，重点支持基础学科、新兴交叉学科和优势特色学科建设，着力打造若干在国内外具有重要影响力的一流学科集群。同时，学校将持续加强高层次人才引进与培养，完善人才评价与激励机制，为创新发展提供坚实的人才支撑。
+            </p>
+            <p>
+              在科研方面，学校将围绕国家重大战略需求和区域经济社会发展，布局一批前沿交叉研究平台，鼓励师生聚焦关键核心技术攻关，推动更多原创性成果产出与转化。与此同时，学校将进一步拓展国际合作渠道，深化与世界一流高校和科研机构的交流合作。
+            </p>
+            <p>
+              值得一提的是，本轮规划专门设置了“校友协同发展”章节，提出要构建更加紧密的校友合作网络，通过完善校友服务体系、搭建校友发展平台、开展多层次校友活动等方式，形成“学校发展—校友成长—社会进步”的良性互动。
+            </p>
+          </section>
+
+          <!-- 交互功能：点赞 / 收藏 / 分享 / 评论入口 -->
+          <section class="mb-3">
+            <div
+              class="flex items-center justify-between px-2 py-1.5 rounded-full bg-slate-50 text-[11px] text-slate-500"
+            >
+              <div class="flex items-center gap-3">
+                <button class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-rose-200"></span>
+                  <span>点赞 320</span>
+                </button>
+                <button class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-amber-200"></span>
+                  <span>收藏 210</span>
+                </button>
+              </div>
+              <div class="flex items-center gap-2">
+                <span>分享至：</span>
+                <span class="w-4 h-4 rounded-full bg-emerald-200"></span>
+                <span class="w-4 h-4 rounded-full bg-sky-200"></span>
+                <span class="w-4 h-4 rounded-full bg-slate-200"></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 评论列表（示意） -->
+          <section class="space-y-2">
+            <h2 class="text-[13px] font-medium text-slate-900">精彩评论（仅会员可评论）</h2>
+            <div class="space-y-1.5">
+              <div class="bg-slate-50 rounded-lg p-2">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+                  <span>2010 级 · 计算机学院</span>
+                  <span>刚刚</span>
+                </div>
+                <p class="text-[13px] text-slate-800">
+                  期待母校在新一轮“双一流”建设中取得更大突破，也希望有更多机会参与到学校与校友协同发展的实践中。
+                </p>
+              </div>
+              <div class="bg-slate-50 rounded-lg p-2">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+                  <span>2005 级 · 经济学院</span>
+                  <span>1 小时前</span>
+                </div>
+                <p class="text-[13px] text-slate-800">
+                  “校友协同发展”这一部分特别好，希望能看到更多校友参与学校重大项目。
+                </p>
+              </div>
+            </div>
+          </section>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>
+

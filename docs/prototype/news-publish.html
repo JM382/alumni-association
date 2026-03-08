@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>校友服务小程序 - 新闻发布原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#e6f5ff",
+                100: "#cce9ff",
+                500: "#0052d9",
+                600: "#003fac",
+              },
+            },
+            boxShadow: {
+              tdesign: "0 4px 12px rgba(0, 0, 0, 0.06)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background: radial-gradient(circle at top, #e6f0ff 0, #f5f7fb 45%, #f3f4f6 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center py-6">
+    <div
+      class="relative w-[390px] max-w-full bg-white rounded-[32px] shadow-2xl border border-slate-200 overflow-hidden"
+    >
+      <!-- 状态栏 -->
+      <div class="h-6 bg-slate-50 flex items-center justify-between px-4 text-[10px] text-slate-500">
+        <span>9:41</span>
+        <span class="flex items-center gap-1">
+          <span class="w-8 h-2 bg-slate-200 rounded-full inline-block"></span>
+          <span class="w-2 h-2 bg-slate-300 rounded-full inline-block"></span>
+        </span>
+      </div>
+
+      <!-- 顶部导航 -->
+      <header
+        class="px-4 py-2.5 bg-white border-b border-slate-100 flex items-center justify-between"
+      >
+        <div class="flex flex-col">
+          <span class="text-sm font-medium text-slate-900">发布资讯</span>
+          <span class="text-[11px] text-slate-400"
+            >管理员可发布全部分类，会员仅可发布「校友故事」</span
+          >
+        </div>
+        <button
+          class="px-3 py-1 text-[11px] rounded-full bg-primary-50 text-primary-600 border border-primary-100"
+        >
+          草稿箱
+        </button>
+      </header>
+
+      <!-- 内容 -->
+      <main class="px-4 pb-4 pt-3 bg-slate-50">
+        <form
+          class="bg-white rounded-xl shadow-tdesign p-3 space-y-2.5 text-[13px]"
+        >
+          <!-- 发布身份提示 -->
+          <div
+            class="px-2 py-1.5 rounded-lg bg-primary-50 text-[11px] text-primary-600 flex items-center justify-between"
+          >
+            <span>当前身份：会员账号 · 仅支持发布「校友故事」</span>
+            <span class="w-4 h-4 rounded-full bg-primary-200 inline-block"></span>
+          </div>
+
+          <!-- 分类选择 -->
+          <div class="space-y-1">
+            <label class="text-[12px] text-slate-600">新闻分类</label>
+            <div class="flex flex-wrap gap-1.5 text-[11px]">
+              <button
+                class="px-3 py-1.5 rounded-full bg-primary-500 text-white font-medium"
+              >
+                校友故事
+              </button>
+              <button
+                class="px-3 py-1.5 rounded-full bg-slate-50 text-slate-400 border border-dashed border-slate-200"
+              >
+                母校新闻（管理员）
+              </button>
+              <button
+                class="px-3 py-1.5 rounded-full bg-slate-50 text-slate-400 border border-dashed border-slate-200"
+              >
+                校友会通知（管理员）
+              </button>
+            </div>
+          </div>
+
+          <!-- 标题 -->
+          <div class="space-y-1">
+            <label class="text-[12px] text-slate-600">标题</label>
+            <div
+              class="h-9 px-2 flex items-center rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-400"
+            >
+              请输入 10~40 字以内的标题
+            </div>
+          </div>
+
+          <!-- 富文本编辑器占位 -->
+          <div class="space-y-1">
+            <label class="text-[12px] text-slate-600">正文内容</label>
+            <div class="border border-slate-200 rounded-lg overflow-hidden">
+              <!-- 工具栏占位 -->
+              <div
+                class="h-8 px-2 flex items-center justify-between bg-slate-50 text-[11px] text-slate-500"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="w-4 h-4 rounded bg-slate-200"></span>
+                  <span class="w-4 h-4 rounded bg-slate-200"></span>
+                  <span class="w-4 h-4 rounded bg-slate-200"></span>
+                  <span class="w-4 h-4 rounded bg-slate-200"></span>
+                  <span>富文本工具栏占位</span>
+                </div>
+                <span>字数：0/2000</span>
+              </div>
+              <!-- 编辑区域占位 -->
+              <div
+                class="h-32 px-2 py-1.5 text-[13px] text-slate-400 bg-white leading-relaxed"
+              >
+                在此输入正文内容，支持加粗、换行、插入图片等富文本样式……
+              </div>
+            </div>
+          </div>
+
+          <!-- 图片 / 视频上传 -->
+          <div class="space-y-1">
+            <label class="text-[12px] text-slate-600">图片 / 视频</label>
+            <div class="flex gap-2">
+              <div
+                class="w-16 h-16 rounded-lg border border-dashed border-slate-300 flex flex-col items-center justify-center text-[11px] text-slate-400"
+              >
+                <span class="w-6 h-6 rounded-full bg-slate-200 mb-1"></span>
+                上传图片
+              </div>
+              <div
+                class="w-16 h-16 rounded-lg border border-dashed border-slate-300 flex flex-col items-center justify-center text-[11px] text-slate-400"
+              >
+                <span class="w-6 h-6 rounded-full bg-slate-200 mb-1"></span>
+                上传视频
+              </div>
+            </div>
+          </div>
+
+          <!-- 置顶 / 推荐 / 定时发布（管理员可用，原型中展示为灰态） -->
+          <div class="space-y-1">
+            <label class="text-[12px] text-slate-600">高级设置（管理员）</label>
+            <div
+              class="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2 py-1.5 text-[11px] text-slate-400 space-y-1"
+            >
+              <div class="flex items-center justify-between">
+                <span>置顶显示</span>
+                <span class="w-8 h-4 rounded-full bg-slate-200 inline-block"></span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>推荐到首页 Banner</span>
+                <span class="w-8 h-4 rounded-full bg-slate-200 inline-block"></span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>定时发布</span>
+                <div
+                  class="w-28 h-7 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center"
+                >
+                  选择时间
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 提交按钮 -->
+          <div class="pt-1.5 flex items-center justify-between text-[11px]">
+            <span class="text-slate-400"
+              >提交后将进入审核流程，审核通过后对全体校友展示。</span
+            >
+            <div class="flex gap-1.5">
+              <button
+                class="px-3 py-1 rounded-full bg-slate-50 text-slate-600 border border-slate-200"
+              >
+                保存草稿
+              </button>
+              <button
+                class="px-3 py-1 rounded-full bg-primary-500 text-white border border-primary-500"
+              >
+                提交发布
+              </button>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+  </body>
+</html>
+

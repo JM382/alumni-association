@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>校友服务小程序 - 首页原型</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#e6f5ff",
+                100: "#cce9ff",
+                500: "#0052d9",
+                600: "#003fac",
+              },
+            },
+            boxShadow: {
+              tdesign: "0 4px 12px rgba(0, 0, 0, 0.06)",
+            },
+            borderRadius: {
+              tdesign: "18px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background: radial-gradient(circle at top, #e6f0ff 0, #f5f7fb 45%, #f3f4f6 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center py-6">
+    <!-- 模拟手机壳 -->
+    <div
+      class="relative w-[390px] max-w-full bg-white rounded-[32px] shadow-2xl border border-slate-200 overflow-hidden"
+    >
+      <!-- 顶部状态栏占位 -->
+      <div class="h-6 bg-slate-50 flex items-center justify-between px-4 text-[10px] text-slate-500">
+        <span>9:41</span>
+        <span class="flex items-center gap-1">
+          <span class="w-8 h-2 bg-slate-200 rounded-full inline-block"></span>
+          <span class="w-2 h-2 bg-slate-300 rounded-full inline-block"></span>
+        </span>
+      </div>
+
+      <!-- 顶部导航 -->
+      <header
+        class="px-4 pt-2 pb-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white"
+      >
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <div class="text-xs opacity-80">校友服务</div>
+            <div class="text-lg font-semibold tracking-wide">校友之家</div>
+          </div>
+          <button
+            class="px-3 py-1 text-[11px] rounded-full bg-white/15 border border-white/30 backdrop-blur-sm"
+          >
+            登录 / 注册
+          </button>
+        </div>
+        <div
+          class="mt-2 flex items-center gap-2 px-3 py-2 bg-white/12 rounded-xl text-[11px]"
+        >
+          <span
+            class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/20 text-[10px]"
+            >AI</span
+          >
+          <span class="truncate">发现你可能感兴趣的校友活动和校园资讯</span>
+        </div>
+      </header>
+
+      <!-- 内容区域 -->
+      <main class="px-4 pb-4 pt-3 bg-slate-50">
+        <!-- 顶部 Banner 区：轮播占位 -->
+        <section class="mb-3">
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-xs font-medium text-slate-700">母校动态 · 校友活动</h2>
+            <span class="text-[11px] text-primary-500">查看更多</span>
+          </div>
+          <div class="relative">
+            <div
+              class="h-28 rounded-tdesign overflow-hidden bg-gradient-to-r from-primary-500 to-indigo-500 text-white p-3 flex flex-col justify-between shadow-tdesign"
+            >
+              <div class="text-[11px] opacity-80">最新活动预告</div>
+              <div class="text-base font-semibold leading-snug">
+                校庆返校日 · 校友专属福利季
+              </div>
+              <div class="flex items-center justify-between text-[10px] opacity-90">
+                <span>上海 · 5 月 20 日</span>
+                <span>已有 1,286 位校友关注</span>
+              </div>
+            </div>
+            <div
+              class="absolute inset-y-3 -right-2 w-10 rounded-2xl bg-primary-600/80 blur-sm"
+            ></div>
+          </div>
+        </section>
+
+        <!-- 快捷功能入口 -->
+        <section class="mb-3">
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-xs font-medium text-slate-700">快捷服务</h2>
+            <span class="text-[11px] text-slate-400">8 个核心入口</span>
+          </div>
+          <div class="grid grid-cols-4 gap-2 text-[11px]">
+            <!-- 单个入口 -->
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-primary-500 to-indigo-500 flex items-center justify-center text-white text-xs"
+              >
+                卡
+              </div>
+              <span class="text-slate-700">电子校友卡</span>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs"
+              >
+                约
+              </div>
+              <span class="text-slate-700">返校预约</span>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white text-xs"
+              >
+                惠
+              </div>
+              <span class="text-slate-700">校友福利</span>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white text-xs"
+              >
+                捐
+              </div>
+              <span class="text-slate-700">捐赠通道</span>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center text-white text-xs"
+              >
+                企
+              </div>
+              <span class="text-slate-700">校友企业</span>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-purple-400 to-violet-500 flex items-center justify-center text-white text-xs"
+              >
+                联
+              </div>
+              <span class="text-slate-700">校友联谊</span>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-lime-400 to-emerald-500 flex items-center justify-center text-white text-xs"
+              >
+                资
+              </div>
+              <span class="text-slate-700">校友资源</span>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl bg-white shadow-tdesign"
+            >
+              <div
+                class="w-8 h-8 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center text-white text-xs"
+              >
+                专
+              </div>
+              <span class="text-slate-700">专家资源</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 动态推送区 -->
+        <section class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xs font-medium text-slate-700">动态推送</h2>
+            <div class="flex items-center gap-1 text-[11px] text-slate-400">
+              <span>校友故事</span>
+              <span class="w-[1px] h-3 bg-slate-200"></span>
+              <span>母校新闻</span>
+              <span class="w-[1px] h-3 bg-slate-200"></span>
+              <span>招聘 · 活动</span>
+            </div>
+          </div>
+
+          <!-- 单条动态卡片 -->
+          <article
+            class="flex gap-2.5 p-2.5 bg-white rounded-xl shadow-tdesign"
+          >
+            <div
+              class="w-16 h-16 rounded-lg bg-gradient-to-br from-primary-500 to-indigo-500 flex items-center justify-center text-[11px] text-white"
+            >
+              校园风光
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="space-y-1">
+                <div class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-primary-50 text-[10px] text-primary-600">
+                  校友故事
+                </div>
+                <h3 class="text-[13px] font-medium text-slate-800 leading-snug">
+                  “从校园到世界 500 强” · 计算机学院 2010 级校友访谈
+                </h3>
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-400 mt-1.5">
+                <span>2 小时前 · 校友会</span>
+                <span>浏览量 1,023</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="flex gap-2.5 p-2.5 bg-white rounded-xl shadow-tdesign"
+          >
+            <div
+              class="w-16 h-16 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-[11px] text-white"
+            >
+              招聘专场
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="space-y-1">
+                <div class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-emerald-50 text-[10px] text-emerald-600">
+                  校友企业招聘
+                </div>
+                <h3 class="text-[13px] font-medium text-slate-800 leading-snug">
+                  校友企业春季招聘 · 互联网 & 金融专场
+                </h3>
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-400 mt-1.5">
+                <span>今天 19:00 线上</span>
+                <span>报名人数 356</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="flex gap-2.5 p-2.5 bg-white rounded-xl shadow-tdesign"
+          >
+            <div
+              class="w-16 h-16 rounded-lg bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-[11px] text-white"
+            >
+              福利上新
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="space-y-1">
+                <div class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-orange-50 text-[10px] text-orange-600">
+                  校友福利
+                </div>
+                <h3 class="text-[13px] font-medium text-slate-800 leading-snug">
+                  南航 · 校友专属机票优惠通道正式开启
+                </h3>
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-400 mt-1.5">
+                <span>截止 6 月 30 日</span>
+                <span>已领取 892 人</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
+

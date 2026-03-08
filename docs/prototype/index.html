@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>校友服务小程序 - 原型总览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#e6f5ff",
+                100: "#cce9ff",
+                500: "#0052d9",
+                600: "#003fac",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background: radial-gradient(circle at top, #e6f0ff 0, #f5f7fb 45%, #f3f4f6 100%);
+      }
+
+      .phone-frame {
+        border-radius: 28px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <!-- 顶部说明 -->
+    <header class="px-6 pt-4 pb-3 flex items-center justify-between">
+      <div>
+        <h1 class="text-lg font-semibold text-slate-900">
+          校友服务小程序 · 原型页面总览
+        </h1>
+        <p class="mt-1 text-xs text-slate-500 max-w-2xl">
+          使用 HTML + Tailwind CSS 按页面拆分实现原型，index.html
+          通过多个&nbsp;<code class="px-1 py-0.5 rounded bg-slate-100 text-[11px]">iframe</code>&nbsp;平铺嵌入各页面文件，不使用链接跳转，便于一次性对比查看。
+        </p>
+      </div>
+      <div
+        class="px-3 py-1.5 rounded-full bg-primary-50 text-primary-600 text-[11px] border border-primary-100"
+      >
+        设计风格：Tailwind + TDesign 风格组件
+      </div>
+    </header>
+
+    <!-- 页面网格：通过 iframe 嵌入每个独立页面 -->
+    <main class="flex-1 px-6 pb-6">
+      <div
+        class="grid gap-6 auto-rows-fr"
+        style="
+          grid-template-columns: repeat(auto-fit, minmax(320px, 360px));
+        "
+      >
+        <!-- 首页 -->
+        <section class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-medium text-slate-800">首页（home.html）</h2>
+            <span class="text-[11px] text-slate-400">Banner + 快捷入口 + 动态推送</span>
+          </div>
+          <div class="phone-frame bg-white w-full aspect-[9/16]">
+            <iframe src="./home.html" title="首页原型"></iframe>
+          </div>
+        </section>
+
+        <!-- 校友服务 -->
+        <section class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-medium text-slate-800">
+              校友服务（services.html）
+            </h2>
+            <span class="text-[11px] text-slate-400"
+              >校友福利 / 返校服务 / 捐赠通道</span
+            >
+          </div>
+          <div class="phone-frame bg-white w-full aspect-[9/16]">
+            <iframe src="./services.html" title="校友服务原型"></iframe>
+          </div>
+        </section>
+
+        <!-- 资讯列表 -->
+        <section class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-medium text-slate-800">资讯列表（news.html）</h2>
+            <span class="text-[11px] text-slate-400">顶部 Tab 分类 + 列表卡片</span>
+          </div>
+          <div class="phone-frame bg-white w-full aspect-[9/16]">
+            <iframe src="./news.html" title="资讯列表原型"></iframe>
+          </div>
+        </section>
+
+        <!-- 新闻详情 -->
+        <section class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-medium text-slate-800">
+              新闻详情（news-detail.html）
+            </h2>
+            <span class="text-[11px] text-slate-400"
+              >标题 + 发布时间 + 来源 + 正文 + 交互</span
+            >
+          </div>
+          <div class="phone-frame bg-white w-full aspect-[9/16]">
+            <iframe src="./news-detail.html" title="新闻详情原型"></iframe>
+          </div>
+        </section>
+
+        <!-- 新闻发布 -->
+        <section class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-medium text-slate-800">
+              新闻发布（news-publish.html）
+            </h2>
+            <span class="text-[11px] text-slate-400"
+              >管理员 / 会员发布入口 + 富文本编辑器占位</span
+            >
+          </div>
+          <div class="phone-frame bg-white w-full aspect-[9/16]">
+            <iframe src="./news-publish.html" title="新闻发布原型"></iframe>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
+
