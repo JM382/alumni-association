@@ -1,0 +1,68 @@
+<!--pages/news-publish/news-publish.wxml-->
+<scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
+  <view class="form">
+    <view class="form-tip">
+      <t-icon name="info-circle" size="32rpx" />
+      <text>当前身份：会员账号 · 仅支持发布「校友故事」</text>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">新闻分类</text>
+      <view class="category-tags">
+        <t-tag theme="primary" size="medium" class="category-tag">校友故事</t-tag>
+        <t-tag variant="outline" size="medium" class="category-tag disabled">母校新闻（管理员）</t-tag>
+        <t-tag variant="outline" size="medium" class="category-tag disabled">校友会通知（管理员）</t-tag>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">标题</text>
+      <t-input placeholder="请输入 10~40 字以内的标题" maxlength="{{40}}" clearable />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">正文内容</text>
+      <t-textarea
+        placeholder="在此输入正文内容，支持加粗、换行、插入图片等富文本样式……"
+        maxlength="{{2000}}"
+        indicator
+        autosize
+      />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">图片 / 视频</text>
+      <t-upload
+        files="{{files}}"
+        grid-config="{{gridConfig}}"
+        max="{{9}}"
+        bind:success="onUploadSuccess"
+        bind:remove="onUploadRemove"
+      />
+    </view>
+
+    <view class="form-group admin-only">
+      <text class="form-label">高级设置（管理员）</text>
+      <view class="admin-row">
+        <text>置顶显示</text>
+        <t-switch disabled />
+      </view>
+      <view class="admin-row">
+        <text>推荐到首页 Banner</text>
+        <t-switch disabled />
+      </view>
+      <view class="admin-row">
+        <text>定时发布</text>
+        <t-button theme="default" size="small" variant="outline">选择时间</t-button>
+      </view>
+    </view>
+
+    <view class="form-footer">
+      <text class="footer-tip">提交后将进入审核流程，审核通过后对全体校友展示。</text>
+      <view class="footer-btns">
+        <t-button theme="default" variant="outline" size="medium" bindtap="onSaveDraft">保存草稿</t-button>
+        <t-button theme="primary" size="medium" bindtap="onSubmit">提交发布</t-button>
+      </view>
+    </view>
+  </view>
+</scroll-view>

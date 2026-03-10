@@ -1,12 +1,42 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/home/home",
+    "pages/services/services",
+    "pages/news/news",
+    "pages/news-detail/news-detail",
+    "pages/news-publish/news-publish"
   ],
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
-    "navigationBarBackgroundColor": "#ffffff"
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "校友之家",
+    "navigationBarBackgroundColor": "#0052D9",
+    "backgroundColor": "#F5F7FB"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#0052D9",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/services/services",
+        "text": "校友服务",
+        "iconPath": "assets/icons/services.png",
+        "selectedIconPath": "assets/icons/services-active.png"
+      },
+      {
+        "pagePath": "pages/news/news",
+        "text": "资讯",
+        "iconPath": "assets/icons/news.png",
+        "selectedIconPath": "assets/icons/news-active.png"
+      }
+    ]
   },
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents"

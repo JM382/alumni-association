@@ -1,0 +1,104 @@
+/* pages/news-detail/news-detail.wxss */
+.page {
+  height: 100vh;
+  background: #f5f7fb;
+}
+
+.article {
+  padding: 24rpx 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.article-header {
+  margin-bottom: 24rpx;
+}
+
+.article-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+}
+
+.article-meta {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.article-cover {
+  width: 100%;
+  border-radius: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+/* 正文：16px 字号，1.5 倍行距 */
+.article-body {
+  margin-bottom: 32rpx;
+}
+
+.article-content {
+  font-size: 32rpx;
+  line-height: 1.5;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.article-actions {
+  display: flex;
+  align-items: center;
+  gap: 48rpx;
+  padding: 24rpx 0;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.share-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.share-btn::after {
+  border: none;
+}
+
+.comment-list {
+  margin-top: 24rpx;
+}
+
+.comment-item {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.comment-user {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.comment-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.comment-content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.5;
+}

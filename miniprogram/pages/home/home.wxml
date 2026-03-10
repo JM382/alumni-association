@@ -1,0 +1,84 @@
+<!--pages/home/home.wxml-->
+<scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
+  <!-- 顶部 Header -->
+  <view class="header">
+    <view class="header-content">
+      <view class="header-title">
+        <text class="header-subtitle">校友服务</text>
+        <text class="header-main">校友之家</text>
+      </view>
+      <t-button theme="light" size="small" variant="outline" class="login-btn">登录 / 注册</t-button>
+    </view>
+    <view class="header-search">
+      <t-icon name="search" size="32rpx" />
+      <text class="search-text">发现你可能感兴趣的校友活动和校园资讯</text>
+    </view>
+  </view>
+
+  <!-- Banner 轮播 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">母校动态 · 校友活动</text>
+      <text class="section-more">查看更多</text>
+    </view>
+    <t-swiper
+      list="{{bannerList}}"
+      height="280rpx"
+      autoplay
+      interval="4000"
+      duration="500"
+      navigation="{{ { type: 'dots', showControls: false } }}"
+    />
+  </view>
+
+  <!-- 快捷功能入口 8个 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">快捷服务</text>
+      <text class="section-hint">8 个核心入口</text>
+    </view>
+    <t-grid column="4" border="{{false}}">
+      <t-grid-item
+        wx:for="{{shortcuts}}"
+        wx:key="key"
+        text="{{item.label}}"
+        icon="{{item.icon}}"
+        bindtap="onShortcutTap"
+        data-key="{{item.key}}"
+      />
+    </t-grid>
+  </view>
+
+  <!-- 动态推送区 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">动态推送</text>
+      <view class="section-tags">
+        <text>校友故事</text>
+        <text class="divider">|</text>
+        <text>母校新闻</text>
+        <text class="divider">|</text>
+        <text>招聘 · 活动</text>
+      </view>
+    </view>
+    <view class="feed-list">
+      <view
+        class="feed-item"
+        wx:for="{{feedList}}"
+        wx:key="id"
+        bindtap="onFeedTap"
+        data-id="{{item.id}}"
+      >
+        <image class="feed-thumb" src="{{item.thumb}}" mode="aspectFill" />
+        <view class="feed-content">
+          <t-tag theme="primary" variant="light" size="small" class="feed-tag">{{item.category}}</t-tag>
+          <text class="feed-title">{{item.title}}</text>
+          <view class="feed-meta">
+            <text>{{item.time}}</text>
+            <text>浏览量 {{item.views}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

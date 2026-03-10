@@ -1,0 +1,235 @@
+/* pages/services/services.wxss */
+.page {
+  height: 100vh;
+  background: #f5f7fb;
+}
+
+.header {
+  background: #fff;
+  padding: 32rpx;
+  padding-top: calc(32rpx + env(safe-area-inset-top));
+  border-bottom: 1rpx solid #eee;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.header-main {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.service-tabs {
+  flex: 1;
+  overflow: hidden;
+}
+
+.benefit-list {
+  padding: 24rpx 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.benefit-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.benefit-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+}
+
+.benefit-logo {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(135deg, #0052d9 0%, #266fe8 100%);
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.benefit-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.benefit-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.benefit-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.benefit-footer {
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.benefit-meta {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.return-section {
+  padding: 24rpx 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin: 24rpx 0 16rpx;
+}
+
+.card-title:first-child {
+  margin-top: 0;
+}
+
+.map-placeholder {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.form-group {
+  background: #fff;
+  padding: 24rpx 32rpx;
+  margin-bottom: 2rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.submit-btn {
+  margin-top: 32rpx;
+}
+
+.donate-section {
+  padding: 24rpx 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.donate-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.donate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.donate-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.donate-target {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.donate-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.donate-progress {
+  margin-top: 20rpx;
+}
+
+.donate-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.donate-amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin: 20rpx 0;
+}
+
+.amount-tag {
+  margin-right: 0;
+}
+
+.donate-payment {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.payment-label {
+  margin-right: 8rpx;
+}
+
+.payment-name {
+  margin-right: 16rpx;
+  font-size: 22rpx;
+}
+
+.empty-tip {
+  padding: 80rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  color: #999;
+  font-size: 28rpx;
+}

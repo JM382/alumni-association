@@ -1,0 +1,44 @@
+<!--pages/news-detail/news-detail.wxml-->
+<scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
+  <view class="article">
+    <view class="article-header">
+      <text class="article-title">{{detail.title}}</text>
+      <view class="article-meta">
+        <text>{{detail.source}} · {{detail.date}}</text>
+      </view>
+    </view>
+
+    <image class="article-cover" src="{{detail.cover}}" mode="widthFix" />
+
+    <view class="article-body">
+      <text class="article-content">{{detail.content}}</text>
+    </view>
+
+    <view class="article-actions">
+      <view class="action-item" bindtap="onLike">
+        <t-icon name="{{liked ? 'thumb-up-filled' : 'thumb-up'}}" size="40rpx" />
+        <text>点赞 {{detail.likes}}</text>
+      </view>
+      <view class="action-item" bindtap="onCollect">
+        <t-icon name="{{collected ? 'star-filled' : 'star'}}" size="40rpx" />
+        <text>收藏 {{detail.collects}}</text>
+      </view>
+      <button class="action-item share-btn" open-type="share">
+        <t-icon name="share" size="40rpx" />
+        <text>分享</text>
+      </button>
+    </view>
+
+    <t-divider>精彩评论（仅会员可评论）</t-divider>
+
+    <view class="comment-list">
+      <view class="comment-item" wx:for="{{detail.comments}}" wx:key="id">
+        <view class="comment-header">
+          <text class="comment-user">{{item.user}}</text>
+          <text class="comment-time">{{item.time}}</text>
+        </view>
+        <text class="comment-content">{{item.content}}</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

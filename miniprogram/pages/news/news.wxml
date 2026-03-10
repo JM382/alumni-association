@@ -1,0 +1,41 @@
+<!--pages/news/news.wxml-->
+<view class="page">
+  <view class="header">
+    <view class="header-content">
+      <view>
+        <text class="header-subtitle">资讯中心</text>
+        <text class="header-main">新闻资讯</text>
+      </view>
+      <t-button theme="light" size="small" variant="outline" bindtap="onPublish">发布资讯</t-button>
+    </view>
+  </view>
+
+  <t-tabs value="{{activeCategory}}" bind:change="onCategoryChange" class="news-tabs">
+    <t-tab-panel label="全部新闻" value="all" />
+    <t-tab-panel label="母校新闻" value="school" />
+    <t-tab-panel label="校友会通知" value="notice" />
+    <t-tab-panel label="行业动态" value="industry" />
+    <t-tab-panel label="校友故事" value="story" />
+    <t-tab-panel label="政策资讯" value="policy" />
+  </t-tabs>
+
+  <scroll-view scroll-y class="news-list" enhanced show-scrollbar="{{false}}">
+    <view
+      class="news-item"
+      wx:for="{{newsList}}"
+      wx:key="id"
+      bindtap="onNewsTap"
+      data-id="{{item.id}}"
+    >
+      <image class="news-thumb" src="{{item.thumb}}" mode="aspectFill" />
+      <view class="news-content">
+        <text class="news-title">{{item.title}}</text>
+        <text class="news-summary">{{item.summary}}</text>
+        <view class="news-meta">
+          <text>{{item.category}} · {{item.date}}</text>
+          <text>浏览 {{item.views}} · 评论 {{item.comments}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
