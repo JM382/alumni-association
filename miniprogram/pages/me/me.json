@@ -1,11 +1,7 @@
 {
-    "navigationStyle": "default",  
-    "navigationBarBackgroundColor": "#ffffff",  
-    "navigationBarTextStyle": "black",  
-    "navigationBarTitleText": "哈军工北京校友会",
-    "backgroundColor": "#b01e2b",
-    "backgroundTextStyle": "light",
-    "usingComponents": {
-    "cloud-tip-modal": "/components/cloudTipModal/index"
-  }
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f5f5f5",
+  "backgroundTextStyle": "light",
+  "usingComponents": {}
 }

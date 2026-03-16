@@ -1,1 +1,6 @@
-/* pages/news/news.wxss */
+/* pages/news/news.wxss - 资讯，底部留出 TabBar + 安全区域 */
+.news-page {
+  min-height: 100vh;
+  padding-bottom: calc(120rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}

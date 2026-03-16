@@ -1,147 +1,53 @@
-<!-- pages/my/my.wxml -->
-<view class="my-page">
-  <!-- 顶部个人信息卡片 -->
-  <view class="user-card">
-    <view class="user-info">
-      <view class="avatar-section">
-        <image class="avatar" src="../../images/default-avatar.png" mode="aspectFill"></image>
-        <view class="vip-badge">校友</view>
-      </view>
-      <view class="user-details">
-        <view class="user-name">黄今慧</view>
-        <view class="user-status">游客</view>
-        <view class="alumni-info">
-          <text class="alumni-no">校友卡号：No.2024010001</text>
-          <text class="school">北京工商大学</text>
-        </view>
-        <view class="enrollment-info">
-          <text>入学年份：2010年</text>
-          <text>所属学院：计算机与信息工程学院</text>
-        </view>
+<!-- 个人中心 - 红色顶栏 + 功能网格 + 设置列表 -->
+<view class="me-page page-with-tabbar">
+  <!-- 红色顶栏（含状态栏区域） -->
+  <view class="me-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="header-nav">
+      <view class="nav-placeholder"></view>
+      <text class="nav-title">我的</text>
+      <view class="nav-actions">
+        <view class="nav-icon" bindtap="onMoreTap">⋯</view>
+        <view class="nav-icon" bindtap="onSettingsTap">⊙</view>
       </view>
     </view>
-    
-    <view class="action-buttons">
-      <button class="card-btn" bindtap="viewAlumniCard">电子校友卡</button>
-      <button class="share-btn" bindtap="shareAlumniCard">分享</button>
+    <view class="user-block">
+      <view class="avatar-wrap">
+        <image wx:if="{{userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onAvatarError" />
+        <view wx:else class="avatar avatar-placeholder">头像</view>
+        <view class="badge badge-unverified">未认证</view>
+      </view>
+      <view class="user-meta">
+        <text class="user-name">{{userInfo.nickName || '微信用户'}}</text>
+        <text class="user-status">游客</text>
+        <text class="user-college">所属学院：{{userInfo.schoolName || ''}}</text>
+      </view>
+      <image class="header-emblem" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/logo_%E9%80%8F%E6%98%8E.png?sign=e11f45497c883df7d6d8d12d7ce6c996&t=1773143399"></image>
     </view>
-    
-    <view class="stats-row">
-      <view class="stat-item" bindtap="goToPoints">
-        <text class="stat-value">0</text>
-        <text class="stat-label">积分</text>
+
+    <!-- 电子校友卡入口 -->
+    <view class="alumni-card-entry" bindtap="viewAlumniCard">
+      <view class="alumni-card-left">
+        <text class="alumni-card-title">电子校友卡</text>
+        <text class="alumni-card-sub">点击查看你的专属校友卡</text>
       </view>
-      <view class="divider"></view>
-      <view class="stat-item" bindtap="goToEvents">
-        <text class="stat-value">0</text>
-        <text class="stat-label">活动</text>
-      </view>
-      <view class="divider"></view>
-      <view class="stat-item" bindtap="goToContacts">
-        <text class="stat-value">0</text>
-        <text class="stat-label">校友</text>
-      </view>
+      <view class="alumni-card-tag">查看</view>
     </view>
   </view>
 
-  <!-- 核心功能入口区 -->
+  <!-- 功能网格（白底），图标资源在 images/me/ 下可替换 -->
   <view class="function-grid">
-    <view class="grid-title">核心功能</view>
-    
-    <view class="grid-row">
-      <view class="grid-item" bindtap="goToCardPackage">
-        <image class="grid-icon" src="../../icons/card.png"></image>
-        <text class="grid-text">卡包</text>
-      </view>
-      <view class="grid-item" bindtap="goToPoints">
-        <image class="grid-icon" src="../../icons/points.png"></image>
-        <text class="grid-text">积分</text>
-      </view>
-      <view class="grid-item" bindtap="goToContacts">
-        <image class="grid-icon" src="../../icons/contacts.png"></image>
-        <text class="grid-text">通讯录</text>
-      </view>
-      <view class="grid-item" bindtap="goToActivities">
-        <image class="grid-icon" src="../../icons/activity.png"></image>
-        <text class="grid-text">我的活动</text>
-      </view>
-    </view>
-    
-    <view class="grid-row">
-      <view class="grid-item" bindtap="goToOrders">
-        <image class="grid-icon" src="../../icons/order.png"></image>
-        <text class="grid-text">我的订单</text>
-      </view>
-      <view class="grid-item" bindtap="goToDonations">
-        <image class="grid-icon" src="../../icons/donation.png"></image>
-        <text class="grid-text">我的捐赠</text>
-      </view>
-      <view class="grid-item" bindtap="goToConnections">
-        <image class="grid-icon" src="../../icons/connection.png"></image>
-        <text class="grid-text">找人脉</text>
-      </view>
-      <view class="grid-item" bindtap="goToResources">
-        <image class="grid-icon" src="../../icons/resource.png"></image>
-        <text class="grid-text">资源求助</text>
-      </view>
-    </view>
-    
-    <view class="grid-row">
-      <view class="grid-item" bindtap="goToPublish">
-        <image class="grid-icon" src="../../icons/publish.png"></image>
-        <text class="grid-text">资源发布</text>
-      </view>
-      <view class="grid-item" bindtap="goToProfile">
-        <image class="grid-icon" src="../../icons/profile.png"></image>
-        <text class="grid-text">个人信息</text>
-      </view>
-      <view class="grid-item" bindtap="goToFriends">
-        <image class="grid-icon" src="../../icons/friend.png"></image>
-        <text class="grid-text">身边好友</text>
-      </view>
-      <view class="grid-item" bindtap="goToMap">
-        <image class="grid-icon" src="../../icons/map.png"></image>
-        <text class="grid-text">企业地图</text>
-      </view>
+    <view class="grid-item" wx:for="{{gridItems}}" wx:key="label" data-method="{{item.method}}" bindtap="onGridTap">
+      <image class="grid-icon" src="{{item.icon}}" mode="aspectFit" />
+      <text class="grid-label">{{item.label}}</text>
     </view>
   </view>
 
-  <!-- 特色功能入口 -->
-  <view class="special-functions">
-    <view class="function-item" bindtap="goToSelfDisplay">
-      <image class="function-icon" src="../../icons/display.png"></image>
-      <text class="function-text">自我展示</text>
-    </view>
-    <view class="function-item" bindtap="goToHunanRestaurant">
-      <image class="function-icon" src="../../icons/restaurant.png"></image>
-      <text class="function-text">找湘菜馆</text>
-    </view>
-  </view>
-
-  <!-- 设置入口 -->
-  <view class="settings-section">
-    <view class="section-title">设置</view>
-    <view class="settings-list">
-      <view class="setting-item" bindtap="goToAccountSettings">
-        <text class="setting-text">账号设置</text>
-        <image class="arrow-icon" src="../../icons/arrow-right.png"></image>
-      </view>
-      <view class="setting-item" bindtap="goToNotification">
-        <text class="setting-text">消息通知</text>
-        <switch class="notification-switch" checked="{{notificationEnabled}}" bindchange="toggleNotification"/>
-      </view>
-      <view class="setting-item" bindtap="goToPrivacy">
-        <text class="setting-text">隐私设置</text>
-        <image class="arrow-icon" src="../../icons/arrow-right.png"></image>
-      </view>
-      <view class="setting-item" bindtap="goToHelp">
-        <text class="setting-text">帮助中心</text>
-        <image class="arrow-icon" src="../../icons/arrow-right.png"></image>
-      </view>
-      <view class="setting-item" bindtap="goToAbout">
-        <text class="setting-text">关于我们</text>
-        <image class="arrow-icon" src="../../icons/arrow-right.png"></image>
-      </view>
+  <!-- 设置列表（白底），图标资源在 images/me/ 下可替换 -->
+  <view class="settings-list">
+    <view class="setting-item" wx:for="{{settingItems}}" wx:key="label" data-method="{{item.method}}" bindtap="onSettingTap">
+      <image class="setting-icon-img" src="{{item.icon}}" mode="aspectFit" />
+      <text class="setting-text">{{item.label}}</text>
+      <text class="setting-arrow">›</text>
     </view>
   </view>
 </view>

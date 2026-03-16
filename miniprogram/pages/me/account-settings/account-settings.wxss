@@ -1,0 +1,75 @@
+/* 账号设置 - 红顶栏 #b01e2b，卡片式，与项目风格一致 */
+.account-settings-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 24rpx;
+  padding-bottom: 60rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 0 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.section-header {
+  font-size: 26rpx;
+  color: #999;
+  padding: 24rpx 0 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-label {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.row-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.row-right {
+  display: flex;
+  align-items: center;
+  margin-left: 24rpx;
+}
+
+.row-value {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 8rpx;
+}
+
+.row-danger .row-label {
+  color: #b01e2b;
+}
+
+.arrow {
+  font-size: 32rpx;
+  color: #999;
+  margin-left: 8rpx;
+}

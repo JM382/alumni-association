@@ -1,0 +1,53 @@
+<view class="notification-page">
+  <!-- 消息提醒 -->
+  <view class="card">
+    <view class="section-header">消息提醒</view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">活动通知</text>
+        <text class="setting-desc">报名活动、活动开始提醒等</text>
+      </view>
+      <switch checked="{{settings.activityOn}}" color="#b01e2b" data-key="activityOn" bindchange="onSwitchChange" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">系统公告</text>
+        <text class="setting-desc">校友会公告、平台通知</text>
+      </view>
+      <switch checked="{{settings.systemOn}}" color="#b01e2b" data-key="systemOn" bindchange="onSwitchChange" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">互动消息</text>
+        <text class="setting-desc">点赞、评论、@我的</text>
+      </view>
+      <switch checked="{{settings.interactOn}}" color="#b01e2b" data-key="interactOn" bindchange="onSwitchChange" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">校友圈动态</text>
+        <text class="setting-desc">关注的人发布新动态</text>
+      </view>
+      <switch checked="{{settings.circleOn}}" color="#b01e2b" data-key="circleOn" bindchange="onSwitchChange" />
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="card">
+    <view class="section-header">其他</view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">接收新消息声音</text>
+        <text class="setting-desc">通知时播放提示音</text>
+      </view>
+      <switch checked="{{settings.soundOn}}" color="#b01e2b" data-key="soundOn" bindchange="onSwitchChange" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">通知振动</text>
+        <text class="setting-desc">收到通知时振动</text>
+      </view>
+      <switch checked="{{settings.vibrateOn}}" color="#b01e2b" data-key="vibrateOn" bindchange="onSwitchChange" />
+    </view>
+  </view>
+</view>

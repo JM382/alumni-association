@@ -1,128 +1,38 @@
-<!-- pages/login/login.wxml -->
+<!-- pages/login/login.wxml - 仅微信一键登录 -->
 <view class="login-page">
-  <!-- 顶部背景 -->
+  <!-- 顶部红色背景 -->
   <view class="login-header">
-    <image class="login-logo" src="/icons/logo.png"></image>
-    <text class="login-title">哈军工校友会</text>
-    <text class="login-subtitle">连接校友，共创未来</text>
+    <!-- 这里的 logo 可以换成你云存储里的图片地址 -->
+    <image class="login-logo" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/logo_%E9%80%8F%E6%98%8E.png?sign=7194d375746b5c805ed2a88a39073bf9&t=1773056090"></image>
+    <text class="login-title">哈军工北京校友会</text>
+    <text class="login-subtitle">校友服务平台</text>
   </view>
 
-  <!-- 登录表单 -->
-  <view class="login-form" wx:if="{{!isAuthenticated}}">
-    <!-- 微信一键登录 -->
-    <button 
-      class="btn-wechat" 
+  <!-- 中间一键登录按钮 -->
+  <view class="login-body">
+    <button
+      class="btn-wechat"
       bindtap="wechatLogin"
       hover-class="btn-hover"
+      loading="{{loading}}"
+      disabled="{{loading || !agreed}}"
     >
-      <image class="btn-icon" src="/icons/wechat.png"></image>
+      <!-- 这里的微信图标同样可以换成云存储地址 -->
+      <image class="btn-icon" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E6%A0%87.png?sign=ca87c9a904fa69b250be1eabe9c1c6af&t=1773056153"></image>
       <text>微信一键登录</text>
     </button>
-
-    <!-- 分隔线 -->
-    <view class="divider">
-      <view class="divider-line"></view>
-      <text class="divider-text">或</text>
-      <view class="divider-line"></view>
-    </view>
-
-    <!-- 手机号登录 -->
-    <view class="form-section">
-      <view class="input-group">
-        <image class="input-icon" src="/icons/phone.png"></image>
-        <input 
-          class="input-field"
-          type="number"
-          placeholder="请输入手机号"
-          maxlength="11"
-          value="{{phone}}"
-          bindinput="onPhoneInput"
-        />
-      </view>
-
-      <view class="input-group">
-        <image class="input-icon" src="/icons/lock.png"></image>
-        <input 
-          class="input-field"
-          password
-          placeholder="请输入验证码"
-          maxlength="6"
-          value="{{code}}"
-          bindinput="onCodeInput"
-        />
-        <button 
-          class="btn-code {{canSendCode ? '' : 'btn-disabled'}}" 
-          bindtap="sendCode"
-          disabled="{{!canSendCode}}"
-        >
-          {{codeText}}
-        </button>
-      </view>
-    </view>
-
-    <button 
-      class="btn-login" 
-      bindtap="phoneLogin"
-      hover-class="btn-hover"
-      disabled="{{!canLogin}}"
-    >
-      登录
-    </button>
-
-    <!-- 服务协议 -->
-    <view class="agreement">
-      <checkbox-group bindchange="onAgreementChange">
-        <label class="checkbox-label">
-          <checkbox value="agreed" checked="{{agreed}}"/>
-          <text class="agreement-text">我已阅读并同意</text>
-          <text class="agreement-link" bindtap="showAgreement">《服务协议》</text>
-          <text class="agreement-link" bindtap="showPrivacy">《隐私政策》</text>
-        </label>
-      </checkbox-group>
-    </view>
   </view>
 
-  <!-- 已登录状态 -->
-  <view class="logged-view" wx:if="{{isAuthenticated}}">
-    <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"></image>
-    <text class="user-name">{{userInfo.nickName || '校友'}}</text>
-    <text class="user-welcome">欢迎回来！</text>
-    
-    <button 
-      class="btn-continue" 
-      bindtap="goToHome"
-      hover-class="btn-hover"
-    >
-      进入首页
-    </button>
-    
-    <button 
-      class="btn-logout" 
-      bindtap="logout"
-      hover-class="btn-hover"
-    >
-      切换账号
-    </button>
-  </view>
-
-  <!-- 游客模式 -->
-  <view class="guest-view" wx:if="{{!isAuthenticated}}">
-    <view class="guest-divider">
-      <view class="guest-line"></view>
-      <text class="guest-text">或</text>
-      <view class="guest-line"></view>
-    </view>
-    
-    <button 
-      class="btn-guest" 
-      bindtap="enterAsGuest"
-      hover-class="btn-hover"
-    >
-      游客体验
-    </button>
-    
-    <view class="guest-tips">
-      <text>游客模式功能受限，建议登录体验完整功能</text>
-    </view>
+  <!-- 底部协议勾选 -->
+  <view class="login-footer">
+    <checkbox-group bindchange="onAgreementChange">
+      <label class="agreement-label">
+        <checkbox value="agreed" checked="{{agreed}}"/>
+        <text class="agreement-text">登录即代表同意</text>
+        <text class="agreement-link" bindtap="showAgreement">《用户协议》</text>
+        <text class="agreement-text">和</text>
+        <text class="agreement-link" bindtap="showPrivacy">《隐私政策》</text>
+      </label>
+    </checkbox-group>
   </view>
 </view>

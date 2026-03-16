@@ -1,0 +1,36 @@
+<view class="help-page">
+  <!-- 常见问题 -->
+  <view class="card">
+    <view class="card-title">常见问题</view>
+    <block wx:for="{{faqList}}" wx:key="id">
+      <view class="faq-item" bindtap="onFaqTap" data-index="{{index}}">
+        <view class="faq-content">
+          <text class="faq-question">{{item.question}}</text>
+          <text class="faq-answer">{{item.answer}}</text>
+        </view>
+        <text class="faq-arrow">›</text>
+      </view>
+      <view wx:if="{{index < faqList.length - 1}}" class="faq-divider"></view>
+    </block>
+  </view>
+
+  <!-- 联系我们 -->
+  <view class="card">
+    <view class="card-title">联系我们</view>
+    <view class="contact-block">
+      <view class="contact-label-row">
+        <text class="contact-label">邮箱</text>
+      </view>
+      <text class="contact-desc">如有问题或建议,可发送邮件至</text>
+      <text class="contact-value contact-value-red">bjjlgxhh@alumni.com</text>
+    </view>
+    <view class="contact-divider"></view>
+    <view class="contact-block">
+      <view class="contact-label-row">
+        <text class="contact-label">联系电话</text>
+      </view>
+      <text class="contact-desc">工作时间:工作日 9:00-18:00</text>
+      <text class="contact-value contact-value-red">010-88888888</text>
+    </view>
+  </view>
+</view>

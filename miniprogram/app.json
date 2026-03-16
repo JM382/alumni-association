@@ -1,12 +1,29 @@
 {
   "pages": [
+    "pages/me/me",
     "pages/login/login",
+
     "pages/index/index",
     "pages/welfare/welfare",
     "pages/news/news",
     "pages/circle/circle",
-    "pages/me/me",
-    "pages/profile/profile"
+    "pages/me/profile/profile",
+    "pages/me/card/card",
+    "pages/me/points/points",
+    "pages/me/contacts/contacts",
+    "pages/me/my-activities/my-activities",
+    "pages/me/account-settings/account-settings",
+    "pages/me/notification-settings/notification-settings",
+    "pages/me/privacy-settings/privacy-settings",
+    "pages/me/help-center/help-center",
+    "pages/me/about-us/about-us",
+    "pages/me/my-orders/my-orders",
+    "pages/me/my-donations/my-donations",
+    "pages/me/connections/connections",
+    "pages/me/resource-help/resource-help",
+    "pages/me/resource-publish/resource-publish",
+    "pages/me/auth/auth",
+    "pages/me/membership/membership"
   ],
   "window": {
     "navigationStyle": "default"

@@ -1,0 +1,53 @@
+<view class="about-page">
+  <!-- 红色品牌区：Logo 图片 + 中英文名称 -->
+  <view class="brand-section">
+    <view class="logo-wrap">
+      <image class="logo-img" src="{{logoUrl}}" mode="aspectFit" />
+    </view>
+    <text class="org-name-cn">哈军工北京校友会</text>
+    <text class="org-name-en">Ha Jun Gong Bei Jing Alumni Association</text>
+  </view>
+
+  <!-- 校友会简介 -->
+  <view class="card">
+    <view class="card-title">校友会简介</view>
+    <text class="card-text">哈军工北京校友会致力于团结服务在京及周边地区的哈军工校友,搭建情感纽带与资源共享平台,传承"哈军工精神",支持母校建设与校友发展。</text>
+    <text class="card-text">校友会通过举办校友联谊、行业沙龙、学术交流、公益活动等形式,促进校友之间、校友与母校之间的互动联系,为校友提供信息交流、资源对接与成长支持。</text>
+  </view>
+
+  <!-- 平台功能 -->
+  <view class="card">
+    <view class="card-title">平台功能</view>
+    <view class="bullet-list">
+      <view class="bullet-item">
+        <view class="bullet-dot"></view>
+        <text class="bullet-text">校友圈:分享动态、报名活动、寻找同届/同专业/同地区校友。</text>
+      </view>
+      <view class="bullet-item">
+        <view class="bullet-dot"></view>
+        <text class="bullet-text">校友服务:校友福利、返校服务、捐赠通道等一站式服务。</text>
+      </view>
+      <view class="bullet-item">
+        <view class="bullet-dot"></view>
+        <text class="bullet-text">资讯中心:母校新闻、校友会通知、行业动态与校友故事。</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="card">
+    <view class="card-title">联系方式</view>
+    <view class="contact-row">
+      <text class="contact-label">邮箱</text>
+      <text class="contact-value">bjjlgxhh@alumni.com</text>
+    </view>
+    <view class="contact-row">
+      <text class="contact-label">联系电话</text>
+      <text class="contact-value">010-88888888</text>
+    </view>
+    <view class="contact-row">
+      <text class="contact-label">联系地址</text>
+      <text class="contact-value">北京市·哈军工北京校友会秘书处</text>
+    </view>
+  </view>
+</view>

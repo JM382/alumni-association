@@ -37,14 +37,24 @@ Component({
     ]
   },
   attached() {},
+  pageLifetimes: {
+    show() {
+      const pages = getCurrentPages()
+      const cur = pages[pages.length - 1]
+      const route = cur ? cur.route : ''
+      const idx = this.data.list.findIndex(item => item.pagePath === '/' + route)
+      if (idx !== -1 && idx !== this.data.selected) {
+        this.setData({ selected: idx })
+      }
+    }
+  },
   methods: {
     switchTab(e) {
       const data = e.currentTarget.dataset
       const url = data.path
+      const index = data.index
+      this.setData({ selected: index })
       wx.switchTab({ url })
-      this.setData({
-        selected: data.index
-      })
     }
   }
 })

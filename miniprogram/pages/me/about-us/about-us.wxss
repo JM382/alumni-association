@@ -1,0 +1,130 @@
+/* 关于我们 - 红顶栏 + 红色品牌区 + 白卡片，与项目风格一致 */
+.about-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 60rpx;
+}
+
+/* 红色品牌区 */
+.brand-section {
+  background: #b01e2b;
+  padding: 48rpx 32rpx 56rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-wrap {
+  margin-bottom: 32rpx;
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.logo-img {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  display: block;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.org-name-cn {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 12rpx;
+  text-align: center;
+}
+
+.org-name-en {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+}
+
+/* 卡片区 */
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  margin: 24rpx 24rpx 0;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.card-text {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 20rpx;
+}
+
+.card-text:last-of-type {
+  margin-bottom: 0;
+}
+
+/* 平台功能 - 红色圆点列表 */
+.bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.bullet-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.bullet-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #b01e2b;
+  flex-shrink: 0;
+  margin-top: 14rpx;
+}
+
+.bullet-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* 联系方式 - 左右对齐 */
+.contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.contact-row:last-child {
+  border-bottom: none;
+}
+
+.contact-label {
+  font-size: 28rpx;
+  color: #333;
+  flex-shrink: 0;
+  margin-right: 24rpx;
+}
+
+.contact-value {
+  font-size: 28rpx;
+  color: #666;
+  text-align: right;
+  flex: 1;
+  word-break: break-all;
+}

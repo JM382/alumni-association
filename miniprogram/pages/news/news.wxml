@@ -1,2 +1,4 @@
 <!--pages/news/news.wxml-->
-<text>pages/news/news.wxml</text>
+<view class="news-page">
+  <text>pages/news/news.wxml</text>
+</view>
