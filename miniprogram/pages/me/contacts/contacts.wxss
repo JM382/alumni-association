@@ -1,3 +1,15 @@
-.placeholder-page { padding: 80rpx 40rpx; text-align: center; }
-.placeholder-title { font-size: 36rpx; color: #333; display: block; margin-bottom: 24rpx; }
-.placeholder-tip { font-size: 28rpx; color: #999; }
+@import "../me.wxss";
+@import "../../circle/circle.wxss";
+
+.alumni-list {
+  padding: 20rpx;
+}
+
+.alumni-card {
+  margin-bottom: 20rpx;
+}
+
+.small-btn {
+  margin-left: 16rpx;
+}
+

@@ -1,0 +1,68 @@
+@import "../me.wxss";
+
+.user-profile-page {
+  padding-bottom: 40rpx;
+}
+
+.profile-actions {
+  margin: 24rpx 32rpx 8rpx;
+  display: flex;
+  gap: 24rpx;
+}
+
+.btn-follow,
+.btn-message {
+  flex: 1;
+  height: 76rpx;
+  line-height: 48rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+}
+
+.btn-follow {
+  background: #fff;
+  color: #b01e2b;
+  border: 2rpx solid #fff;
+}
+
+.btn-message {
+  background: #b01e2b;
+  color: #fff;
+  border: none;
+}
+
+.profile-section {
+  padding: 24rpx;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  padding: 20rpx 24rpx;
+}
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.profile-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.profile-value {
+  font-size: 26rpx;
+  color: #333;
+  max-width: 60%;
+  text-align: right;
+}
+

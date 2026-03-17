@@ -1,93 +1,61 @@
-<!-- pages/circle/circle.wxml -->
-<view class="circle-page">
-  <!-- 顶部功能栏 -->
-  <view class="top-bar">
-    <!-- 搜索框 -->
-    <view class="search-container" bindtap="goToSearch">
-      <view class="search-input">
-        <image class="search-icon" src="/icons/search.png"></image>
-        <text class="search-placeholder">搜索校友/年级/专业...</text>
-      </view>
+<view class="circle-page page-with-tabbar">
+  <!-- 三个切换键 -->
+  <view class="tabs">
+    <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" data-tab="0" bindtap="onChangeTab">
+      动态
     </view>
-    
-    <!-- 发布按钮 -->
-    <view class="publish-btn" bindtap="showPublishModal">
-      <image class="publish-icon" src="/icons/add-circle.png"></image>
-      <text>发布</text>
+    <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" data-tab="1" bindtap="onChangeTab">
+      活动
+    </view>
+    <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" data-tab="2" bindtap="onChangeTab">
+      找校友
     </view>
   </view>
 
-  <!-- 导航选项卡 -->
-  <view class="nav-tabs">
-    <view 
-      class="nav-item {{currentTab === 0 ? 'nav-active' : ''}}" 
-      bindtap="changeTab" 
-      data-tab="0"
-    >
-      <text>动态广场</text>
-      <view class="nav-indicator"></view>
-    </view>
-    <view 
-      class="nav-item {{currentTab === 1 ? 'nav-active' : ''}}" 
-      bindtap="changeTab" 
-      data-tab="1"
-    >
-      <text>活动报名</text>
-      <view class="nav-indicator"></view>
-    </view>
-    <view 
-      class="nav-item {{currentTab === 2 ? 'nav-active' : ''}}" 
-      bindtap="changeTab" 
-      data-tab="2"
-    >
-      <text>校友查找</text>
-      <view class="nav-indicator"></view>
-    </view>
-  </view>
-
-  <!-- 动态广场 -->
-  <view class="tab-content" wx:if="{{currentTab === 0}}">
-    <!-- 话题标签 -->
-    <scroll-view class="topic-scroll" scroll-x>
-      <view class="topic-list">
-        <view class="topic-item topic-active">全部</view>
-        <view class="topic-item">#校友联谊</view>
-        <view class="topic-item">#行业交流</view>
-        <view class="topic-item">#校园回忆</view>
+  <!-- 动态 -->
+  <view wx:if="{{currentTab === 0}}" class="tab-panel">
+    <view class="toolbar">
+      <view class="toolbar-left"></view>
+      <view class="toolbar-right">
+        <button class="toolbar-btn" size="mini" bindtap="onViewInteractions">互动历史</button>
+        <button class="toolbar-btn primary" size="mini" bindtap="onGoPublish">发动态</button>
       </view>
-    </scroll-view>
+    </view>
 
-    <!-- 动态列表 -->
     <view class="post-list">
-      <block wx:for="{{posts}}" wx:key="id">
+      <block wx:if="{{posts.length === 0}}">
+        <view class="empty-tip">还没有动态，快去发布第一条吧～</view>
+      </block>
+      <block wx:for="{{posts}}" wx:key="_id">
         <view class="post-card">
-          <!-- 发布者信息 -->
           <view class="post-header">
-            <image class="post-avatar" src="{{item.avatar}}"></image>
-            <view class="post-user-info">
-              <view class="post-username">{{item.name}}</view>
-              <view class="post-user-desc">{{item.grade}} • {{item.major}}</view>
+            <view class="post-user-touch" data-user-id="{{item.userId || item.user.userId}}" bindtap="onTapUser">
+              <image class="post-avatar" src="{{item.user.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+              <view class="post-user-info">
+                <view class="post-username">{{item.user.nickname || '校友'}}</view>
+                <view class="post-user-desc">
+                  {{item.user.enterYear || ''}}级 {{item.user.major || ''}}
+                </view>
+              </view>
             </view>
-            <text class="post-time">{{item.time}}</text>
+            <text class="post-time">{{item.timeText}}</text>
           </view>
-
-          <!-- 动态内容 -->
           <view class="post-content">
             <text class="post-text">{{item.content}}</text>
           </view>
-
-          <!-- 互动功能区 -->
+          <view wx:if="{{item.images && item.images.length}}" class="post-images">
+            <block wx:for="{{item.images}}" wx:key="*this">
+              <image class="post-image" src="{{item}}" mode="aspectFill" />
+            </block>
+          </view>
           <view class="post-actions">
-            <view class="action-item" bindtap="likePost" data-id="{{item.id}}">
-              <image class="action-icon" src="/icons/heart.png"></image>
-              <text class="action-count">{{item.likes}}</text>
+            <view class="action-item" bindtap="onToggleLike" data-id="{{item._id}}">
+              <text class="action-icon">{{item.hasLiked ? '♥' : '♡'}}</text>
+              <text class="action-text">{{item.likeCount || 0}}</text>
             </view>
-            <view class="action-item" bindtap="commentPost">
-              <image class="action-icon" src="/icons/comment.png"></image>
-              <text class="action-count">{{item.comments}}</text>
-            </view>
-            <view class="action-item" bindtap="sharePost">
-              <image class="action-icon" src="/icons/share.png"></image>
+            <view class="action-item" bindtap="onCommentTodo">
+              <text class="action-icon">💬</text>
+              <text class="action-text">{{item.commentCount || 0}}</text>
             </view>
           </view>
         </view>
@@ -95,78 +63,49 @@
     </view>
   </view>
 
-  <!-- 活动报名 -->
-  <view class="tab-content" wx:if="{{currentTab === 1}}">
-    <view class="activity-list">
-      <block wx:for="{{activities}}" wx:key="id">
-        <view class="activity-card">
-          <view class="activity-header">
-            <text class="activity-type">{{item.type}}</text>
-          </view>
-          
-          <view class="activity-body">
-            <text class="activity-title">{{item.title}}</text>
-            <view class="activity-info">
-              <view class="info-item">
-                <image class="info-icon" src="/icons/time.png"></image>
-                <text>{{item.date}} {{item.time}}</text>
-              </view>
-              <view class="info-item">
-                <image class="info-icon" src="/icons/location.png"></image>
-                <text>{{item.location}}</text>
-              </view>
-            </view>
-          </view>
-
-          <view class="activity-footer">
-            <button 
-              class="activity-btn"
-              bindtap="joinActivity"
-              data-id="{{item.id}}"
-            >
-              立即报名
-            </button>
-          </view>
-        </view>
-      </block>
-    </view>
+  <!-- 活动：稍后接入 -->
+  <view wx:elif="{{currentTab === 1}}" class="tab-panel">
+    <view class="empty-tip">活动模块稍后接入</view>
   </view>
 
-  <!-- 校友查找 -->
-  <view class="tab-content" wx:if="{{currentTab === 2}}">
-    <view class="filter-panel">
-      <view class="filter-item">
-        <picker range="{{grades}}" bindchange="onGradeChange">
-          <view class="picker-view">选择年级</view>
+  <!-- 找校友 -->
+  <view wx:elif="{{currentTab === 2}}" class="tab-panel">
+    <view class="alumni-filter-card">
+      <view class="alumni-filter-row">
+        <picker range="{{schoolOptions}}" value="{{currentSchoolIndex}}" bindchange="onSchoolChange">
+          <view class="alumni-filter-pill">
+            {{schoolOptions[currentSchoolIndex]}}
+          </view>
+        </picker>
+        <picker range="{{majorOptions}}" value="{{currentMajorIndex}}" bindchange="onMajorChange">
+          <view class="alumni-filter-pill">
+            {{majorOptions[currentMajorIndex]}}
+          </view>
+        </picker>
+        <picker range="{{gradeOptions}}" value="{{currentGradeIndex}}" bindchange="onGradeChange">
+          <view class="alumni-filter-pill">
+            {{gradeOptions[currentGradeIndex]}}
+          </view>
         </picker>
       </view>
     </view>
 
     <view class="alumni-list">
-      <block wx:for="{{alumni}}" wx:key="id">
-        <view class="alumni-card">
-          <image class="alumni-avatar" src="{{item.avatar}}"></image>
+      <block wx:if="{{!alumniList.length}}">
+        <view class="empty-tip">还没有符合条件的校友～</view>
+      </block>
+      <block wx:for="{{alumniList}}" wx:key="userId">
+        <view class="alumni-card" data-user-id="{{item.userId}}" bindtap="onTapUser">
+          <image class="alumni-avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
           <view class="alumni-info">
-            <text class="alumni-name">{{item.name}}</text>
-            <text class="alumni-desc">{{item.grade}} • {{item.major}}</text>
-            <text class="alumni-location">{{item.location}}</text>
+            <text class="alumni-name">{{item.nickname}}</text>
+            <text class="alumni-desc">
+              {{item.schoolName}} · {{item.enterYear}}级 · {{item.major}}
+            </text>
+            <text class="alumni-location">{{item.city || ''}}</text>
           </view>
-          <button class="chat-btn" bindtap="sendMessage">私信</button>
         </view>
       </block>
-    </view>
-  </view>
-
-  <!-- 发布弹窗 -->
-  <view class="publish-modal" wx:if="{{showModal}}">
-    <view class="modal-mask" bindtap="hideModal"></view>
-    <view class="modal-content">
-      <view class="modal-header">
-        <text class="modal-title">发布动态</text>
-        <image class="modal-close" src="/icons/close.png" bindtap="hideModal"></image>
-      </view>
-      <textarea class="publish-textarea" placeholder="分享你的想法..."></textarea>
-      <button class="publish-btn-submit" bindtap="submitPost">发布</button>
     </view>
   </view>
 </view>

@@ -1,3 +1,41 @@
-.placeholder-page { padding: 80rpx 40rpx; text-align: center; }
-.placeholder-title { font-size: 36rpx; color: #333; display: block; margin-bottom: 24rpx; }
-.placeholder-tip { font-size: 28rpx; color: #999; }
+@import "../me.wxss";
+
+.form-card {
+  margin: 24rpx;
+  padding: 24rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.form-input {
+  width: 100%;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #eee;
+  font-size: 26rpx;
+  margin-bottom: 20rpx;
+  box-sizing: border-box;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 180rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #eee;
+  font-size: 26rpx;
+  margin-bottom: 20rpx;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 999rpx;
+  background: #b01e2b;
+  color: #fff;
+  font-size: 30rpx;
+}
+

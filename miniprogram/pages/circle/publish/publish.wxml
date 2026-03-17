@@ -1,0 +1,54 @@
+<view class="publish-page">
+  <view class="card">
+    <view class="card-title">说点什么</view>
+    <textarea
+      class="content-input"
+      placeholder="这一刻的想法、故事或心得..."
+      maxlength="500"
+      auto-height="true"
+      bindinput="onContentInput"
+      value="{{content}}"
+    />
+  </view>
+
+  <view class="card">
+    <view class="card-title-row">
+      <text class="card-title">图片 / 视频</text>
+      <text class="card-sub">最多 9 张图片，或 1 个视频</text>
+    </view>
+    <view class="media-grid">
+      <block wx:for="{{mediaList}}" wx:key="index">
+        <view class="media-item">
+          <image
+            wx:if="{{item.type === 'image'}}"
+            class="media-thumb"
+            src="{{item.src}}"
+            mode="aspectFill"
+          />
+          <view wx:elif="{{item.type === 'video'}}" class="media-thumb video-thumb">
+            <image class="video-cover" src="{{item.thumb || item.src}}" mode="aspectFill" />
+            <view class="video-play">▶</view>
+          </view>
+          <view class="media-remove" data-index="{{index}}" bindtap="onRemoveMedia">✕</view>
+        </view>
+      </block>
+      <view class="media-item add-item" bindtap="onChooseMedia">
+        <!-- 这里需要你在项目中添加图标：/images/circle/add_media.png -->
+        <image class="add-icon" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/circle/%E6%B7%BB%E5%8A%A0.png?sign=bbbfc37df1c8cddedd65a84fc13ea12b&t=1773718832" mode="aspectFit" />
+        <text class="add-text">添加</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <button
+      class="submit-btn"
+      loading="{{submitting}}"
+      disabled="{{!canSubmit || submitting}}"
+      bindtap="onSubmit"
+    >
+      发布
+    </button>
+  </view>
+</view>
+

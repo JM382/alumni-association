@@ -1,0 +1,10 @@
+{
+  "name": "searchAlumni",
+  "version": "1.0.0",
+  "description": "Search alumni by school, major, and enterYear",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}
+

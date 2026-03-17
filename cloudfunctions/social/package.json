@@ -1,0 +1,9 @@
+{
+  "name": "social",
+  "version": "1.0.0",
+  "description": "关注、私信、通讯录好友",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~3.0.4"
+  }
+}

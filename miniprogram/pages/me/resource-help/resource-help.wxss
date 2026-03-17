@@ -1,3 +1,44 @@
-.placeholder-page { padding: 80rpx 40rpx; text-align: center; }
-.placeholder-title { font-size: 36rpx; color: #333; display: block; margin-bottom: 24rpx; }
-.placeholder-tip { font-size: 28rpx; color: #999; }
+@import "../me.wxss";
+
+.help-list {
+  padding: 24rpx;
+}
+
+.help-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.help-tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+  background: #fde6e8;
+  color: #b01e2b;
+  font-size: 22rpx;
+  margin-bottom: 12rpx;
+}
+
+.help-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.help-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.help-meta {
+  font-size: 22rpx;
+  color: #999;
+}
+

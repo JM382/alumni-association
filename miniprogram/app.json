@@ -23,7 +23,9 @@
     "pages/me/resource-help/resource-help",
     "pages/me/resource-publish/resource-publish",
     "pages/me/auth/auth",
-    "pages/me/membership/membership"
+    "pages/me/membership/membership",
+    "pages/me/user-profile/user-profile",
+    "pages/circle/publish/publish"
   ],
   "window": {
     "navigationStyle": "default"

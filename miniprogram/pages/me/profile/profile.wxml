@@ -59,6 +59,10 @@
   </view>
 
   <view class="save-wrap">
-    <button class="save-btn" disabled="{{saving}}" bindtap="onSubmit">保存</button>
+    <button class="save-btn {{hasChanged ? 'save-btn-active' : 'save-btn-disabled'}}"
+            disabled="{{!hasChanged || saving}}"
+            bindtap="onSubmit">
+      保存
+    </button>
   </view>
 </view>

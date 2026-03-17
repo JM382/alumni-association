@@ -1,1 +1,39 @@
-<view class="placeholder-page"><text class="placeholder-title">{{title}}</text><text class="placeholder-tip">敬请期待</text></view>
+<view class="me-page">
+  <view class="points-header">
+    <view class="points-balance-card">
+      <text class="points-title">我的积分</text>
+      <text class="points-balance">{{balance}}</text>
+      <text class="points-sub">可用于兑换福利、抽奖等</text>
+      <button class="points-redeem-btn" size="mini" bindtap="onGoRedeem">积分兑换</button>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-row">
+      <text class="section-title">积分明细</text>
+    </view>
+  </view>
+
+  <view class="points-log-list">
+    <block wx:if="{{!logs.length}}">
+      <view class="empty-tip">暂时没有积分记录～</view>
+    </block>
+    <block wx:for="{{logs}}" wx:key="_id">
+      <view class="points-log-item">
+        <view class="log-main">
+          <view class="log-left">
+            <text class="log-title">{{item.title}}</text>
+            <text class="log-desc">{{item.desc}}</text>
+          </view>
+          <view class="log-right">
+            <text class="log-change {{item.change >= 0 ? 'log-plus' : 'log-minus'}}">
+              {{item.change >= 0 ? '+' : ''}}{{item.change}}
+            </text>
+            <text class="log-time">{{item.createdAtText}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+

@@ -1,1 +1,74 @@
-<view class="placeholder-page"><text class="placeholder-title">{{title}}</text><text class="placeholder-tip">敬请期待</text></view>
+<view class="membership-page">
+  <!-- 顶部会员状态卡片 -->
+  <view class="status-card">
+    <view class="status-main">
+      <view class="status-left">
+        <view class="status-title">当前会员</view>
+        <view class="status-level">
+          {{info.level == 'svip'
+            ? 'SVIP 高级会员'
+            : info.level == 'vip'
+              ? 'VIP 会员'
+              : '尚未开通会员'}}
+        </view>
+        <view class="status-expire">
+          有效期至：
+          {{info.isValid && info.expireAt ? info.expireAt : '未开通'}}
+        </view>
+      </view>
+      <view class="status-badge" wx:if="{{info.identity == 'alumni'}}">校友</view>
+      <view class="status-badge disabled" wx:else>游客</view>
+    </view>
+    <view class="status-tip">
+      仅通过校友认证的用户可以开通会员，享受更多专属权益。
+    </view>
+  </view>
+
+  <!-- 会员套餐列表 -->
+  <view class="plans-card">
+    <view class="card-title">会员套餐</view>
+    <view
+      class="plan-item {{item.highlight ? 'plan-item-highlight' : ''}}"
+      wx:for="{{plans}}"
+      wx:key="key"
+    >
+      <view class="plan-main">
+        <view class="plan-name">{{item.name}}</view>
+        <view class="plan-desc">{{item.desc}}</view>
+      </view>
+      <view class="plan-right">
+        <view class="plan-price">{{item.priceText}}</view>
+        <button
+          class="plan-btn {{info.identity == 'alumni' ? 'plan-btn-active' : 'plan-btn-disabled'}}"
+          disabled="{{info.identity != 'alumni' || creating}}"
+          loading="{{creating}}"
+          data-key="{{item.key}}"
+          bindtap="onBuyTap"
+        >
+          {{info.identity == 'alumni' ? '立即开通' : '仅校友可开通'}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会员权益说明 -->
+  <view class="benefit-card">
+    <view class="card-title">会员权益</view>
+    <view class="benefit-item">
+      <view class="dot"></view>
+      <text class="benefit-text">优先参与校友活动报名（SVIP 名额更多）</text>
+    </view>
+    <view class="benefit-item">
+      <view class="dot"></view>
+      <text class="benefit-text">专属校友资源对接通道</text>
+    </view>
+    <view class="benefit-item">
+      <view class="dot"></view>
+      <text class="benefit-text">会员专享内容与课程（SVIP 可解锁全部）</text>
+    </view>
+    <view class="benefit-item">
+      <view class="dot"></view>
+      <text class="benefit-text">更多权益后续持续更新</text>
+    </view>
+  </view>
+</view>

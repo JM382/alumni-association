@@ -1,3 +1,107 @@
-.placeholder-page { padding: 80rpx 40rpx; text-align: center; }
-.placeholder-title { font-size: 36rpx; color: #333; display: block; margin-bottom: 24rpx; }
-.placeholder-tip { font-size: 28rpx; color: #999; }
+@import "../me.wxss";
+
+.points-header {
+  padding: 24rpx;
+}
+
+.points-balance-card {
+  background: linear-gradient(135deg, #8b1a24 0%, #b01e2b 50%, #c42d3a 100%);
+  border-radius: 24rpx;
+  padding: 28rpx 24rpx;
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.25);
+}
+
+.points-title {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.points-balance {
+  display: block;
+  margin: 12rpx 0;
+  font-size: 48rpx;
+  font-weight: 600;
+}
+
+.points-sub {
+  font-size: 22rpx;
+  opacity: 0.9;
+}
+
+.points-redeem-btn {
+  margin-top: 16rpx;
+  border-radius: 999rpx;
+  background: #fff;
+  color: #b01e2b;
+  font-size: 24rpx;
+  padding: 0 24rpx;
+}
+
+.points-log-list {
+  padding: 16rpx 24rpx 24rpx;
+}
+
+.points-log-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.log-main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.log-left {
+  flex: 1;
+  padding-right: 16rpx;
+}
+
+.log-title {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.log-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.log-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.log-change {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.log-plus {
+  color: #4caf50;
+}
+
+.log-minus {
+  color: #b01e2b;
+}
+
+.log-time {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.empty-tip {
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
+  padding: 60rpx 0;
+}
+

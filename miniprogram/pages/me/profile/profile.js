@@ -11,6 +11,8 @@ Page({
       city: '',
       bio: '',
     },
+    originalForm: null,
+    hasChanged: false,
     genderOptions: [
       { value: 'male', label: '男' },
       { value: 'female', label: '女' },
@@ -33,6 +35,26 @@ Page({
     this.loadUserInfo();
   },
 
+  computeHasChanged(current, original) {
+    if (!original) return false;
+    const keys = Object.keys(original);
+    for (let i = 0; i < keys.length; i += 1) {
+      const k = keys[i];
+      if ((current[k] || '') !== (original[k] || '')) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  updateChangedState(nextForm) {
+    const form = nextForm || this.data.form;
+    const hasChanged = this.computeHasChanged(form, this.data.originalForm);
+    if (hasChanged !== this.data.hasChanged) {
+      this.setData({ hasChanged });
+    }
+  },
+
   loadUserInfo() {
     wx.cloud.callFunction({ name: 'getUserInfo' }).then((res) => {
       const result = res.result || {};
@@ -43,7 +65,7 @@ Page({
       if (gender === 'male') genderIndex = 0;
       else if (gender === 'female') genderIndex = 1;
       const genderText = ['男', '女', '保密'][genderIndex];
-      this.setData({
+      const form = {
         form: {
           avatarUrl: data.avatarUrl || '',
           nickname: nickname,
@@ -56,37 +78,65 @@ Page({
         },
         genderIndex,
         genderText,
+      };
+      this.setData({
+        ...form,
+        originalForm: { ...form.form },
+        hasChanged: false,
       });
     }).catch(() => {});
   },
 
   onFieldInput(e) {
     const field = e.currentTarget.dataset.field;
-    this.setData({ [`form.${field}`]: e.detail.value });
+    const value = e.detail.value;
+    const form = { ...this.data.form, [field]: value };
+    this.setData({ form });
+    this.updateChangedState(form);
   },
 
   onGenderChange(e) {
     const i = parseInt(e.detail.value, 10);
     const opt = this.data.genderOptions[i];
+    const form = {
+      ...this.data.form,
+      gender: opt.value,
+    };
     this.setData({
       genderIndex: i,
       genderText: opt.label,
-      'form.gender': opt.value,
+      form,
     });
+    this.updateChangedState(form);
   },
 
   onBirthdayChange(e) {
-    this.setData({ 'form.birthday': e.detail.value });
+    const form = {
+      ...this.data.form,
+      birthday: e.detail.value,
+    };
+    this.setData({ form });
+    this.updateChangedState(form);
   },
 
   onRegionChange(e) {
     const arr = e.detail.value || [];
     const city = arr.length >= 2 ? arr[1] : (arr[0] || '');
-    this.setData({ 'form.city': city });
+    const form = {
+      ...this.data.form,
+      city,
+    };
+    this.setData({ form });
+    this.updateChangedState(form);
   },
 
   onAvatarError() {
-    this.setData({ 'form.avatarUrl': '' });
+    const form = {
+      ...this.data.form,
+      avatarUrl: '',
+    };
+    this.setData({ form });
+    this.updateChangedState(form);
   },
 
   onChangeAvatar() {
@@ -103,7 +153,12 @@ Page({
           filePath,
           success: (up) => {
             wx.hideLoading();
-            this.setData({ 'form.avatarUrl': up.fileID });
+            const form = {
+              ...this.data.form,
+              avatarUrl: up.fileID,
+            };
+            this.setData({ form });
+            this.updateChangedState(form);
           },
           fail: () => {
             wx.hideLoading();
@@ -139,6 +194,7 @@ Page({
 
   onSubmit() {
     if (this.data.saving) return;
+    if (!this.data.hasChanged) return;
     if (!this.validate()) return;
     this.setData({ saving: true });
     const form = this.data.form;
@@ -161,6 +217,10 @@ Page({
         return;
       }
       wx.showToast({ title: '保存成功', icon: 'success' });
+      this.setData({
+        originalForm: { ...this.data.form },
+        hasChanged: false,
+      });
       setTimeout(() => wx.navigateBack(), 600);
     }).catch((err) => {
       wx.showToast({ title: err.message || '保存失败', icon: 'none' });

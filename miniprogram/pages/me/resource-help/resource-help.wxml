@@ -1,1 +1,19 @@
-<view class="placeholder-page"><text class="placeholder-title">{{title}}</text><text class="placeholder-tip">敬请期待</text></view>
+<view class="me-page">
+  <view class="section-card">
+    <view class="section-row">
+      <text class="section-title">资源求助</text>
+    </view>
+  </view>
+
+  <view class="help-list">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="help-card" bindtap="onTapItem">
+        <view class="help-tag">{{item.tag}}</view>
+        <text class="help-title">{{item.title}}</text>
+        <text class="help-desc">{{item.desc}}</text>
+        <text class="help-meta">{{item.city || ''}}</text>
+      </view>
+    </block>
+  </view>
+</view>
+

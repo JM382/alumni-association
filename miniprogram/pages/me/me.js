@@ -64,11 +64,19 @@ Page({
           return;
         }
         const data = result.data;
+        // 身份直接来自 users 表里的 identity 字段（login 和 authApplications 已维护）
+        const identity = data.identity || 'visitor';
+        let identityText = '游客';
+        if (identity === 'alumni') identityText = '校友';
+        else if (identity === 'company') identityText = '企业用户';
+        else if (identity === 'expert') identityText = '专家';
         this.setData({
           userInfo: {
             nickName: data.nickname || data.nickName || '微信用户',
             avatarUrl: data.avatarUrl || '',
             schoolName: data.schoolName || '',
+            identity,
+            identityText,
           },
         });
       })

@@ -1,7 +1,7 @@
 {
   "usingComponents": {},
   "navigationBarTitleText": "校友圈",
-  "navigationBarBackgroundColor": "#87ceeb",
+  "navigationBarBackgroundColor": "#b01e2b",
   "navigationBarTextStyle": "white",
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"

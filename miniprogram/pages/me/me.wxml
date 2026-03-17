@@ -14,12 +14,14 @@
       <view class="avatar-wrap">
         <image wx:if="{{userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onAvatarError" />
         <view wx:else class="avatar avatar-placeholder">头像</view>
-        <view class="badge badge-unverified">未认证</view>
+        <view class="badge badge-unverified">
+          {{userInfo.identity == 'alumni' ? '已认证' : '未认证'}}
+        </view>
       </view>
       <view class="user-meta">
         <text class="user-name">{{userInfo.nickName || '微信用户'}}</text>
-        <text class="user-status">游客</text>
-        <text class="user-college">所属学院：{{userInfo.schoolName || ''}}</text>
+        <text class="user-status">{{userInfo.identityText || '游客'}}</text>
+        <text class="user-college">所属学校：{{userInfo.schoolName || ''}}</text>
       </view>
       <image class="header-emblem" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/logo_%E9%80%8F%E6%98%8E.png?sign=e11f45497c883df7d6d8d12d7ce6c996&t=1773143399"></image>
     </view>

@@ -1,1 +1,30 @@
-<view class="placeholder-page"><text class="placeholder-title">{{title}}</text><text class="placeholder-tip">敬请期待</text></view>
+<view class="me-page">
+  <view class="section-card">
+    <view class="section-row">
+      <text class="section-title">发布资源</text>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <input
+      class="form-input"
+      placeholder="请输入标题，如：求北京产品实习内推"
+      value="{{title}}"
+      bindinput="onTitleInput"
+    />
+    <textarea
+      class="form-textarea"
+      placeholder="请详细描述你的资源或需求"
+      value="{{desc}}"
+      bindinput="onDescInput"
+    />
+    <input
+      class="form-input"
+      placeholder="标签（如：实习内推 / 学习资料）"
+      value="{{tag}}"
+      bindinput="onTagInput"
+    />
+    <button class="submit-btn" bindtap="onSubmit">发布</button>
+  </view>
+</view>
+

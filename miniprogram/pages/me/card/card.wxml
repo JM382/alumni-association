@@ -1,1 +1,38 @@
-<view class="placeholder-page"><text class="placeholder-title">{{title}}</text><text class="placeholder-tip">敬请期待</text></view>
+<view class="me-page">
+  <view class="card-wrapper">
+    <block wx:if="{{status === 'notRegistered'}}">
+      <view class="empty-tip">请先登录后再查看电子校友卡</view>
+    </block>
+    <block wx:elif="{{status === 'notAlumni'}}">
+      <view class="empty-tip">您还不是校友，请先完成校友认证</view>
+    </block>
+    <block wx:elif="{{card}}">
+      <view class="alumni-card">
+        <view class="card-header">
+          <text class="card-title">电子校友卡</text>
+          <text class="card-school">{{card.schoolName}}</text>
+        </view>
+        <view class="card-body">
+          <view class="avatar-wrap">
+            <image
+              wx:if="{{card.avatarUrl}}"
+              class="avatar"
+              src="{{card.avatarUrl}}"
+              mode="aspectFill"
+            />
+            <view wx:else class="avatar avatar-placeholder">头像</view>
+          </view>
+          <view class="info">
+            <text class="name">{{card.name}}</text>
+            <text class="line">{{card.enterYear}}级 {{card.major}}</text>
+            <text class="line">学号：{{card.cardNo}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <block wx:elif="{{!loading}}">
+      <view class="empty-tip">暂时无法加载校友卡</view>
+    </block>
+  </view>
+</view>
+

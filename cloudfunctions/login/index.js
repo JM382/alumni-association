@@ -26,6 +26,7 @@ function toUserPayload(user) {
     openid: user.openid,
     nickname: user.nickname || '',
     avatarUrl: user.avatarUrl || '',
+    identity: user.identity || 'visitor',
     schoolId: user.schoolId || '',
     schoolName: user.schoolName || '',
     major: user.major || '',
@@ -58,6 +59,10 @@ exports.main = async (event, context) => {
       if (!userDoc.user_id) {
         updateData.user_id = userDoc._id; // 用 _id 作为 user_id，保证唯一
       }
+      // 老用户若没有 identity，补一个默认 visitor，避免前端读取不到
+      if (!userDoc.identity) {
+        updateData.identity = 'visitor';
+      }
       if (!userDoc.nickname && nickname) {
         updateData.nickname = nickname;
       }
@@ -82,6 +87,7 @@ exports.main = async (event, context) => {
         user_id,
         nickname: nickname || '微信用户',
         avatarUrl: avatarUrl || '',
+        identity: 'visitor',
         schoolId: '',
         schoolName: '',
         major: '',
