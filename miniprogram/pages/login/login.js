@@ -3,6 +3,7 @@ Page({
   data: {
     userInfo: null,
     agreed: false,
+    adminMode: false,
     loading: false,
   },
 
@@ -15,8 +16,10 @@ Page({
 
   // 勾选协议
   onAgreementChange(e) {
-    const agreed = e.detail.value.includes('agreed');
-    this.setData({ agreed });
+    const values = e.detail.value || [];
+    const agreed = values.includes('agreed');
+    const adminMode = values.includes('adminMode');
+    this.setData({ agreed, adminMode });
   },
 
   // 点击“微信一键登录”
@@ -63,12 +66,48 @@ Page({
 
           this.setData({ userInfo: storedUser });
 
+          if (this.data.adminMode) {
+            wx.cloud
+              .callFunction({
+                name: 'authApplications',
+                data: { action: 'myAdminProfile' },
+              })
+              .then((adminRes) => {
+                const adminResult = adminRes.result || {};
+                if (!adminResult.success || !adminResult.isAdmin) {
+                  wx.showModal({
+                    title: '管理员校验未通过',
+                    content: '未识别到当前 OPENID，请稍后重试。',
+                    showCancel: false,
+                    confirmText: '知道了',
+                  });
+                  return;
+                }
+                wx.setStorageSync('entryMode', 'admin');
+                wx.showToast({
+                  title: '管理员登录成功',
+                  icon: 'success',
+                  duration: 800,
+                });
+                setTimeout(() => {
+                  wx.reLaunch({ url: '/pages/admin/dashboard/dashboard' });
+                }, 600);
+              })
+              .catch((err) => {
+                wx.showToast({
+                  title: (err && err.message) || '管理员身份校验失败',
+                  icon: 'none',
+                });
+              });
+            return;
+          }
+
+          wx.setStorageSync('entryMode', 'normal');
           wx.showToast({
             title: '登录成功',
             icon: 'success',
             duration: 800,
           });
-
           setTimeout(() => {
             wx.switchTab({ url: '/pages/index/index' });
           }, 600);

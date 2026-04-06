@@ -92,6 +92,10 @@
   color: #666666;
 }
 
+.admin-label {
+  margin-top: 12rpx;
+}
+
 checkbox {
   transform: scale(0.8);
   margin-right: 8rpx;

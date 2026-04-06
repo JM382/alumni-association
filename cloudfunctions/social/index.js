@@ -176,6 +176,46 @@ async function getUserBrief(userId) {
   };
 }
 
+function toIdentityText(identity) {
+  if (identity === 'alumni') return '校友';
+  if (identity === 'company') return '企业用户';
+  if (identity === 'expert') return '专家';
+  return '游客';
+}
+
+// 个人主页资料
+async function handleGetUserProfile(event) {
+  const { userId: currentUserId } = await getCurrentUser();
+  const targetUserId = (event.targetUserId || '').trim();
+  if (!targetUserId) return { success: false, error: '缺少用户参数' };
+
+  const res = await usersCol.where({ user_id: targetUserId }).limit(1).get();
+  if (!res.data || res.data.length === 0) {
+    return { success: false, error: '用户不存在' };
+  }
+  const u = res.data[0];
+  const identity = u.identity || 'visitor';
+
+  return {
+    success: true,
+    isSelf: targetUserId === currentUserId,
+    user: {
+      userId: resolveUserId(u),
+      nickname: u.nickname || u.nickName || '校友',
+      avatarUrl: u.avatarUrl || '',
+      identity,
+      identityText: toIdentityText(identity),
+      schoolName: u.schoolName || '',
+      major: u.major || '',
+      enterYear: u.enterYear || '',
+      graduationYear: u.graduationYear || '',
+      city: u.city || '',
+      mobile: u.mobile || '',
+      email: u.email || '',
+    },
+  };
+}
+
 // 发送私信
 async function handleSendMessage(event) {
   const { userId } = await getCurrentUser();
@@ -388,6 +428,8 @@ exports.main = async (event, context) => {
 
   try {
     switch (action) {
+      case 'getUserProfile':
+        return await handleGetUserProfile(event);
       case 'toggleFollow':
         return await handleToggleFollow(event);
       case 'getFollowStatus':

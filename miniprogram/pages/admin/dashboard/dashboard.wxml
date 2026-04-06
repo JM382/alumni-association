@@ -1,0 +1,27 @@
+<view class="admin-page">
+  <view class="header">
+    <view class="title">管理台</view>
+    <view class="sub" wx:if="{{isAdmin}}">
+      {{admin.level === 'super_admin' ? '一级管理员' : '二级管理员'}}
+    </view>
+  </view>
+
+  <block wx:if="{{!isAdmin && !loading}}">
+    <view class="empty">你当前不是管理员账号</view>
+  </block>
+
+  <block wx:if="{{isAdmin}}">
+    <view class="menu-list">
+      <block wx:for="{{menus}}" wx:key="key">
+        <view class="menu-item" data-category="{{item.category}}" bindtap="onTapMenu">
+          <text class="menu-title">{{item.title}}</text>
+          <text class="menu-arrow">›</text>
+        </view>
+      </block>
+      <view wx:if="{{!menus.length}}" class="empty">当前账号暂无分配功能域权限</view>
+    </view>
+    <view class="actions">
+      <button class="exit-btn" bindtap="onExitAdminMode">退出管理员模式</button>
+    </view>
+  </block>
+</view>

@@ -1,33 +1,102 @@
-// pages/me/resource-help/resource-help.js
 Page({
   data: {
+    category: 'help',
     list: [],
+    loading: false,
+    page: 1,
+    pageSize: 20,
   },
 
   onLoad() {
-    // 先用静态示例卡片，后续再接资源云函数
-    this.setData({
-      list: [
-        {
-          id: '1',
-          title: '寻找北京互联网产品实习机会',
-          desc: '19级计算机校友，正在找暑期产品实习，欢迎内推～',
-          tag: '实习内推',
-          city: '北京',
+    this.fetchList(true);
+  },
+
+  onShow() {
+    // 从发布页返回后刷新
+    this.fetchList(true);
+  },
+
+  onPullDownRefresh() {
+    this.fetchList(true).finally(() => wx.stopPullDownRefresh());
+  },
+
+  fetchList(reset) {
+    if (this.data.loading) return Promise.resolve();
+    const page = reset ? 1 : this.data.page;
+    this.setData({ loading: true });
+    return wx.cloud
+      .callFunction({
+        name: 'resources',
+        data: {
+          action: 'listPosts',
+          category: this.data.category,
+          page,
+          pageSize: this.data.pageSize,
         },
-        {
-          id: '2',
-          title: '求购一套考研资料',
-          desc: '西工大电子信息考研资料，有转让的学长学姐吗？',
-          tag: '学习资料',
-          city: '西安',
-        },
-      ],
+      })
+      .then((res) => {
+        const result = res.result || {};
+        if (!result.success) {
+          wx.showToast({ title: result.error || '加载失败', icon: 'none' });
+          return;
+        }
+        const next = reset ? result.list || [] : (this.data.list || []).concat(result.list || []);
+        this.setData({ list: next, page: page + 1 });
+      })
+      .catch((err) => {
+        wx.showToast({ title: err.message || '加载失败', icon: 'none' });
+      })
+      .finally(() => this.setData({ loading: false }));
+  },
+
+  onGoPublish() {
+    wx.navigateTo({
+      url: `/pages/me/resource-create/resource-create?category=help`,
     });
   },
 
-  onTapItem() {
-    wx.showToast({ title: '资源详情稍后接入', icon: 'none' });
+  onTapUser(e) {
+    const userId = e.currentTarget.dataset.userId;
+    if (!userId) return;
+    wx.navigateTo({
+      url: `/pages/me/user-profile/user-profile?userId=${userId}`,
+    });
+  },
+
+  onToggleLike(e) {
+    const postId = e.currentTarget.dataset.id;
+    if (!postId) return;
+    wx.cloud
+      .callFunction({
+        name: 'resources',
+        data: { action: 'toggleLike', postId },
+      })
+      .then((res) => {
+        const result = res.result || {};
+        if (!result.success) {
+          wx.showToast({ title: result.error || '操作失败', icon: 'none' });
+          return;
+        }
+        const liked = !!result.liked;
+        const list = (this.data.list || []).map((p) => {
+          if (p._id !== postId) return p;
+          const next = { ...p };
+          next.hasLiked = liked;
+          next.likeCount = (next.likeCount || 0) + (liked ? 1 : -1);
+          if (next.likeCount < 0) next.likeCount = 0;
+          return next;
+        });
+        this.setData({ list });
+      })
+      .catch((err) => wx.showToast({ title: err.message || '操作失败', icon: 'none' }));
+  },
+
+  onGoDetail(e) {
+    const postId = e.currentTarget.dataset.id;
+    if (!postId) return;
+    wx.navigateTo({
+      url: `/pages/me/resource-detail/resource-detail?postId=${postId}`,
+    });
   },
 });
 

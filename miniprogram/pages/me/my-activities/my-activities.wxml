@@ -1,4 +1,24 @@
-<view class="placeholder-page">
-  <text class="placeholder-title">{{title}}</text>
-  <text class="placeholder-tip">敬请期待</text>
+<view class="me-page">
+  <view class="section-card">
+    <view class="section-row">
+      <text class="section-title">我的活动</text>
+    </view>
+  </view>
+
+  <view class="activity-list">
+    <block wx:if="{{!list.length}}">
+      <view class="empty-tip">你还没有报名活动～</view>
+    </block>
+    <block wx:for="{{list}}" wx:key="signupId">
+      <view class="{{item.cardClass}}" data-signup-id="{{item.signupId}}" bindtap="onTapItem">
+        <image wx:if="{{item.coverImage}}" class="activity-cover" src="{{item.coverImage}}" mode="aspectFill" />
+        <view class="activity-main">
+          <text class="activity-title">{{item.title}}</text>
+          <text class="activity-sub">{{item.startTimeText}}</text>
+          <text class="activity-sub">{{item.location}}</text>
+          <text class="activity-sub">报名时间：{{item.signupTimeText || '--'}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
 </view>

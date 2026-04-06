@@ -46,6 +46,8 @@ Page({
 
   onStartChat(e) {
     const userId = e.currentTarget.dataset.userId;
+    const nickname = e.currentTarget.dataset.nickname || '聊天';
+    const avatarUrl = e.currentTarget.dataset.avatarUrl || '';
     if (!userId) return;
     wx.cloud
       .callFunction({
@@ -61,7 +63,12 @@ Page({
           wx.showToast({ title: result.error || '发起失败', icon: 'none' });
           return;
         }
-        wx.showToast({ title: '会话已创建，聊天稍后接入', icon: 'none' });
+        const conversationId = result.conversationId;
+        wx.navigateTo({
+          url: `/pages/chat/chat?conversationId=${conversationId}&targetUserId=${userId}&targetName=${encodeURIComponent(
+            nickname
+          )}&targetAvatarUrl=${encodeURIComponent(avatarUrl)}`,
+        });
       })
       .catch((err) => {
         wx.showToast({ title: err.message || '发起失败', icon: 'none' });

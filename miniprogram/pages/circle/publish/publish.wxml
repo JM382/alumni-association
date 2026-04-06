@@ -42,7 +42,7 @@
 
   <view class="bottom-bar">
     <button
-      class="submit-btn"
+      class="submit-btn {{canSubmit && !submitting ? 'submit-active' : 'submit-disabled'}}"
       loading="{{submitting}}"
       disabled="{{!canSubmit || submitting}}"
       bindtap="onSubmit"

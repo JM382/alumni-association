@@ -3,10 +3,19 @@ Page({
     content: '',
     mediaList: [], // { type: 'image' | 'video', src, thumb? }
     submitting: false,
+    canSubmit: false,
+  },
+
+  recomputeCanSubmit() {
+    const content = (this.data.content || '').trim();
+    const mediaLen = (this.data.mediaList || []).length;
+    this.setData({
+      canSubmit: !!content || mediaLen > 0,
+    });
   },
 
   onContentInput(e) {
-    this.setData({ content: e.detail.value });
+    this.setData({ content: e.detail.value }, () => this.recomputeCanSubmit());
   },
 
   onChooseMedia() {
@@ -35,7 +44,7 @@ Page({
                 type: 'image',
                 src: f.tempFilePath,
               }));
-              this.setData({ mediaList: mediaList.concat(list) });
+              this.setData({ mediaList: mediaList.concat(list) }, () => this.recomputeCanSubmit());
             },
           });
         } else if (res.tapIndex === 1) {
@@ -54,7 +63,7 @@ Page({
                     thumb: file.thumbTempFilePath || '',
                   },
                 ],
-              });
+              }, () => this.recomputeCanSubmit());
             },
           });
         }
@@ -66,7 +75,7 @@ Page({
     const index = e.currentTarget.dataset.index;
     const list = this.data.mediaList.slice();
     list.splice(index, 1);
-    this.setData({ mediaList: list });
+    this.setData({ mediaList: list }, () => this.recomputeCanSubmit());
   },
 
   onSubmit() {
@@ -125,10 +134,6 @@ Page({
       .finally(() => {
         this.setData({ submitting: false });
       });
-  },
-
-  get canSubmit() {
-    return (this.data.content && this.data.content.trim()) || (this.data.mediaList || []).length > 0;
   },
 });
 

@@ -33,6 +33,10 @@
         <text class="agreement-text">和</text>
         <text class="agreement-link" bindtap="showPrivacy">《隐私政策》</text>
       </label>
+      <label class="agreement-label admin-label">
+        <checkbox value="adminMode" checked="{{adminMode}}"/>
+        <text class="agreement-text">以管理员身份登录</text>
+      </label>
     </checkbox-group>
   </view>
 </view>

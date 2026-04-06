@@ -133,13 +133,22 @@
   height: 88rpx;
   line-height: 88rpx;
   border-radius: 44rpx;
-  background: #b01e2b;
-  color: #fff;
   font-size: 32rpx;
   border: none;
 }
 
 .submit-btn[disabled] {
   opacity: 0.5;
+}
+
+.submit-active {
+  background: #b01e2b;
+  color: #fff;
+}
+
+.submit-disabled {
+  background: #ccc;
+  color: #fff;
+  opacity: 1;
 }
 

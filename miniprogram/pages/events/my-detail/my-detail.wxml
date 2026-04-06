@@ -1,0 +1,61 @@
+<view class="me-page">
+  <block wx:if="{{detail}}">
+    <view class="detail-card">
+      <text class="detail-title">{{detail.title}}</text>
+      <text class="detail-sub">{{detail.startTimeText}}</text>
+      <text class="detail-sub">{{detail.location}}</text>
+      <view class="detail-row">
+        <text class="label">票种</text>
+        <text class="value">{{detail.ticketName}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="label">报名人</text>
+        <text class="value">{{detail.realName}}（{{detail.mobile}}）</text>
+      </view>
+      <view class="detail-row">
+        <text class="label">人数</text>
+        <text class="value">{{detail.peopleCount}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{detail.remark}}">
+        <text class="label">备注</text>
+        <text class="value">{{detail.remark}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="label">签到状态</text>
+        <text class="value {{detail.signInStatus === 'signed' ? 'green' : 'gray'}}">
+          {{detail.signInStatus === 'signed' ? ('已签到 ' + detail.signInTimeText) : '未签到'}}
+        </text>
+      </view>
+      <view class="detail-row">
+        <text class="label">报名状态</text>
+        <text class="value {{detail.status === 'canceled' ? 'gray' : 'green'}}">
+          {{detail.status === 'canceled' ? '已取消' : '有效报名'}}
+        </text>
+      </view>
+    </view>
+
+    <view class="actions">
+      <button
+        class="primary-btn"
+        loading="{{signing}}"
+        disabled="{{signing || detail.signInStatus === 'signed' || detail.status === 'canceled'}}"
+        bindtap="onScanSignIn"
+      >
+        {{detail.signInStatus === 'signed' ? '已签到' : '扫码签到'}}
+      </button>
+      <button
+        class="primary-btn"
+        loading="{{canceling}}"
+        disabled="{{canceling || detail.signInStatus === 'signed' || detail.status === 'canceled'}}"
+        bindtap="onCancelSignup"
+      >
+        {{detail.status === 'canceled' ? '已取消报名' : '取消报名'}}
+      </button>
+    </view>
+  </block>
+
+  <block wx:elif="{{!loading}}">
+    <view class="empty-tip">加载失败</view>
+  </block>
+</view>
+

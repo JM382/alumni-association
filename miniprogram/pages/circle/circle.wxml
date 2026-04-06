@@ -30,7 +30,7 @@
         <view class="post-card">
           <view class="post-header">
             <view class="post-user-touch" data-user-id="{{item.userId || item.user.userId}}" bindtap="onTapUser">
-              <image class="post-avatar" src="{{item.user.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+              <image class="post-avatar" src="{{item.user.avatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}" mode="aspectFill" />
               <view class="post-user-info">
                 <view class="post-username">{{item.user.nickname || '校友'}}</view>
                 <view class="post-user-desc">
@@ -53,7 +53,7 @@
               <text class="action-icon">{{item.hasLiked ? '♥' : '♡'}}</text>
               <text class="action-text">{{item.likeCount || 0}}</text>
             </view>
-            <view class="action-item" bindtap="onCommentTodo">
+            <view class="action-item" bindtap="onGoPostDetail" data-id="{{item._id}}">
               <text class="action-icon">💬</text>
               <text class="action-text">{{item.commentCount || 0}}</text>
             </view>
@@ -63,30 +63,45 @@
     </view>
   </view>
 
-  <!-- 活动：稍后接入 -->
+  <!-- 活动 -->
   <view wx:elif="{{currentTab === 1}}" class="tab-panel">
-    <view class="empty-tip">活动模块稍后接入</view>
+    <view class="activity-list">
+      <block wx:if="{{!activities || !activities.length}}">
+        <view class="empty-tip">暂时没有活动～</view>
+      </block>
+      <block wx:for="{{activities}}" wx:key="_id">
+        <view class="activity-card" data-id="{{item._id}}" bindtap="onTapEvent">
+          <image wx:if="{{item.coverImage}}" class="activity-cover" src="{{item.coverImage}}" mode="aspectFill" />
+          <view class="activity-main">
+            <text class="activity-title">{{item.title}}</text>
+            <text class="activity-sub">{{item.startTimeText}}</text>
+            <text class="activity-sub">{{item.location}}</text>
+            <text wx:if="{{item.brief}}" class="activity-brief">{{item.brief}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
   </view>
 
   <!-- 找校友 -->
   <view wx:elif="{{currentTab === 2}}" class="tab-panel">
     <view class="alumni-filter-card">
       <view class="alumni-filter-row">
-        <picker range="{{schoolOptions}}" value="{{currentSchoolIndex}}" bindchange="onSchoolChange">
-          <view class="alumni-filter-pill">
-            {{schoolOptions[currentSchoolIndex]}}
+        <view class="alumni-filter-item">
+          <view class="alumni-filter-pill" bindtap="onPickSchool">
+            {{currentSchoolIndex === 0 ? '大学' : schoolOptions[currentSchoolIndex]}}
           </view>
-        </picker>
-        <picker range="{{majorOptions}}" value="{{currentMajorIndex}}" bindchange="onMajorChange">
-          <view class="alumni-filter-pill">
-            {{majorOptions[currentMajorIndex]}}
+        </view>
+        <view class="alumni-filter-item">
+          <view class="alumni-filter-pill" bindtap="onPickGrade">
+            {{currentGradeIndex === 0 ? '年级' : gradeOptions[currentGradeIndex]}}
           </view>
-        </picker>
-        <picker range="{{gradeOptions}}" value="{{currentGradeIndex}}" bindchange="onGradeChange">
-          <view class="alumni-filter-pill">
-            {{gradeOptions[currentGradeIndex]}}
+        </view>
+        <view class="alumni-filter-item">
+          <view class="alumni-filter-pill" bindtap="onPickMajor">
+            {{currentMajorIndex === 0 ? '专业' : majorOptions[currentMajorIndex]}}
           </view>
-        </picker>
+        </view>
       </view>
     </view>
 
@@ -96,7 +111,7 @@
       </block>
       <block wx:for="{{alumniList}}" wx:key="userId">
         <view class="alumni-card" data-user-id="{{item.userId}}" bindtap="onTapUser">
-          <image class="alumni-avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+          <image class="alumni-avatar" src="{{item.avatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}" mode="aspectFill" />
           <view class="alumni-info">
             <text class="alumni-name">{{item.nickname}}</text>
             <text class="alumni-desc">
@@ -107,5 +122,22 @@
         </view>
       </block>
     </view>
+  </view>
+
+  <!-- 底部选择器（自定义） -->
+  <view wx:if="{{pickerVisible}}" class="picker-mask" catchtap="closePicker"></view>
+  <view wx:if="{{pickerVisible}}" class="picker-panel">
+    <view class="picker-header">
+      <text class="picker-cancel" catchtap="closePicker">取消</text>
+      <text class="picker-title">{{pickerTitle}}</text>
+      <text class="picker-ok" catchtap="closePicker">确定</text>
+    </view>
+    <scroll-view class="picker-list" scroll-y="true">
+      <block wx:for="{{pickerItems}}" wx:key="*this">
+        <view class="picker-item" data-index="{{index}}" catchtap="onPickItem">
+          {{item}}
+        </view>
+      </block>
+    </scroll-view>
   </view>
 </view>

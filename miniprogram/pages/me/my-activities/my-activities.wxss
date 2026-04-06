@@ -1,3 +1,20 @@
-.placeholder-page { padding: 80rpx 40rpx; text-align: center; }
-.placeholder-title { font-size: 36rpx; color: #333; display: block; margin-bottom: 24rpx; }
-.placeholder-tip { font-size: 28rpx; color: #999; }
+@import "../me.wxss";
+@import "../../circle/circle.wxss";
+
+.activity-list {
+  padding: 16rpx 24rpx 24rpx;
+}
+
+.activity-card.active {
+  border: 2rpx solid rgba(176, 30, 43, 0.2);
+}
+
+.activity-card.canceled {
+  border: 2rpx solid #e5e5e5;
+  background: #fafafa;
+}
+
+.activity-card.canceled .activity-title,
+.activity-card.canceled .activity-sub {
+  color: #8a8a8a;
+}

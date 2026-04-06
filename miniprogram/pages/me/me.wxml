@@ -14,12 +14,17 @@
       <view class="avatar-wrap">
         <image wx:if="{{userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onAvatarError" />
         <view wx:else class="avatar avatar-placeholder">头像</view>
-        <view class="badge badge-unverified">
-          {{userInfo.identity == 'alumni' ? '已认证' : '未认证'}}
-        </view>
       </view>
       <view class="user-meta">
-        <text class="user-name">{{userInfo.nickName || '微信用户'}}</text>
+        <view class="user-name-row">
+          <text class="user-name">{{userInfo.nickName || '微信用户'}}</text>
+          <image
+            wx:if="{{userInfo.membershipLevel && userInfo.membershipBadgeImage}}"
+            class="membership-badge-img"
+            src="{{userInfo.membershipBadgeImage}}"
+            mode="aspectFit"
+          />
+        </view>
         <text class="user-status">{{userInfo.identityText || '游客'}}</text>
         <text class="user-college">所属学校：{{userInfo.schoolName || ''}}</text>
       </view>
@@ -27,7 +32,7 @@
     </view>
 
     <!-- 电子校友卡入口 -->
-    <view class="alumni-card-entry" bindtap="viewAlumniCard">
+    <view class="alumni-card-entry" bindtap="goToCardPackage">
       <view class="alumni-card-left">
         <text class="alumni-card-title">电子校友卡</text>
         <text class="alumni-card-sub">点击查看你的专属校友卡</text>
@@ -38,7 +43,7 @@
 
   <!-- 功能网格（白底），图标资源在 images/me/ 下可替换 -->
   <view class="function-grid">
-    <view class="grid-item" wx:for="{{gridItems}}" wx:key="label" data-method="{{item.method}}" bindtap="onGridTap">
+    <view class="grid-item" wx:for="{{gridItems}}" wx:key="label" wx:if="{{!item.adminOnly || isAdmin}}" data-method="{{item.method}}" bindtap="onGridTap">
       <image class="grid-icon" src="{{item.icon}}" mode="aspectFit" />
       <text class="grid-label">{{item.label}}</text>
     </view>

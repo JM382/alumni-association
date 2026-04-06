@@ -260,8 +260,8 @@
 
   <!-- 底部提交按钮 -->
   <view class="save-wrap">
-    <button class="save-btn" loading="{{saving}}" disabled="{{saving}}" bindtap="onSubmit">
-      提交认证申请
+    <button class="save-btn" loading="{{saving}}" disabled="{{saving || !hasChanged}}" bindtap="onSubmit">
+      保存并提交
     </button>
   </view>
 </view>

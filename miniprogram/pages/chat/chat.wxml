@@ -1,0 +1,30 @@
+<view class="chat-page">
+  <view class="msg-list">
+    <block wx:for="{{messages}}" wx:key="_id">
+      <view class="msg-row {{item.fromUserId === myUserId ? 'me' : 'other'}}">
+        <image
+          class="avatar"
+          wx:if="{{item.fromUserId !== myUserId}}"
+          src="{{targetAvatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}"
+          mode="aspectFill"
+        />
+        <view class="bubble">
+          <block wx:if="{{item.contentType === 'text'}}">{{item.text}}</block>
+          <block wx:else>[暂不支持的消息]</block>
+        </view>
+        <image
+          class="avatar"
+          wx:if="{{item.fromUserId === myUserId}}"
+          src="{{myAvatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}"
+          mode="aspectFill"
+        />
+      </view>
+    </block>
+  </view>
+
+  <view class="composer">
+    <input class="input" placeholder="输入消息..." value="{{input}}" bindinput="onInput" />
+    <button class="send" size="mini" loading="{{sending}}" disabled="{{sending}}" bindtap="onSend">发送</button>
+  </view>
+</view>
+

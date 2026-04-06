@@ -1,4 +1,53 @@
 // 个人中心 - 红色顶栏 + 功能网格 + 设置列表
+const VIP_BADGE_IMAGE = 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/membership/VIP.png?sign=c57b3c86e4a346a51ac4c1bafacf96ba&t=1774960586'; // TODO: 填你的 VIP 图片路径（cloud:// 或 https://）
+const SVIP_BADGE_IMAGE = 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/membership/SVIP.png?sign=2c744ff1e46ec63c0fcf09ae84258eb8&t=1774960608'; // TODO: 填你的 SVIP 图片路径（cloud:// 或 https://）
+
+function toTimestamp(v) {
+  if (!v) return 0;
+  if (v instanceof Date) return v.getTime();
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
+function resolveMembershipBadge(data) {
+  const level = ((data && data.membershipLevel) || '').toLowerCase();
+  const expireAt = data && data.membershipExpireAt;
+  const valid = toTimestamp(expireAt) > Date.now();
+  if (!valid) return { level: '', image: '' };
+  if (level === 'svip') return { level: 'svip', image: SVIP_BADGE_IMAGE };
+  if (level === 'vip') return { level: 'vip', image: VIP_BADGE_IMAGE };
+  return { level: '', image: '' };
+}
+
+function baseIdentityText(identity) {
+  if (identity === 'alumni') return '校友';
+  if (identity === 'company') return '企业';
+  if (identity === 'expert') return '专家';
+  return '游客';
+}
+
+function buildIdentityText(identity, authStatus) {
+  const tags = [];
+  const pushUnique = (v) => {
+    if (!v) return;
+    if (!tags.includes(v)) tags.push(v);
+  };
+
+  // 兼容已有 users.identity
+  pushUnique(baseIdentityText(identity));
+
+  // 以认证通过结果为准叠加展示
+  const st = authStatus || {};
+  if (st.alumni && st.alumni.status === 'approved') pushUnique('校友');
+  if (st.company && st.company.status === 'approved') pushUnique('企业');
+  if (st.expert && st.expert.status === 'approved') pushUnique('专家');
+
+  // 游客不和其他身份并存
+  const filtered = tags.filter((x) => x !== '游客');
+  if (filtered.length) return filtered.join('·');
+  return '游客';
+}
+
 Page({
   data: {
     statusBarHeight: 20,
@@ -46,12 +95,17 @@ Page({
   },
 
   loadUserInfo() {
-    wx.cloud
-      .callFunction({
-        name: 'getUserInfo',
-      })
-      .then((res) => {
-        const result = res.result || {};
+    Promise.all([
+      wx.cloud.callFunction({ name: 'getUserInfo' }),
+      wx.cloud.callFunction({
+        name: 'authApplications',
+        data: { action: 'myStatus' },
+      }).catch(() => ({ result: { success: false } })),
+    ])
+      .then((allRes) => {
+        const userRes = allRes && allRes[0];
+        const authRes = allRes && allRes[1];
+        const result = (userRes && userRes.result) || {};
         if (result.code !== 0 || !result.data) {
           console.warn('getUserInfo 返回异常', result);
           this.setData({
@@ -64,12 +118,11 @@ Page({
           return;
         }
         const data = result.data;
-        // 身份直接来自 users 表里的 identity 字段（login 和 authApplications 已维护）
         const identity = data.identity || 'visitor';
-        let identityText = '游客';
-        if (identity === 'alumni') identityText = '校友';
-        else if (identity === 'company') identityText = '企业用户';
-        else if (identity === 'expert') identityText = '专家';
+        const authResult = (authRes && authRes.result) || {};
+        const authStatus = authResult.success ? (authResult.data || {}) : {};
+        const identityText = buildIdentityText(identity, authStatus);
+        const membership = resolveMembershipBadge(data);
         this.setData({
           userInfo: {
             nickName: data.nickname || data.nickName || '微信用户',
@@ -77,6 +130,8 @@ Page({
             schoolName: data.schoolName || '',
             identity,
             identityText,
+            membershipLevel: membership.level,
+            membershipBadgeImage: membership.image,
           },
         });
       })
@@ -155,6 +210,9 @@ Page({
   },
   goToMembership() {
     wx.navigateTo({ url: '/pages/me/membership/membership' });
+  },
+  viewAlumniCard() {
+    wx.navigateTo({ url: '/pages/me/card/card' });
   },
 
   goToAccountSettings() {

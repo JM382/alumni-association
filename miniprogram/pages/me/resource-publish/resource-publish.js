@@ -1,31 +1,99 @@
-// pages/me/resource-publish/resource-publish.js
 Page({
   data: {
-    title: '',
-    desc: '',
-    tag: '',
+    category: 'publish',
+    list: [],
+    loading: false,
+    page: 1,
+    pageSize: 20,
   },
 
-  onTitleInput(e) {
-    this.setData({ title: e.detail.value });
+  onLoad() {
+    this.fetchList(true);
   },
 
-  onDescInput(e) {
-    this.setData({ desc: e.detail.value });
+  onShow() {
+    this.fetchList(true);
   },
 
-  onTagInput(e) {
-    this.setData({ tag: e.detail.value });
+  onPullDownRefresh() {
+    this.fetchList(true).finally(() => wx.stopPullDownRefresh());
   },
 
-  onSubmit() {
-    const { title, desc } = this.data;
-    if (!title.trim() || !desc.trim()) {
-      wx.showToast({ title: '请填写标题和描述', icon: 'none' });
-      return;
-    }
-    // 先做前端占位，后续接入资源云函数
-    wx.showToast({ title: '资源发布稍后接入', icon: 'none' });
+  fetchList(reset) {
+    if (this.data.loading) return Promise.resolve();
+    const page = reset ? 1 : this.data.page;
+    this.setData({ loading: true });
+    return wx.cloud
+      .callFunction({
+        name: 'resources',
+        data: {
+          action: 'listPosts',
+          category: this.data.category,
+          page,
+          pageSize: this.data.pageSize,
+        },
+      })
+      .then((res) => {
+        const result = res.result || {};
+        if (!result.success) {
+          wx.showToast({ title: result.error || '加载失败', icon: 'none' });
+          return;
+        }
+        const next = reset ? result.list || [] : (this.data.list || []).concat(result.list || []);
+        this.setData({ list: next, page: page + 1 });
+      })
+      .catch((err) => wx.showToast({ title: err.message || '加载失败', icon: 'none' }))
+      .finally(() => this.setData({ loading: false }));
+  },
+
+  onGoPublish() {
+    wx.navigateTo({
+      url: `/pages/me/resource-create/resource-create?category=publish`,
+    });
+  },
+
+  onTapUser(e) {
+    const userId = e.currentTarget.dataset.userId;
+    if (!userId) return;
+    wx.navigateTo({
+      url: `/pages/me/user-profile/user-profile?userId=${userId}`,
+    });
+  },
+
+  onToggleLike(e) {
+    const postId = e.currentTarget.dataset.id;
+    if (!postId) return;
+    wx.cloud
+      .callFunction({
+        name: 'resources',
+        data: { action: 'toggleLike', postId },
+      })
+      .then((res) => {
+        const result = res.result || {};
+        if (!result.success) {
+          wx.showToast({ title: result.error || '操作失败', icon: 'none' });
+          return;
+        }
+        const liked = !!result.liked;
+        const list = (this.data.list || []).map((p) => {
+          if (p._id !== postId) return p;
+          const next = { ...p };
+          next.hasLiked = liked;
+          next.likeCount = (next.likeCount || 0) + (liked ? 1 : -1);
+          if (next.likeCount < 0) next.likeCount = 0;
+          return next;
+        });
+        this.setData({ list });
+      })
+      .catch((err) => wx.showToast({ title: err.message || '操作失败', icon: 'none' }));
+  },
+
+  onGoDetail(e) {
+    const postId = e.currentTarget.dataset.id;
+    if (!postId) return;
+    wx.navigateTo({
+      url: `/pages/me/resource-detail/resource-detail?postId=${postId}`,
+    });
   },
 });
 

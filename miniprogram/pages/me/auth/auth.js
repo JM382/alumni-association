@@ -77,17 +77,141 @@ Page({
       certImages: [],
       extra: '',
     },
+
+    // 保存按钮状态（像个人信息页一样）
+    originalForms: null, // { alumni: {...}, company: {...}, expert: {...} }
+    hasChanged: false,
   },
 
-  onLoad() {
+  onLoad(options) {
+    const adminCategory = options && options.adminCategory;
+    if (adminCategory && ['alumni', 'company', 'expert'].includes(adminCategory)) {
+      this.setData({ activeCategory: adminCategory });
+    }
     wx.setNavigationBarTitle({ title: this.data.title });
-    this.fetchStatus();
-    this.fetchLatestForms();
+    // 先加载本地草稿，保证“填写过不丢”
+    this.loadDrafts();
+    this.ensureUserReady().then(() => {
+      this.fetchStatus();
+      this.fetchLatestForms();
+    });
   },
 
   onShow() {
     // 回到页面时刷新状态
-    this.fetchStatus();
+    this.ensureUserReady().then(() => {
+      this.fetchStatus();
+      // 确保历史记录回填可见（例如用户在别处提交后返回）
+      this.fetchLatestForms();
+    });
+  },
+
+  // 认证页兜底：若 users 中没有当前用户，先触发一次 login 建档
+  ensureUserReady() {
+    return wx.cloud
+      .callFunction({ name: 'getUserInfo' })
+      .then((res) => {
+        const result = res.result || {};
+        const data = result.code === 0 ? result.data : null;
+        if (data && (data.user_id || data._id)) return;
+        return wx.cloud.callFunction({
+          name: 'login',
+          data: { nickname: '', avatarUrl: '' },
+        });
+      })
+      .catch(() =>
+        wx.cloud.callFunction({
+          name: 'login',
+          data: { nickname: '', avatarUrl: '' },
+        })
+      )
+      .catch(() => {});
+  },
+
+  // ===== 草稿（本地兜底）=====
+  draftKey(category) {
+    return `auth_draft_${category}`;
+  },
+
+  loadDrafts() {
+    try {
+      const alumni = wx.getStorageSync(this.draftKey('alumni')) || null;
+      const company = wx.getStorageSync(this.draftKey('company')) || null;
+      const expert = wx.getStorageSync(this.draftKey('expert')) || null;
+      if (alumni) this.setData({ formAlumni: { ...this.data.formAlumni, ...alumni } });
+      if (company) this.setData({ formCompany: { ...this.data.formCompany, ...company } });
+      if (expert) this.setData({ formExpert: { ...this.data.formExpert, ...expert } });
+    } catch (e) {}
+  },
+
+  saveDraft(category) {
+    try {
+      const key = this.draftKey(category);
+      if (category === 'alumni') wx.setStorageSync(key, this.data.formAlumni);
+      if (category === 'company') wx.setStorageSync(key, this.data.formCompany);
+      if (category === 'expert') wx.setStorageSync(key, this.data.formExpert);
+    } catch (e) {}
+  },
+
+  // ===== 保存按钮灰/红（变更检测）=====
+  computeHasChanged(current, original) {
+    if (!original) {
+      // 首次填写（尚无 original）时：只要有任一有效输入，就允许保存
+      const keys = Object.keys(current || {});
+      for (let i = 0; i < keys.length; i += 1) {
+        const k = keys[i];
+        const v = current[k];
+        if (Array.isArray(v)) {
+          if (v.length > 0) return true;
+          continue;
+        }
+        if (typeof v === 'string') {
+          if (v.trim()) return true;
+          continue;
+        }
+        if (v !== null && v !== undefined && v !== '') {
+          return true;
+        }
+      }
+      return false;
+    }
+    const keys = Object.keys(original);
+    for (let i = 0; i < keys.length; i += 1) {
+      const k = keys[i];
+      const a = current[k];
+      const b = original[k];
+      // 数组（图片）比较
+      if (Array.isArray(a) || Array.isArray(b)) {
+        const aa = Array.isArray(a) ? a : [];
+        const bb = Array.isArray(b) ? b : [];
+        if (aa.length !== bb.length) return true;
+        for (let j = 0; j < aa.length; j += 1) {
+          if ((aa[j] || '') !== (bb[j] || '')) return true;
+        }
+      } else if ((a || '') !== (b || '')) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  updateChangedState() {
+    const c = this.data.activeCategory;
+    const originals = this.data.originalForms || {};
+    let current = {};
+    let original = null;
+    if (c === 'alumni') {
+      current = this.data.formAlumni;
+      original = originals.alumni || null;
+    } else if (c === 'company') {
+      current = this.data.formCompany;
+      original = originals.company || null;
+    } else {
+      current = this.data.formExpert;
+      original = originals.expert || null;
+    }
+    const hasChanged = this.computeHasChanged(current, original);
+    if (hasChanged !== this.data.hasChanged) this.setData({ hasChanged });
   },
 
   mapStatusText(status) {
@@ -154,39 +278,77 @@ Page({
           const list = result.list || [];
           if (!list.length) return;
           const latest = list[0];
-          if (category === 'alumni' && latest.alumniInfo) {
-            const info = latest.alumniInfo;
+          const pickKeys = (src, keys) => {
+            const out = {};
+            keys.forEach((k) => {
+              if (src && src[k] !== undefined) out[k] = src[k];
+            });
+            return out;
+          };
+          if (category === 'alumni') {
+            // 兼容：优先 alumniInfo；若历史数据结构不同，则从根字段回填
+            const formKeys = Object.keys(this.data.formAlumni || {});
+            const raw = latest.alumniInfo && typeof latest.alumniInfo === 'object' ? latest.alumniInfo : {};
+            const fallback = latest && typeof latest === 'object' ? pickKeys(latest, formKeys) : {};
+            const info = { ...fallback, ...raw };
+
             const schools = this.data.schoolOptions;
-            const schoolIndex = Math.max(
-              0,
-              info.school ? schools.indexOf(info.school) : 0,
+            const colleges = this.data.alumniCollegeOptions;
+            const majors = this.data.alumniMajorOptions;
+            const degrees = this.data.degreeOptions;
+
+            const si = info.school ? schools.indexOf(info.school) : 0;
+            const ci = info.college ? colleges.indexOf(info.college) : 0;
+            const mi = info.major ? majors.indexOf(info.major) : 0;
+            const di = info.degree ? degrees.indexOf(info.degree) : 0;
+
+            const schoolIndex = si >= 0 ? si : (schools.length - 1);
+            const alumniCollegeIndex = ci >= 0 ? ci : 0;
+            const alumniMajorIndex = mi >= 0 ? mi : 0;
+            const degreeIndex = di >= 0 ? di : 0;
+
+            const mergedForm = { ...this.data.formAlumni, ...info };
+            this.setData(
+              {
+                formAlumni: mergedForm,
+                schoolIndex,
+                alumniCollegeIndex,
+                alumniMajorIndex,
+                degreeIndex,
+              },
+              () => {
+                const originals = this.data.originalForms || {};
+                originals.alumni = { ...mergedForm };
+                this.setData({ originalForms: originals }, () => this.updateChangedState());
+              }
             );
-            this.setData({
-              formAlumni: {
-                ...this.data.formAlumni,
-                ...info,
-              },
-              schoolIndex: schoolIndex === -1 ? schools.length - 1 : schoolIndex,
+          }
+          if (category === 'company') {
+            const formKeys = Object.keys(this.data.formCompany || {});
+            const raw = latest.companyInfo && typeof latest.companyInfo === 'object' ? latest.companyInfo : {};
+            const fallback = latest && typeof latest === 'object' ? pickKeys(latest, formKeys) : {};
+            const info = { ...fallback, ...raw };
+            const mergedForm = { ...this.data.formCompany, ...info };
+            this.setData({ formCompany: mergedForm }, () => {
+              const originals = this.data.originalForms || {};
+              originals.company = { ...mergedForm };
+              this.setData({ originalForms: originals }, () => this.updateChangedState());
             });
           }
-          if (category === 'company' && latest.companyInfo) {
-            this.setData({
-              formCompany: {
-                ...this.data.formCompany,
-                ...latest.companyInfo,
-              },
-            });
-          }
-          if (category === 'expert' && latest.expertInfo) {
-            const info = latest.expertInfo;
-            this.setData({
-              formExpert: {
-                ...this.data.formExpert,
-                ...info,
-                fieldTags: Array.isArray(info.fieldTags)
-                  ? info.fieldTags.join('、')
-                  : info.fieldTags || '',
-              },
+          if (category === 'expert') {
+            const formKeys = Object.keys(this.data.formExpert || {});
+            const raw = latest.expertInfo && typeof latest.expertInfo === 'object' ? latest.expertInfo : {};
+            const fallback = latest && typeof latest === 'object' ? pickKeys(latest, formKeys) : {};
+            const info = { ...fallback, ...raw };
+            const mergedForm = {
+              ...this.data.formExpert,
+              ...info,
+              fieldTags: Array.isArray(info.fieldTags) ? info.fieldTags.join('、') : info.fieldTags || '',
+            };
+            this.setData({ formExpert: mergedForm }, () => {
+              const originals = this.data.originalForms || {};
+              originals.expert = { ...mergedForm };
+              this.setData({ originalForms: originals }, () => this.updateChangedState());
             });
           }
         })
@@ -197,7 +359,7 @@ Page({
   onSwitchTab(e) {
     const type = e.currentTarget.dataset.type;
     if (!type) return;
-    this.setData({ activeCategory: type });
+    this.setData({ activeCategory: type }, () => this.updateChangedState());
   },
 
   onFieldInput(e) {
@@ -208,6 +370,8 @@ Page({
     const key = category === 'alumni' ? 'formAlumni' : category === 'company' ? 'formCompany' : 'formExpert';
     const form = { ...this.data[key], [field]: value };
     this.setData({ [key]: form });
+    this.saveDraft(category);
+    this.updateChangedState();
   },
 
   onSchoolChange(e) {
@@ -217,6 +381,8 @@ Page({
       schoolIndex: i,
       'formAlumni.school': name,
     });
+    this.saveDraft('alumni');
+    this.updateChangedState();
   },
 
   onAlumniCollegeChange(e) {
@@ -226,6 +392,8 @@ Page({
       alumniCollegeIndex: i,
       'formAlumni.college': name,
     });
+    this.saveDraft('alumni');
+    this.updateChangedState();
   },
 
   onAlumniMajorChange(e) {
@@ -235,6 +403,8 @@ Page({
       alumniMajorIndex: i,
       'formAlumni.major': name,
     });
+    this.saveDraft('alumni');
+    this.updateChangedState();
   },
 
   onDegreeChange(e) {
@@ -244,6 +414,8 @@ Page({
       degreeIndex: i,
       'formAlumni.degree': name,
     });
+    this.saveDraft('alumni');
+    this.updateChangedState();
   },
 
   onChooseImage(e) {
@@ -284,6 +456,8 @@ Page({
               form.certImages = (form.certImages || []).concat(ids);
             }
             this.setData({ [key]: form });
+            this.saveDraft(category);
+            this.updateChangedState();
           })
           .catch(() => {
             wx.showToast({ title: '上传失败', icon: 'none' });
@@ -304,6 +478,8 @@ Page({
     arr.splice(index, 1);
     form.certImages = arr;
     this.setData({ [key]: form });
+    this.saveDraft(category);
+    this.updateChangedState();
   },
 
   validateCurrent() {
@@ -351,6 +527,7 @@ Page({
 
   onSubmit() {
     if (this.data.saving) return;
+    if (!this.data.hasChanged) return;
     if (!this.validateCurrent()) return;
     const category = this.data.activeCategory;
     let payload = {};
@@ -386,6 +563,13 @@ Page({
         }
         wx.showToast({ title: '已提交审核', icon: 'success' });
         this.fetchStatus();
+        // 提交成功后，把当前表单作为 original，并置灰按钮
+        const originals = this.data.originalForms || {};
+        if (category === 'alumni') originals.alumni = { ...this.data.formAlumni };
+        if (category === 'company') originals.company = { ...this.data.formCompany };
+        if (category === 'expert') originals.expert = { ...this.data.formExpert };
+        this.setData({ originalForms: originals, hasChanged: false });
+        this.saveDraft(category);
       })
       .catch((err) => {
         wx.showToast({ title: err.message || '提交失败', icon: 'none' });

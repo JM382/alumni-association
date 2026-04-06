@@ -1,0 +1,30 @@
+<view class="me-page">
+  <view class="section-card">
+    <view class="section-row">
+      <text class="section-title">互动历史</text>
+    </view>
+  </view>
+
+  <view class="interact-list">
+    <block wx:if="{{!list.length}}">
+      <view class="empty-tip">暂时没有互动记录～</view>
+    </block>
+    <block wx:for="{{list}}" wx:key="_id">
+      <view class="interact-card">
+        <image
+          class="avatar"
+          src="{{item.fromUser.avatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}"
+          mode="aspectFill"
+          data-user-id="{{item.fromUser.userId}}"
+          bindtap="onTapUser"
+        />
+        <view class="content">
+          <text class="line">{{item.contentSnapshot}}</text>
+          <text class="time">{{item.createdAtText}}</text>
+        </view>
+        <view wx:if="{{!item.isRead}}" class="dot"></view>
+      </view>
+    </block>
+  </view>
+</view>
+

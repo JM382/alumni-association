@@ -171,6 +171,52 @@
   padding: 60rpx 0;
 }
 
+/* 活动列表（报名入口） */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.activity-card {
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.activity-cover {
+  width: 100%;
+  height: 260rpx;
+  background: #f0f0f0;
+}
+
+.activity-main {
+  padding: 20rpx 24rpx;
+}
+
+.activity-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.activity-sub {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 2rpx;
+}
+
+.activity-brief {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
 /* 找校友筛选与列表 */
 .alumni-filter-card {
   background: #fff;
@@ -185,13 +231,81 @@
   gap: 12rpx;
 }
 
+.alumni-filter-item {
+  flex: 1;
+}
+
 .alumni-filter-pill {
+  width: 100%;
   background: #f5f5f5;
   border-radius: 999rpx;
   padding: 12rpx 20rpx;
   text-align: center;
   font-size: 26rpx;
   color: #666;
+}
+
+/* ===== 底部选择器（自定义）===== */
+.picker-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9998;
+}
+
+.picker-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  z-index: 9999;
+  overflow: hidden;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+}
+
+.picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.picker-cancel,
+.picker-ok {
+  font-size: 26rpx;
+  color: #b01e2b;
+  width: 120rpx;
+}
+
+.picker-ok {
+  text-align: right;
+}
+
+.picker-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+.picker-list {
+  max-height: 60vh;
+}
+
+.picker-item {
+  padding: 26rpx 24rpx;
+  font-size: 28rpx;
+  color: #333;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.picker-item:active {
+  background: #f8f8f8;
 }
 
 .alumni-list {

@@ -1,8 +1,10 @@
 {
   "pages": [
-    "pages/me/me",
     "pages/login/login",
-
+    "pages/me/me",
+    "pages/admin/dashboard/dashboard",
+    "pages/admin/review-list/review-list",
+    "pages/admin/review-detail/review-detail",
     "pages/index/index",
     "pages/welfare/welfare",
     "pages/news/news",
@@ -22,9 +24,17 @@
     "pages/me/connections/connections",
     "pages/me/resource-help/resource-help",
     "pages/me/resource-publish/resource-publish",
+    "pages/me/resource-create/resource-create",
+    "pages/me/resource-detail/resource-detail",
     "pages/me/auth/auth",
     "pages/me/membership/membership",
     "pages/me/user-profile/user-profile",
+    "pages/events/detail/detail",
+    "pages/events/tickets/tickets",
+    "pages/events/my-detail/my-detail",
+    "pages/circle/interactions/interactions",
+    "pages/circle/post-detail/post-detail",
+    "pages/chat/chat",
     "pages/circle/publish/publish"
   ],
   "window": {

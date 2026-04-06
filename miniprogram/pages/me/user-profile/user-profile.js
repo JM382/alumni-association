@@ -1,6 +1,3 @@
-// pages/me/user-profile/user-profile.js
-const db = wx.cloud.database();
-
 Page({
   data: {
     userId: '',
@@ -23,45 +20,29 @@ Page({
     this.fetchFollowStatus();
   },
 
-  // 读取用户基本信息（直接从 users 集合按 user_id 查询）
+  // 读取用户基本信息（走云函数，避免小程序端直连 users 被权限规则拦截）
   fetchUser() {
     const { userId } = this.data;
-    db.collection('users')
-      .where({ user_id: userId })
-      .limit(1)
-      .get()
+    wx.cloud
+      .callFunction({
+        name: 'social',
+        data: {
+          action: 'getUserProfile',
+          targetUserId: userId,
+        },
+      })
       .then((res) => {
-        if (!res.data || res.data.length === 0) {
-          wx.showToast({ title: '用户不存在', icon: 'none' });
+        const result = res.result || {};
+        if (!result.success) {
+          wx.showToast({ title: result.error || '加载失败', icon: 'none' });
           return;
         }
-        const u = res.data[0];
-        const myOpenid = wx.getStorageSync('openid') || '';
-        const isSelf = !!(myOpenid && u.openid === myOpenid);
-        const identity = u.identity || 'visitor';
-        let identityText = '游客';
-        if (identity === 'alumni') identityText = '校友';
-        else if (identity === 'company') identityText = '企业用户';
-        else if (identity === 'expert') identityText = '专家';
-
         this.setData({
-          user: {
-            userId,
-            nickname: u.nickname || '校友',
-            avatarUrl: u.avatarUrl || '',
-            identity,
-            identityText,
-            schoolName: u.schoolName || '',
-            major: u.major || '',
-            enterYear: u.enterYear || '',
-            city: u.city || '',
-          },
-          isSelf,
+          user: result.user || {},
+          isSelf: !!result.isSelf,
         });
       })
-      .catch((err) => {
-        wx.showToast({ title: err.message || '加载失败', icon: 'none' });
-      });
+      .catch((err) => wx.showToast({ title: err.message || '加载失败', icon: 'none' }));
   },
 
   // 查询关注/互关状态
@@ -135,9 +116,13 @@ Page({
           wx.showToast({ title: result.error || '发起失败', icon: 'none' });
           return;
         }
-        // 这里先只提示会话已创建，后续再接入聊天页面
-        wx.showToast({ title: '会话已创建，聊天稍后接入', icon: 'none' });
-        console.log('conversationId:', result.conversationId);
+        const conversationId = result.conversationId;
+        const targetUser = result.targetUser || {};
+        wx.navigateTo({
+          url: `/pages/chat/chat?conversationId=${conversationId}&targetUserId=${userId}&targetName=${encodeURIComponent(
+            targetUser.nickname || this.data.user.nickname || '聊天'
+          )}&targetAvatarUrl=${encodeURIComponent(targetUser.avatarUrl || this.data.user.avatarUrl || '')}`,
+        });
       })
       .catch((err) => {
         wx.showToast({ title: err.message || '发起失败', icon: 'none' });

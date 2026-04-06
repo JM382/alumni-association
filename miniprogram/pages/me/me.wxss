@@ -101,6 +101,17 @@
   color: #fff;
 }
 
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.membership-badge-img {
+  width: 50rpx;
+  height: 50rpx;
+}
+
 .user-status,
 .user-college {
   font-size: 24rpx;

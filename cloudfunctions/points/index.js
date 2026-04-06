@@ -3,9 +3,12 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
 const db = cloud.database();
+const _ = db.command;
 
 const usersCol = db.collection('users');
 const logsCol = db.collection('points_logs');
+const donationsCol = db.collection('donations');
+const DONATION_POINT_REWARD = 50;
 
 function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
@@ -73,10 +76,83 @@ function sourceTitleAndDesc(log) {
   }
 }
 
+function isRewardableDonationStatus(status) {
+  // paid / completed / 空状态都按有效捐赠处理
+  return !status || status === 'paid' || status === 'completed';
+}
+
+/**
+ * 同步捐赠积分：
+ * - donations 每条有效捐赠固定 +50
+ * - 通过 points_logs(source=donation, extra.donationId) 去重，避免重复加分
+ */
+async function syncDonationPoints(userId, openid) {
+  if (!userId) return { addedPoints: 0, addedCount: 0 };
+
+  const donationsRes = await donationsCol.where({ userId }).limit(1000).get();
+  const donations = (donationsRes.data || []).filter((d) => isRewardableDonationStatus(d.status));
+  if (!donations.length) return { addedPoints: 0, addedCount: 0 };
+
+  const donationIds = donations.map((d) => d._id).filter(Boolean);
+  if (!donationIds.length) return { addedPoints: 0, addedCount: 0 };
+
+  const existLogsRes = await logsCol
+    .where({
+      userId,
+      source: 'donation',
+      'extra.donationId': _.in(donationIds),
+    })
+    .limit(1000)
+    .get();
+  const rewardedSet = new Set((existLogsRes.data || []).map((l) => l.extra && l.extra.donationId).filter(Boolean));
+
+  const needReward = donations.filter((d) => d && d._id && !rewardedSet.has(d._id));
+  if (!needReward.length) return { addedPoints: 0, addedCount: 0 };
+
+  const now = db.serverDate();
+  for (let i = 0; i < needReward.length; i += 1) {
+    const d = needReward[i];
+    await logsCol.add({
+      data: {
+        userId,
+        change: DONATION_POINT_REWARD,
+        type: 'earn',
+        source: 'donation',
+        title: '捐赠积分',
+        desc: d.projectName ? `捐赠 ${d.projectName}` : '捐赠获得积分',
+        createdAt: now,
+        extra: {
+          donationId: d._id,
+          projectId: d.projectId || '',
+          projectName: d.projectName || d.title || '',
+        },
+      },
+    });
+  }
+
+  const addedPoints = needReward.length * DONATION_POINT_REWARD;
+  const userWhere = userId ? { user_id: userId } : openid ? { openid } : null;
+  if (userWhere) {
+    await usersCol
+      .where(userWhere)
+      .update({
+        data: {
+          pointsBalance: _.inc(addedPoints),
+        },
+      });
+  }
+
+  return {
+    addedPoints,
+    addedCount: needReward.length,
+  };
+}
+
 // 获取积分概览 + 最近流水
 async function handleGetInfo(event) {
-  const { user, userId } = await getCurrentUser();
-  let balance = typeof user.pointsBalance === 'number' ? user.pointsBalance : 0;
+  const { user, userId, openid } = await getCurrentUser();
+  const syncRes = await syncDonationPoints(userId, openid);
+  let balance = typeof user.pointsBalance === 'number' ? user.pointsBalance + (syncRes.addedPoints || 0) : 0;
 
   const res = await logsCol
     .where({ userId })
@@ -113,7 +189,8 @@ async function handleGetInfo(event) {
 
 // 积分明细列表
 async function handleListLogs(event) {
-  const { userId } = await getCurrentUser();
+  const { userId, openid } = await getCurrentUser();
+  await syncDonationPoints(userId, openid);
   const type = (event.type || 'all').trim();
   const page = Math.max(1, Number(event.page) || 1);
   const pageSize = Math.min(100, Math.max(1, Number(event.pageSize) || 20));
