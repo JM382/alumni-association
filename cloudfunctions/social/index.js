@@ -12,6 +12,7 @@ const followsCol = db.collection('follows');
 const conversationsCol = db.collection('conversations');
 const messagesCol = db.collection('messages');
 const privacySettingsCol = db.collection('privacy_settings');
+const authCol = db.collection('authApplications');
 
 function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
@@ -184,6 +185,36 @@ function toIdentityText(identity) {
   return '游客';
 }
 
+function itemTimeMs(item) {
+  if (!item || typeof item !== 'object') return 0;
+  const t = item.updatedAt || item.createdAt;
+  if (!t) return 0;
+  const d = new Date(t);
+  return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
+function buildIdentityTextFromAuth(baseIdentity, rows) {
+  const tags = [];
+  const pushUnique = (v) => {
+    if (!v) return;
+    if (!tags.includes(v)) tags.push(v);
+  };
+  pushUnique(toIdentityText(baseIdentity));
+  const latestByCategory = {};
+  (rows || []).forEach((row) => {
+    if (!row || !row.category) return;
+    const prev = latestByCategory[row.category];
+    if (!prev || itemTimeMs(row) >= itemTimeMs(prev)) {
+      latestByCategory[row.category] = row;
+    }
+  });
+  if (latestByCategory.alumni && latestByCategory.alumni.status === 'approved') pushUnique('校友');
+  if (latestByCategory.company && latestByCategory.company.status === 'approved') pushUnique('企业');
+  if (latestByCategory.expert && latestByCategory.expert.status === 'approved') pushUnique('专家');
+  const filtered = tags.filter((x) => x !== '游客');
+  return filtered.length ? filtered.join('·') : '游客';
+}
+
 const PRIVACY_DEFAULT = {
   phoneVisible: false,
   emailVisible: true,
@@ -216,6 +247,16 @@ async function handleGetUserProfile(event) {
   const u = res.data[0];
   const identity = u.identity || 'visitor';
   const isSelf = targetUserId === currentUserId;
+  const openid = u.openid || '';
+
+  const authConds = [];
+  if (targetUserId) authConds.push({ userId: targetUserId });
+  if (openid) authConds.push({ openid });
+  let authRows = [];
+  if (authConds.length) {
+    const authRes = await authCol.where(_.or(authConds)).get();
+    authRows = authRes.data || [];
+  }
 
   let mobile = u.mobile || '';
   let email = u.email || '';
@@ -248,11 +289,13 @@ async function handleGetUserProfile(event) {
       nickname: u.nickname || u.nickName || '校友',
       avatarUrl: u.avatarUrl || '',
       identity,
-      identityText: toIdentityText(identity),
+      identityText: buildIdentityTextFromAuth(identity, authRows),
       schoolName: u.schoolName || '',
       major: u.major || '',
       enterYear: u.enterYear || '',
       graduationYear: u.graduationYear || '',
+      membershipLevel: u.membershipLevel || '',
+      membershipExpireAt: u.membershipExpireAt || null,
       city: city || '',
       mobile: mobile || '',
       email: email || '',

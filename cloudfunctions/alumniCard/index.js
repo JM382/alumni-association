@@ -7,6 +7,7 @@ const _ = db.command;
 
 const usersCol = db.collection('users');
 const cardsCol = db.collection('alumni_cards');
+const authCol = db.collection('authApplications');
 
 function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
@@ -29,6 +30,15 @@ async function getCurrentUser() {
   };
 }
 
+async function hasApprovedAlumniAuth(userId, openid) {
+  const conds = [];
+  if (userId) conds.push({ userId, category: 'alumni', status: 'approved' });
+  if (openid) conds.push({ openid, category: 'alumni', status: 'approved' });
+  if (!conds.length) return false;
+  const res = await authCol.where(_.or(conds)).limit(1).get();
+  return !!(res.data && res.data.length);
+}
+
 // 生成一个简单的卡号：NO + 年份 + userId 后 4 位
 function buildCardNo(user, userId, seq) {
   const year = user.enterYear || new Date().getFullYear();
@@ -38,12 +48,13 @@ function buildCardNo(user, userId, seq) {
 
 // 确保 alumni 用户有一张卡，必要时在 alumni_cards 中创建
 async function handleEnsureCard() {
-  const { user, userId } = await getCurrentUser();
+  const { user, userId, openid } = await getCurrentUser();
   if (!user) {
     return { success: false, status: 'notRegistered', error: '用户不存在' };
   }
   const identity = user.identity || 'visitor';
-  if (identity !== 'alumni') {
+  const approvedAlumni = await hasApprovedAlumniAuth(userId, openid);
+  if (identity !== 'alumni' && !approvedAlumni) {
     return { success: false, status: 'notAlumni', error: '仅校友可生成校友卡' };
   }
 
@@ -95,13 +106,14 @@ async function handleGetMyCard() {
     return ensureRes;
   }
 
-  const { user, userId } = await getCurrentUser();
+  const { user, userId, openid } = await getCurrentUser();
   if (!user) {
     return { success: false, status: 'notRegistered', error: '用户不存在' };
   }
 
   const identity = user.identity || 'visitor';
-  if (identity !== 'alumni') {
+  const approvedAlumni = await hasApprovedAlumniAuth(userId, openid);
+  if (identity !== 'alumni' && !approvedAlumni) {
     return { success: false, status: 'notAlumni', error: '仅校友可查看校友卡' };
   }
 

@@ -4,12 +4,17 @@
       <view class="avatar-wrap">
         <image wx:if="{{user.avatarUrl}}" class="avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
         <view wx:else class="avatar avatar-placeholder">头像</view>
-        <view class="badge badge-unverified">
-          {{user.identity == 'alumni' ? '已认证' : '未认证'}}
-        </view>
       </view>
       <view class="user-meta">
-        <text class="user-name">{{user.nickname || '校友'}}</text>
+        <view class="user-name-row">
+          <text class="user-name">{{user.nickname || '校友'}}</text>
+          <image
+            wx:if="{{user.membershipLevel && user.membershipBadgeImage}}"
+            class="membership-badge-img"
+            src="{{user.membershipBadgeImage}}"
+            mode="aspectFit"
+          />
+        </view>
         <text class="user-status">{{user.identityText || '游客'}}</text>
         <text class="user-college">
           {{user.schoolName || ''}} {{user.enterYear ? user.enterYear + '级' : ''}} {{user.major || ''}}

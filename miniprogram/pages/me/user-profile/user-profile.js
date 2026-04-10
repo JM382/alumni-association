@@ -1,3 +1,23 @@
+const VIP_BADGE_IMAGE = 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/membership/VIP.png?sign=c57b3c86e4a346a51ac4c1bafacf96ba&t=1774960586';
+const SVIP_BADGE_IMAGE = 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/membership/SVIP.png?sign=2c744ff1e46ec63c0fcf09ae84258eb8&t=1774960608';
+
+function toTimestamp(v) {
+  if (!v) return 0;
+  if (v instanceof Date) return v.getTime();
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
+function resolveMembershipBadge(data) {
+  const level = ((data && data.membershipLevel) || '').toLowerCase();
+  const expireAt = data && data.membershipExpireAt;
+  const valid = toTimestamp(expireAt) > Date.now();
+  if (!valid) return { level: '', image: '' };
+  if (level === 'svip') return { level: 'svip', image: SVIP_BADGE_IMAGE };
+  if (level === 'vip') return { level: 'vip', image: VIP_BADGE_IMAGE };
+  return { level: '', image: '' };
+}
+
 Page({
   data: {
     userId: '',
@@ -37,8 +57,14 @@ Page({
           wx.showToast({ title: result.error || '加载失败', icon: 'none' });
           return;
         }
+        const user = result.user || {};
+        const membership = resolveMembershipBadge(user);
         this.setData({
-          user: result.user || {},
+          user: {
+            ...user,
+            membershipLevel: membership.level,
+            membershipBadgeImage: membership.image,
+          },
           isSelf: !!result.isSelf,
         });
       })

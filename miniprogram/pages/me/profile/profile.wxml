@@ -15,6 +15,10 @@
   <view class="card">
     <view class="card-title">基本信息</view>
     <view class="form-row">
+      <text class="label">校友会身份</text>
+      <text class="value">{{identityText || '游客'}}</text>
+    </view>
+    <view class="form-row">
       <text class="label">昵称</text>
       <input class="input" placeholder="用于个人中心展示" value="{{form.nickname}}" data-field="nickname" bindinput="onFieldInput" />
     </view>

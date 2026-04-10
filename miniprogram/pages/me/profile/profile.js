@@ -1,6 +1,7 @@
 // 个人信息页：头像、昵称、手机、邮箱（必填）、性别、生日、城市、简介，保存到 users
 Page({
   data: {
+    identityText: '游客',
     form: {
       avatarUrl: '',
       nickname: '',
@@ -56,35 +57,65 @@ Page({
   },
 
   loadUserInfo() {
-    wx.cloud.callFunction({ name: 'getUserInfo' }).then((res) => {
-      const result = res.result || {};
-      const data = (result.code === 0 && result.data) ? result.data : {};
-      const nickname = data.nickname || data.nickName || '';
-      const gender = data.gender || '';
-      let genderIndex = 2;
-      if (gender === 'male') genderIndex = 0;
-      else if (gender === 'female') genderIndex = 1;
-      const genderText = ['男', '女', '保密'][genderIndex];
-      const form = {
-        form: {
-          avatarUrl: data.avatarUrl || '',
-          nickname: nickname,
-          mobile: data.mobile || '',
-          email: data.email || '',
-          gender: gender,
-          birthday: data.birthday || '',
-          city: data.city || '',
-          bio: data.bio || '',
-        },
-        genderIndex,
-        genderText,
-      };
-      this.setData({
-        ...form,
-        originalForm: { ...form.form },
-        hasChanged: false,
-      });
-    }).catch(() => {});
+    Promise.all([
+      wx.cloud.callFunction({ name: 'getUserInfo' }),
+      wx.cloud.callFunction({
+        name: 'authApplications',
+        data: { action: 'myStatus' },
+      }).catch(() => ({ result: { success: false } })),
+    ])
+      .then((allRes) => {
+        const userRes = allRes && allRes[0];
+        const authRes = allRes && allRes[1];
+        const result = (userRes && userRes.result) || {};
+        const data = result.code === 0 && result.data ? result.data : {};
+        const nickname = data.nickname || data.nickName || '';
+        const gender = data.gender || '';
+        let genderIndex = 2;
+        if (gender === 'male') genderIndex = 0;
+        else if (gender === 'female') genderIndex = 1;
+        const genderText = ['男', '女', '保密'][genderIndex];
+        const form = {
+          form: {
+            avatarUrl: data.avatarUrl || '',
+            nickname,
+            mobile: data.mobile || '',
+            email: data.email || '',
+            gender: gender,
+            birthday: data.birthday || '',
+            city: data.city || '',
+            bio: data.bio || '',
+          },
+          genderIndex,
+          genderText,
+        };
+
+        const identity = data.identity || 'visitor';
+        const authResult = (authRes && authRes.result) || {};
+        const authStatus = authResult.success ? authResult.data || {} : {};
+        const tags = [];
+        const pushUnique = (v) => {
+          if (!v) return;
+          if (!tags.includes(v)) tags.push(v);
+        };
+        if (identity === 'alumni') pushUnique('校友');
+        else if (identity === 'company') pushUnique('企业');
+        else if (identity === 'expert') pushUnique('专家');
+        else pushUnique('游客');
+        if (authStatus.alumni && authStatus.alumni.status === 'approved') pushUnique('校友');
+        if (authStatus.company && authStatus.company.status === 'approved') pushUnique('企业');
+        if (authStatus.expert && authStatus.expert.status === 'approved') pushUnique('专家');
+        const filtered = tags.filter((x) => x !== '游客');
+        const identityText = filtered.length ? filtered.join('·') : '游客';
+
+        this.setData({
+          ...form,
+          identityText,
+          originalForm: { ...form.form },
+          hasChanged: false,
+        });
+      })
+      .catch(() => {});
   },
 
   onFieldInput(e) {
