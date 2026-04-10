@@ -11,6 +11,7 @@ const usersCol = db.collection('users');
 const followsCol = db.collection('follows');
 const conversationsCol = db.collection('conversations');
 const messagesCol = db.collection('messages');
+const privacySettingsCol = db.collection('privacy_settings');
 
 function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
@@ -183,7 +184,26 @@ function toIdentityText(identity) {
   return '游客';
 }
 
-// 个人主页资料
+const PRIVACY_DEFAULT = {
+  phoneVisible: false,
+  emailVisible: true,
+  workVisible: true,
+};
+
+async function getTargetPrivacyFlags(targetUserId) {
+  const privRes = await privacySettingsCol.where({ userId: targetUserId }).limit(1).get();
+  if (!privRes.data || !privRes.data.length) {
+    return { ...PRIVACY_DEFAULT };
+  }
+  const row = privRes.data[0];
+  return {
+    phoneVisible: row.phoneVisible !== undefined ? !!row.phoneVisible : PRIVACY_DEFAULT.phoneVisible,
+    emailVisible: row.emailVisible !== undefined ? !!row.emailVisible : PRIVACY_DEFAULT.emailVisible,
+    workVisible: row.workVisible !== undefined ? !!row.workVisible : PRIVACY_DEFAULT.workVisible,
+  };
+}
+
+// 个人主页资料（他人查看时按 privacy_settings 脱敏手机/邮箱；本人查看始终完整）
 async function handleGetUserProfile(event) {
   const { userId: currentUserId } = await getCurrentUser();
   const targetUserId = (event.targetUserId || '').trim();
@@ -195,10 +215,34 @@ async function handleGetUserProfile(event) {
   }
   const u = res.data[0];
   const identity = u.identity || 'visitor';
+  const isSelf = targetUserId === currentUserId;
+
+  let mobile = u.mobile || '';
+  let email = u.email || '';
+  let city = u.city || '';
+  let mobileHidden = false;
+  let emailHidden = false;
+  let cityHidden = false;
+
+  if (!isSelf) {
+    const priv = await getTargetPrivacyFlags(targetUserId);
+    if (!priv.phoneVisible) {
+      if (u.mobile) mobileHidden = true;
+      mobile = '';
+    }
+    if (!priv.emailVisible) {
+      if (u.email) emailHidden = true;
+      email = '';
+    }
+    if (!priv.workVisible) {
+      if (u.city) cityHidden = true;
+      city = '';
+    }
+  }
 
   return {
     success: true,
-    isSelf: targetUserId === currentUserId,
+    isSelf,
     user: {
       userId: resolveUserId(u),
       nickname: u.nickname || u.nickName || '校友',
@@ -209,9 +253,12 @@ async function handleGetUserProfile(event) {
       major: u.major || '',
       enterYear: u.enterYear || '',
       graduationYear: u.graduationYear || '',
-      city: u.city || '',
-      mobile: u.mobile || '',
-      email: u.email || '',
+      city: city || '',
+      mobile: mobile || '',
+      email: email || '',
+      mobileHidden,
+      emailHidden,
+      cityHidden,
     },
   };
 }

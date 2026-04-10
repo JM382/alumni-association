@@ -46,15 +46,21 @@
       </view>
       <view class="profile-row">
         <text class="profile-label">当前城市</text>
-        <text class="profile-value">{{user.city || '未填写'}}</text>
+        <text class="profile-value" wx:if="{{user.cityHidden}}">已隐藏</text>
+        <text class="profile-value" wx:elif="{{user.city}}">{{user.city}}</text>
+        <text class="profile-value" wx:else>未填写</text>
       </view>
       <view class="profile-row">
         <text class="profile-label">手机号</text>
-        <text class="profile-value">{{user.mobile || '未填写'}}</text>
+        <text class="profile-value" wx:if="{{user.mobileHidden}}">已隐藏</text>
+        <text class="profile-value" wx:elif="{{user.mobile}}">{{user.mobile}}</text>
+        <text class="profile-value" wx:else>未填写</text>
       </view>
       <view class="profile-row">
         <text class="profile-label">邮箱</text>
-        <text class="profile-value">{{user.email || '未填写'}}</text>
+        <text class="profile-value" wx:if="{{user.emailHidden}}">已隐藏</text>
+        <text class="profile-value" wx:elif="{{user.email}}">{{user.email}}</text>
+        <text class="profile-value" wx:else>未填写</text>
       </view>
     </view>
   </view>

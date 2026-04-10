@@ -1,5 +1,7 @@
-// 云函数 updateNotificationSettings：按当前用户 user_id 更新 notification_settings 集合
-// 有则 update，无则 add 一条；与消息通知页的 6 个开关一致
+// 云函数 updateNotificationSettings：读写 notification_settings（每用户一条）
+// action:
+// - get：读取当前用户通知开关（无记录返回默认值，不落库）
+// - 默认/省略 action：按 event 字段增量更新；无记录则 add
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
@@ -9,8 +11,27 @@ const settingsCol = db.collection('notification_settings');
 
 const SETTING_KEYS = ['activityOn', 'systemOn', 'interactOn', 'circleOn', 'soundOn', 'vibrateOn'];
 
+function defaultSettings() {
+  return {
+    activityOn: true,
+    systemOn: true,
+    interactOn: true,
+    circleOn: true,
+    soundOn: true,
+    vibrateOn: true,
+  };
+}
+
 function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
+}
+
+function sanitizeSettings(row) {
+  const out = { ...defaultSettings() };
+  SETTING_KEYS.forEach((k) => {
+    if (row && row[k] !== undefined) out[k] = !!row[k];
+  });
+  return out;
 }
 
 exports.main = async (event, context) => {
@@ -25,6 +46,14 @@ exports.main = async (event, context) => {
       return { success: false, error: '用户不存在' };
     }
     const user_id = resolveUserId(userRes.data[0]);
+
+    if (event && event.action === 'get') {
+      const existRes = await settingsCol.where({ userId: user_id }).limit(1).get();
+      if (existRes.data && existRes.data.length > 0) {
+        return { success: true, settings: sanitizeSettings(existRes.data[0]) };
+      }
+      return { success: true, settings: defaultSettings() };
+    }
 
     const dataToSet = {};
     SETTING_KEYS.forEach((key) => {
@@ -42,21 +71,20 @@ exports.main = async (event, context) => {
         await settingsCol.doc(docId).update({ data: dataToSet });
       }
       const updated = await settingsCol.doc(docId).get();
-      return { success: true, settings: updated.data };
+      return { success: true, settings: sanitizeSettings(updated.data) };
     }
 
+    const base = defaultSettings();
+    SETTING_KEYS.forEach((k) => {
+      if (event[k] !== undefined) base[k] = !!event[k];
+    });
     const newDoc = {
       userId: user_id,
-      activityOn: event.activityOn !== undefined ? !!event.activityOn : true,
-      systemOn: event.systemOn !== undefined ? !!event.systemOn : true,
-      interactOn: event.interactOn !== undefined ? !!event.interactOn : true,
-      circleOn: event.circleOn !== undefined ? !!event.circleOn : true,
-      soundOn: event.soundOn !== undefined ? !!event.soundOn : true,
-      vibrateOn: event.vibrateOn !== undefined ? !!event.vibrateOn : true,
+      ...base,
       updateTime: db.serverDate(),
     };
     await settingsCol.add({ data: newDoc });
-    return { success: true, settings: newDoc };
+    return { success: true, settings: base };
   } catch (e) {
     console.error('updateNotificationSettings 异常', e);
     return { success: false, error: e.message || '更新失败' };
