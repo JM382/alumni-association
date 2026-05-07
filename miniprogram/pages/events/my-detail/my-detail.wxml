@@ -28,17 +28,25 @@
       </view>
       <view class="detail-row">
         <text class="label">报名状态</text>
-        <text class="value {{detail.status === 'canceled' ? 'gray' : 'green'}}">
-          {{detail.status === 'canceled' ? '已取消' : '有效报名'}}
+        <text
+          class="value {{detail.status === 'canceled' ? 'gray' : (detail.status === 'pending_payment' ? 'gray' : 'green')}}"
+        >
+          {{detail.statusText || '有效报名'}}
         </text>
       </view>
+    </view>
+
+    <view class="actions" wx:if="{{detail.needsPayment && detail.orderNo}}">
+      <button class="primary-btn" loading="{{paying}}" disabled="{{paying}}" bindtap="onPaySignup">
+        立即支付（￥{{detail.amount}}）
+      </button>
     </view>
 
     <view class="actions">
       <button
         class="primary-btn"
         loading="{{signing}}"
-        disabled="{{signing || detail.signInStatus === 'signed' || detail.status === 'canceled'}}"
+        disabled="{{signing || detail.signInStatus === 'signed' || detail.status === 'canceled' || detail.status === 'pending_payment'}}"
         bindtap="onScanSignIn"
       >
         {{detail.signInStatus === 'signed' ? '已签到' : '扫码签到'}}

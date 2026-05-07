@@ -6,12 +6,21 @@ const db = cloud.database();
 const _ = db.command;
 
 const usersCol = db.collection('users');
+const authCol = db.collection('authApplications');
 const postsCol = db.collection('resource_posts');
 const commentsCol = db.collection('resource_comments');
 const likesCol = db.collection('resource_likes');
 
 function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
+}
+
+function authItemTimeMs(item) {
+  if (!item || typeof item !== 'object') return 0;
+  const t = item.updatedAt || item.createdAt;
+  if (!t) return 0;
+  const d = new Date(t);
+  return Number.isNaN(d.getTime()) ? 0 : d.getTime();
 }
 
 function normalizeAvatarUrl(url) {
@@ -31,6 +40,35 @@ async function getCurrentUser() {
 
   const user = res.data[0];
   return { openid: OPENID, user, userId: resolveUserId(user) };
+}
+
+/**
+ * 与 authApplications.handleMyStatus 一致：校友类取「非 canceled」里时间最新的一条，
+ * 仅其为 approved 才允许发布（避免多条申请时仍命中历史 approved）
+ */
+async function hasAlumniPostPrivilege(user, openid) {
+  const userId = resolveUserId(user);
+  const orConds = [];
+  if (userId) orConds.push({ userId });
+  if (openid) orConds.push({ openid });
+  if (!orConds.length) return false;
+  const whereUser = orConds.length === 1 ? orConds[0] : _.or(orConds);
+
+  const res = await authCol.where(whereUser).limit(100).get();
+  const byId = new Map();
+  (res.data || []).forEach((row) => {
+    if (row && row._id) byId.set(row._id, row);
+  });
+  const mergedRows = Array.from(byId.values());
+  const rows = mergedRows.filter((item) => item && item.category === 'alumni');
+  if (!rows.length) return false;
+  const active = rows.filter((item) => item.status !== 'canceled');
+  const pool = active.length ? active : rows;
+  let best = pool[0];
+  pool.forEach((item) => {
+    if (authItemTimeMs(item) >= authItemTimeMs(best)) best = item;
+  });
+  return !!(best && best.status === 'approved');
 }
 
 async function getUserBrief(userId) {
@@ -56,8 +94,9 @@ function safeCategory(cat) {
 }
 
 async function handleCreatePost(event) {
-  const { user, userId } = await getCurrentUser();
-  if ((user.identity || 'visitor') !== 'alumni') return { success: false, error: '仅校友可发布' };
+  const { user, userId, openid } = await getCurrentUser();
+  const canPost = await hasAlumniPostPrivilege(user, openid);
+  if (!canPost) return { success: false, error: '请等待校友认证审核通过后再发布' };
 
   const category = safeCategory(event.category);
   const title = (event.title || '').trim();

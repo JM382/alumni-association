@@ -1,15 +1,20 @@
 // 云函数 membership：会员中心相关接口
 // action:
 // - getInfo: 获取当前用户会员状态
-// - createOrder: 创建会员订单（当前先模拟支付成功，直接开通/续期）
+// - createOrder: 创建待支付会员业务单
+// - getLatestOrder: 获取最近一笔会员订单（用于前端展示退款入口）
+// - getRefundEligibility: 校验最近订单是否满足退款条件
 
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
 const db = cloud.database();
+const _ = db.command;
 
 const usersCol = db.collection('users');
-const ordersCol = db.collection('membership_orders');
+const membershipOrdersCol = db.collection('membership_orders');
+const payOrdersCol = db.collection('wechat_pay_orders');
+const authCol = db.collection('authApplications');
 
 // 会员产品配置（可以按需修改价格和天数）
 const PLANS = {
@@ -38,6 +43,51 @@ async function getCurrentUser() {
   };
 }
 
+/** 与 authApplications「myStatus」校友类选条规则一致，避免仅看 users.identity 与认证页不一致 */
+function itemTimeMs(item) {
+  if (!item || typeof item !== 'object') return 0;
+  const t = item.updatedAt || item.createdAt;
+  if (!t) return 0;
+  const d = new Date(t);
+  return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
+async function getPickedAlumniApplication(userId, openid) {
+  const conditions = [];
+  if (userId) conditions.push({ userId });
+  if (openid) conditions.push({ openid });
+  if (!conditions.length) return null;
+
+  const res = await authCol
+    .where(
+      _.and([_.or(conditions), { category: 'alumni' }])
+    )
+    .get();
+  const byId = new Map();
+  (res.data || []).forEach((row) => {
+    if (row && row._id) byId.set(row._id, row);
+  });
+  const rows = Array.from(byId.values()).filter((item) => item && item.category === 'alumni');
+  if (!rows.length) return null;
+  const active = rows.filter((item) => item.status !== 'canceled');
+  const pool = active.length ? active : rows;
+  let best = pool[0];
+  pool.forEach((item) => {
+    if (itemTimeMs(item) >= itemTimeMs(best)) best = item;
+  });
+  return best;
+}
+
+/** 会员权益以「users 已标校友」或「校友认证审核通过」为准，与个人中心逻辑对齐 */
+async function resolveIdentityForMembership(user) {
+  const docIdentity = user.identity || 'visitor';
+  if (docIdentity === 'alumni') return 'alumni';
+  const uid = resolveUserId(user);
+  const picked = await getPickedAlumniApplication(uid, user.openid || '');
+  if (picked && picked.status === 'approved') return 'alumni';
+  return docIdentity;
+}
+
 // 获取当前会员状态
 async function handleGetInfo() {
   const { user } = await getCurrentUser();
@@ -51,29 +101,48 @@ async function handleGetInfo() {
     isValid = true;
   }
 
+  const identity = await resolveIdentityForMembership(user);
+
   return {
     success: true,
     data: {
       level,
       expireAt,
       isValid,
-      identity: user.identity || 'visitor',
+      identity,
     },
   };
 }
 
-// 根据当前到期时间 + 计划天数，计算新的到期时间
-function calcNewExpireAt(currentExpireAt, days) {
-  const now = Date.now();
-  const base =
-    currentExpireAt && currentExpireAt.getTime && currentExpireAt.getTime() > now
-      ? currentExpireAt.getTime()
-      : now;
-  const ms = days * 24 * 60 * 60 * 1000;
-  return new Date(base + ms);
+function genOrderNo(prefix) {
+  const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `${prefix}${Date.now()}${rand}`;
 }
 
-// 创建会员订单（当前简化为直接开通/续期）
+function parseServerDate(value) {
+  if (!value) return 0;
+  if (value instanceof Date) return value.getTime();
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 0;
+  return parsed.getTime();
+}
+
+async function findUnpaidPayOrder(userId, planKey) {
+  const res = await payOrdersCol
+    .where({
+      userId,
+      bizType: 'membership',
+      planKey,
+      status: _.in(['CREATED', 'PAYING']),
+    })
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get();
+  if (!res.data || !res.data.length) return null;
+  return res.data[0];
+}
+
+// 创建会员订单（只建待支付业务单，不直接开通）
 async function handleCreateOrder(event) {
   const { userId, user, openid } = await getCurrentUser();
   const { planKey } = event; // 例如 'vip_month' 或 'svip_year'
@@ -82,48 +151,124 @@ async function handleCreateOrder(event) {
     throw new Error('不支持的会员套餐');
   }
 
-  // 只有校友才能开通会员
-  const identity = user.identity || 'visitor';
+  // 只有校友才能开通会员（users.identity 或校友认证已通过）
+  const identity = await resolveIdentityForMembership(user);
   if (identity !== 'alumni') {
     return { success: false, error: '仅校友可开通会员' };
   }
 
   const plan = PLANS[planKey];
+  const existingPayOrder = await findUnpaidPayOrder(userId, planKey);
+  if (existingPayOrder) {
+    return {
+      success: true,
+      orderNo: existingPayOrder.orderNo,
+      membershipOrderId: existingPayOrder.bizId || '',
+      payOrderId: existingPayOrder._id,
+      amountFen: existingPayOrder.amountFen || plan.price,
+      level: plan.level,
+      planType: plan.planType,
+      planKey,
+    };
+  }
 
+  const orderNo = genOrderNo('MPM');
   const now = db.serverDate();
-  const orderDoc = {
+  const membershipOrderDoc = {
     userId,
     openid,
     level: plan.level,
     planType: plan.planType,
     planKey,
     price: plan.price,
-    status: 'paid', // 暂时直接视为已支付，后续接入微信支付时可改为 pending
+    status: 'pending',
+    orderNo,
     createdAt: now,
     updatedAt: now,
-    paidAt: now,
+    paidAt: null,
   };
-
-  const addRes = await ordersCol.add({ data: orderDoc });
-
-  // 更新用户会员信息（开通或续期）
-  const newExpireAt = calcNewExpireAt(user.membershipExpireAt, plan.days);
-
-  await usersCol
-    .where({ user_id: userId })
-    .update({
-      data: {
-        membershipLevel: plan.level,
-        membershipExpireAt: newExpireAt,
-        membershipUpdatedAt: db.serverDate(),
-      },
-    });
+  const membershipRes = await membershipOrdersCol.add({ data: membershipOrderDoc });
+  const payOrderDoc = {
+    orderNo,
+    bizType: 'membership',
+    bizId: membershipRes._id,
+    planKey,
+    userId,
+    openid,
+    amountFen: plan.price,
+    status: 'CREATED',
+    wxPrepayId: '',
+    wxTransactionId: '',
+    notifyAt: null,
+    createdAt: now,
+    updatedAt: now,
+  };
+  const payOrderRes = await payOrdersCol.add({ data: payOrderDoc });
 
   return {
     success: true,
-    orderId: addRes._id,
-    newLevel: plan.level,
-    newExpireAt,
+    orderNo,
+    membershipOrderId: membershipRes._id,
+    payOrderId: payOrderRes._id,
+    amountFen: plan.price,
+    level: plan.level,
+    planType: plan.planType,
+    planKey,
+  };
+}
+
+async function handleGetLatestOrder() {
+  const { userId } = await getCurrentUser();
+  const res = await membershipOrdersCol
+    .where({ userId })
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get();
+  const latest = (res.data && res.data[0]) || null;
+  if (!latest) return { success: true, data: null };
+  return { success: true, data: latest };
+}
+
+async function handleGetRefundEligibility(event) {
+  const { userId } = await getCurrentUser();
+  const limitMinutes = Math.max(1, Number(event.limitMinutes) || 30);
+
+  const res = await payOrdersCol
+    .where({
+      userId,
+      bizType: 'membership',
+      status: 'PAID',
+    })
+    .orderBy('notifyAt', 'desc')
+    .limit(1)
+    .get();
+  const order = (res.data && res.data[0]) || null;
+  if (!order) {
+    return {
+      success: true,
+      eligible: false,
+      reason: '暂无可退款订单',
+      limitMinutes,
+      data: null,
+    };
+  }
+
+  const paidMs = parseServerDate(order.notifyAt) || parseServerDate(order.updatedAt);
+  const elapsedMs = Math.max(0, Date.now() - paidMs);
+  const remainMs = limitMinutes * 60 * 1000 - elapsedMs;
+  const eligible = !!paidMs && remainMs > 0;
+  return {
+    success: true,
+    eligible,
+    reason: eligible ? '' : `仅支持支付后${limitMinutes}分钟内退款`,
+    limitMinutes,
+    remainSeconds: Math.max(0, Math.floor(remainMs / 1000)),
+    data: {
+      orderNo: order.orderNo,
+      amountFen: order.amountFen,
+      wxTransactionId: order.wxTransactionId || '',
+      notifyAt: order.notifyAt || null,
+    },
   };
 }
 
@@ -137,6 +282,10 @@ exports.main = async (event, context) => {
         return await handleGetInfo();
       case 'createOrder':
         return await handleCreateOrder(event);
+      case 'getLatestOrder':
+        return await handleGetLatestOrder();
+      case 'getRefundEligibility':
+        return await handleGetRefundEligibility(event);
       default:
         throw new Error('不支持的 action');
     }

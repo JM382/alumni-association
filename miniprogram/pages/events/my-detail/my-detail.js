@@ -6,6 +6,7 @@ Page({
     detail: null,
     signing: false,
     canceling: false,
+    paying: false,
   },
 
   onLoad(options) {
@@ -16,6 +17,92 @@ Page({
     }
     this.setData({ signupId });
     this.fetchDetail();
+  },
+
+  pollEventSignupPaid(orderNo, maxRetry) {
+    const retry = Math.max(1, Number(maxRetry) || 5);
+    const attempt = (left) =>
+      wx.cloud
+        .callFunction({
+          name: 'wechatPayOrder',
+          data: {
+            action: 'queryEventSignupOrder',
+            orderNo,
+          },
+        })
+        .then((res) => {
+          const result = res.result || {};
+          const status = result.status || '';
+          if (status === 'PAID') return true;
+          if (left <= 1) return false;
+          return new Promise((resolve) => {
+            setTimeout(() => resolve(attempt(left - 1)), 1200);
+          });
+        })
+        .catch(() => {
+          if (left <= 1) return false;
+          return new Promise((resolve) => {
+            setTimeout(() => resolve(attempt(left - 1)), 1200);
+          });
+        });
+    return attempt(retry);
+  },
+
+  onPaySignup() {
+    const { detail, paying } = this.data;
+    if (paying || !detail || !detail.needsPayment || !detail.orderNo) return;
+    const orderNo = detail.orderNo;
+    this.setData({ paying: true });
+    wx.cloud
+      .callFunction({
+        name: 'wechatPayOrder',
+        data: {
+          action: 'createEventSignupPrepay',
+          orderNo,
+        },
+      })
+      .then((res) => {
+        const result = res.result || {};
+        if (!result.success || !result.payParams) {
+          throw new Error(result.error || '拉起支付失败');
+        }
+        const p = result.payParams;
+        return new Promise((resolve, reject) => {
+          const pay = {
+            timeStamp: String(p.timeStamp || ''),
+            nonceStr: String(p.nonceStr || ''),
+            package: String(p.package || ''),
+            signType: String(p.signType || 'RSA'),
+            paySign: String(p.paySign || ''),
+          };
+          if (p.appId) pay.appId = String(p.appId);
+          wx.requestPayment({
+            ...pay,
+            success: () => resolve(orderNo),
+            fail: (err) => reject(err || new Error('支付失败')),
+          });
+        });
+      })
+      .then((no) => this.pollEventSignupPaid(no, 6))
+      .then((paid) => {
+        if (!paid) {
+          wx.showToast({ title: '支付处理中，请稍后下拉刷新', icon: 'none' });
+          return;
+        }
+        wx.showToast({ title: '支付成功', icon: 'success' });
+        this.fetchDetail();
+      })
+      .catch((err) => {
+        const msg = (err && (err.errMsg || err.message)) || '';
+        if (msg.includes('cancel')) {
+          wx.showToast({ title: '已取消支付', icon: 'none' });
+          return;
+        }
+        wx.showToast({ title: msg || '支付失败', icon: 'none' });
+      })
+      .finally(() => {
+        this.setData({ paying: false });
+      });
   },
 
   fetchDetail() {
@@ -94,9 +181,12 @@ Page({
       return;
     }
 
+    const isPendingPay = detail.status === 'pending_payment';
     wx.showModal({
       title: '取消报名',
-      content: '确认取消本次活动报名吗？已获得积分将回扣。',
+      content: isPendingPay
+        ? '确认取消该报名？未支付的订单将关闭。'
+        : '确认取消本次活动报名吗？已获得积分将回扣。',
       confirmText: '确认取消',
       cancelText: '再想想',
       success: (r) => {

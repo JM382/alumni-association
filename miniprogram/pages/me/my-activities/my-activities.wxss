@@ -9,6 +9,10 @@
   border: 2rpx solid rgba(176, 30, 43, 0.2);
 }
 
+.activity-card.pending {
+  border: 2rpx solid rgba(230, 162, 60, 0.45);
+}
+
 .activity-card.canceled {
   border: 2rpx solid #e5e5e5;
   background: #fafafa;

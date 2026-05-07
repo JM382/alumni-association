@@ -29,6 +29,27 @@ function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
 }
 
+/** 按申请里存的 openid / user_id 定位 users；避免 where(_.or).update 不命中导致身份未同步 */
+async function findUsersDocByAuthApplication(authData) {
+  const openid = String((authData && authData.openid) || '').trim();
+  const userId = String((authData && authData.userId) || '').trim();
+  if (openid) {
+    const r = await usersCol.where({ openid }).limit(1).get();
+    if (r.data && r.data.length) return r.data[0];
+  }
+  if (userId) {
+    const r1 = await usersCol.where({ user_id: userId }).limit(1).get();
+    if (r1.data && r1.data.length) return r1.data[0];
+    try {
+      const r2 = await usersCol.doc(userId).get();
+      if (r2.data) return r2.data;
+    } catch (e) {
+      /* _id 不存在 */
+    }
+  }
+  return null;
+}
+
 async function getCurrentUser() {
   const { OPENID } = cloud.getWXContext();
   if (!OPENID) {
@@ -595,43 +616,35 @@ async function handleAdminReview(event) {
     reviewAction,
   });
 
-  // 审核通过后同步 users 身份字段，保证前台“我的”等展示实时变化
+  // 审核通过后同步 users 身份字段，保证发帖/发资源等云函数读取 identity 一致
   if (reviewAction === 'approve') {
-    const userId = record.data.userId;
-    const openid = record.data.openid || '';
-    const userWhere = userId ? { user_id: userId } : openid ? { openid } : null;
-    if (userWhere) {
-      if (record.data.category === 'alumni') {
+    const userDoc = await findUsersDocByAuthApplication(record.data);
+    if (!userDoc || !userDoc._id) {
+      console.error('adminReview approve: users 未找到', {
+        userId: record.data.userId,
+        openid: record.data.openid,
+        category: record.data.category,
+      });
+    } else {
+      const cat = record.data.category;
+      let data = {};
+      if (cat === 'alumni') {
         const info = record.data.alumniInfo || {};
-        const school = info.school || '';
-        await usersCol
-          .where(userWhere)
-          .update({
-            data: {
-              identity: 'alumni',
-              schoolName: school,
-              major: info.major || '',
-              enterYear: info.enterYear || '',
-              realName: info.realName || '',
-              graduationYear: info.gradYear || '',
-            },
-          });
-      } else if (record.data.category === 'company') {
-        await usersCol
-          .where(userWhere)
-          .update({
-            data: {
-              identity: 'company',
-            },
-          });
-      } else if (record.data.category === 'expert') {
-        await usersCol
-          .where(userWhere)
-          .update({
-            data: {
-              identity: 'expert',
-            },
-          });
+        data = {
+          identity: 'alumni',
+          schoolName: info.school || info.college || '',
+          major: info.major || '',
+          enterYear: info.enterYear || '',
+          realName: info.realName || '',
+          graduationYear: info.gradYear || info.graduationYear || '',
+        };
+      } else if (cat === 'company') {
+        data = { identity: 'company' };
+      } else if (cat === 'expert') {
+        data = { identity: 'expert' };
+      }
+      if (Object.keys(data).length) {
+        await usersCol.doc(userDoc._id).update({ data });
       }
     }
   }

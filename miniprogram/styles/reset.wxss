@@ -39,8 +39,10 @@ input, textarea {
   background: none;
   -webkit-appearance: none;
   appearance: none;
+  /* 勿用 inherit：父级未设 color 时部分机型输入文字会与背景同色而不可见 */
   font-size: inherit;
-  color: inherit;
+  color: #333;
+  -webkit-text-fill-color: #333;
 }
 /* 统一占位符颜色 */
 input::placeholder, textarea::placeholder {

@@ -17,6 +17,7 @@
           <text class="activity-sub">{{item.startTimeText}}</text>
           <text class="activity-sub">{{item.location}}</text>
           <text class="activity-sub">报名时间：{{item.signupTimeText || '--'}}</text>
+          <text class="activity-sub" wx:if="{{item.statusText}}">状态：{{item.statusText}}</text>
         </view>
       </view>
     </block>

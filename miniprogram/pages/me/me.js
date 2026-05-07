@@ -19,13 +19,6 @@ function resolveMembershipBadge(data) {
   return { level: '', image: '' };
 }
 
-function baseIdentityText(identity) {
-  if (identity === 'alumni') return '校友';
-  if (identity === 'company') return '企业';
-  if (identity === 'expert') return '专家';
-  return '游客';
-}
-
 function buildIdentityText(identity, authStatus) {
   const tags = [];
   const pushUnique = (v) => {
@@ -33,16 +26,23 @@ function buildIdentityText(identity, authStatus) {
     if (!tags.includes(v)) tags.push(v);
   };
 
-  // 兼容已有 users.identity
-  pushUnique(baseIdentityText(identity));
-
-  // 以认证通过结果为准叠加展示
   const st = authStatus || {};
-  if (st.alumni && st.alumni.status === 'approved') pushUnique('校友');
+
+  // 校友：与认证页「当前一条」一致。申请中/已拒绝等不因 users 表仍存 alumni 而显示为校友；无记录时兼容旧库仅有 identity
+  const al = st.alumni;
+  const alStatus = al && al.status;
+  if (alStatus === 'approved') {
+    pushUnique('校友');
+  } else if (identity === 'alumni' && (alStatus === 'none' || alStatus === undefined || !al)) {
+    pushUnique('校友');
+  }
+
+  // 企业 / 专家：沿用 users.identity，并与已通过结果对齐
+  if (identity === 'company') pushUnique('企业');
   if (st.company && st.company.status === 'approved') pushUnique('企业');
+  if (identity === 'expert') pushUnique('专家');
   if (st.expert && st.expert.status === 'approved') pushUnique('专家');
 
-  // 游客不和其他身份并存
   const filtered = tags.filter((x) => x !== '游客');
   if (filtered.length) return filtered.join('·');
   return '游客';

@@ -9,7 +9,13 @@ const usersCol = db.collection('users');
 const eventsCol = db.collection('events');
 const signupsCol = db.collection('event_signups');
 const pointsLogsCol = db.collection('points_logs');
+const payOrdersCol = db.collection('wechat_pay_orders');
 const SIGNUP_REWARD_POINTS = 10;
+
+function genPayOrderNo() {
+  const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `EVT${Date.now()}${rand}`;
+}
 
 function resolveUserId(doc) {
   return (doc && (doc.user_id || doc._id)) || '';
@@ -130,7 +136,7 @@ async function handleGetDetail(event) {
 }
 
 async function handleCreateSignup(event) {
-  const { userId } = await getCurrentUser();
+  const { userId, openid } = await getCurrentUser();
   const eventId = (event.eventId || '').trim();
   const ticketId = (event.ticketId || '').trim();
   const realName = (event.realName || '').trim();
@@ -168,34 +174,93 @@ async function handleCreateSignup(event) {
   const tk = options.find((t) => t.ticketId === ticketId);
   if (!tk) return { success: false, error: '票种不存在' };
 
-  const amount = Number(tk.price) || 0;
+  const priceYuan = Number(tk.price) || 0;
+  const amountFen = priceYuan > 0 ? Math.max(1, Math.round(priceYuan * 100)) : 0;
+  const needPay = amountFen > 0;
   const now = db.serverDate();
 
+  if (!needPay) {
+    const addRes = await signupsCol.add({
+      data: {
+        eventId,
+        userId,
+        openid,
+        ticketId,
+        ticketName: tk.name || '',
+        amount: priceYuan,
+        status: 'completed',
+        realName,
+        mobile,
+        peopleCount,
+        remark,
+        signInStatus: 'not_signed',
+        signInTime: null,
+        signInCode: '',
+        payOrderNo: '',
+        createdAt: now,
+        updatedAt: now,
+        pointsAwarded: SIGNUP_REWARD_POINTS,
+        pointsReverted: false,
+        extra: {},
+      },
+    });
+
+    await signupsCol.doc(addRes._id).update({
+      data: {
+        signInCode: addRes._id,
+        updatedAt: now,
+      },
+    });
+
+    await eventsCol.doc(eventId).update({
+      data: {
+        participantCount: _.inc(peopleCount),
+        updatedAt: now,
+      },
+    });
+
+    await applyPointsChange(
+      userId,
+      SIGNUP_REWARD_POINTS,
+      '活动报名',
+      `报名活动《${ev.title || '活动'}》奖励${SIGNUP_REWARD_POINTS}积分`,
+      'event_signup',
+      { eventId, signupId: addRes._id }
+    );
+
+    return {
+      success: true,
+      signupId: addRes._id,
+      needPay: false,
+    };
+  }
+
+  const orderNo = genPayOrderNo();
   const addRes = await signupsCol.add({
     data: {
       eventId,
       userId,
+      openid,
       ticketId,
       ticketName: tk.name || '',
-      amount,
-      status: 'completed', // 暂不接支付，先视为已确认；接支付后在回调里改为 paid/completed
+      amount: priceYuan,
+      status: 'pending_payment',
       realName,
       mobile,
       peopleCount,
       remark,
       signInStatus: 'not_signed',
       signInTime: null,
-      // 扫码签到：先用 signupId 作为二维码内容（简单可靠）
       signInCode: '',
+      payOrderNo: orderNo,
       createdAt: now,
       updatedAt: now,
-      pointsAwarded: SIGNUP_REWARD_POINTS,
+      pointsAwarded: 0,
       pointsReverted: false,
       extra: {},
     },
   });
 
-  // 写回 signInCode（使用 signupId）
   await signupsCol.doc(addRes._id).update({
     data: {
       signInCode: addRes._id,
@@ -203,25 +268,30 @@ async function handleCreateSignup(event) {
     },
   });
 
-  await eventsCol.doc(eventId).update({
+  await payOrdersCol.add({
     data: {
-      participantCount: _.inc(peopleCount),
+      orderNo,
+      bizType: 'event_signup',
+      bizId: addRes._id,
+      planKey: '',
+      userId,
+      openid,
+      amountFen,
+      status: 'CREATED',
+      wxPrepayId: '',
+      wxTransactionId: '',
+      notifyAt: null,
+      createdAt: now,
       updatedAt: now,
     },
   });
 
-  await applyPointsChange(
-    userId,
-    SIGNUP_REWARD_POINTS,
-    '活动报名',
-    `报名活动《${ev.title || '活动'}》奖励${SIGNUP_REWARD_POINTS}积分`,
-    'event_signup',
-    { eventId, signupId: addRes._id }
-  );
-
   return {
     success: true,
     signupId: addRes._id,
+    needPay: true,
+    orderNo,
+    amountFen,
   };
 }
 
@@ -241,12 +311,15 @@ async function handleCheckMySignup(event) {
     .get();
   if (res.data && res.data.length > 0) {
     const s = res.data[0];
+    const status = s.status || 'completed';
     return {
       success: true,
       hasSignedUp: true,
       signupId: s._id,
       signInStatus: s.signInStatus || 'not_signed',
-      status: s.status || 'completed',
+      status,
+      needsPayment: status === 'pending_payment',
+      orderNo: s.payOrderNo || '',
     };
   }
   return { success: true, hasSignedUp: false };
@@ -265,6 +338,11 @@ async function handleGetMySignupDetail(event) {
   const eRes = await eventsCol.doc(s.eventId).get();
   const ev = eRes.data || {};
 
+  const status = s.status || 'completed';
+  let statusText = '有效报名';
+  if (status === 'canceled') statusText = '已取消';
+  else if (status === 'pending_payment') statusText = '待支付';
+
   return {
     success: true,
     data: {
@@ -276,7 +354,10 @@ async function handleGetMySignupDetail(event) {
       location: ev.location || '',
       ticketName: s.ticketName || '',
       amount: s.amount || 0,
-      status: s.status || 'completed',
+      status,
+      statusText,
+      needsPayment: status === 'pending_payment',
+      orderNo: s.payOrderNo || '',
       realName: s.realName || '',
       mobile: s.mobile || '',
       peopleCount: s.peopleCount || 1,
@@ -315,6 +396,10 @@ async function handleListMyActivities(event) {
   const list = signups.map((s) => {
     const ev = evMap[s.eventId] || {};
     const createdAt = s.createdAt || null;
+    const st = s.status || 'completed';
+    let statusText = '已报名';
+    if (st === 'canceled') statusText = '已取消';
+    else if (st === 'pending_payment') statusText = '待支付';
     return {
       signupId: s._id,
       eventId: s.eventId,
@@ -323,7 +408,8 @@ async function handleListMyActivities(event) {
       startTimeText: ev.startTime ? formatTime(ev.startTime) : '',
       location: ev.location || '',
       ticketName: s.ticketName || '',
-      status: s.status || 'completed',
+      status: st,
+      statusText,
       signInStatus: s.signInStatus || 'not_signed',
       signupTimeText: createdAt ? formatTime(createdAt) : '',
     };
@@ -341,6 +427,7 @@ async function handleSignIn(event) {
   const s = res.data;
   if (!s) return { success: false, error: '报名记录不存在' };
   if (s.userId !== userId) return { success: false, error: '无权签到' };
+  if (s.status === 'pending_payment') return { success: false, error: '请先完成支付' };
   if (s.signInStatus === 'signed') return { success: false, error: '已签到' };
 
   await signupsCol.doc(signupId).update({
@@ -375,8 +462,18 @@ async function handleCancelSignup(event) {
     },
   });
 
+  if (s.status === 'pending_payment' && s.payOrderNo) {
+    const por = await payOrdersCol.where({ orderNo: s.payOrderNo }).limit(1).get();
+    const row = por.data && por.data[0];
+    if (row && row._id && row.status !== 'PAID' && row.status !== 'REFUNDED') {
+      await payOrdersCol.doc(row._id).update({
+        data: { status: 'CLOSED', updatedAt: now },
+      });
+    }
+  }
+
   const peopleCount = Math.max(1, Number(s.peopleCount) || 1);
-  if (s.eventId) {
+  if (s.eventId && s.status === 'completed') {
     await eventsCol.doc(s.eventId).update({
       data: {
         participantCount: _.inc(-peopleCount),

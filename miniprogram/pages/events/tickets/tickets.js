@@ -35,6 +35,13 @@ Page({
         const result = res.result || {};
         if (!result.success) return;
         if (result.hasSignedUp && result.signupId) {
+          if (result.needsPayment) {
+            wx.showToast({ title: '您有待支付的报名', icon: 'none' });
+            wx.redirectTo({
+              url: `/pages/events/my-detail/my-detail?signupId=${result.signupId}`,
+            });
+            return;
+          }
           wx.showToast({ title: '你已报名过该活动', icon: 'none' });
           wx.redirectTo({
             url: `/pages/events/my-detail/my-detail?signupId=${result.signupId}`,
@@ -102,6 +109,79 @@ Page({
     this.setData({ 'form.remark': e.detail.value });
   },
 
+  pollEventSignupPaid(orderNo, maxRetry) {
+    const retry = Math.max(1, Number(maxRetry) || 5);
+    const attempt = (left) =>
+      wx.cloud
+        .callFunction({
+          name: 'wechatPayOrder',
+          data: {
+            action: 'queryEventSignupOrder',
+            orderNo,
+          },
+        })
+        .then((res) => {
+          const result = res.result || {};
+          const status = result.status || '';
+          if (status === 'PAID') return true;
+          if (left <= 1) return false;
+          return new Promise((resolve) => {
+            setTimeout(() => resolve(attempt(left - 1)), 1200);
+          });
+        })
+        .catch(() => {
+          if (left <= 1) return false;
+          return new Promise((resolve) => {
+            setTimeout(() => resolve(attempt(left - 1)), 1200);
+          });
+        });
+    return attempt(retry);
+  },
+
+  runEventPay(orderNo) {
+    return wx.cloud
+      .callFunction({
+        name: 'wechatPayOrder',
+        data: {
+          action: 'createEventSignupPrepay',
+          orderNo,
+        },
+      })
+      .then((res) => {
+        const result = res.result || {};
+        if (!result.success || !result.payParams) {
+          throw new Error(result.error || '拉起支付失败');
+        }
+        const p = result.payParams;
+        return new Promise((resolve, reject) => {
+          const pay = {
+            timeStamp: String(p.timeStamp || ''),
+            nonceStr: String(p.nonceStr || ''),
+            package: String(p.package || ''),
+            signType: String(p.signType || 'RSA'),
+            paySign: String(p.paySign || ''),
+          };
+          if (p.appId) pay.appId = String(p.appId);
+          wx.requestPayment({
+            ...pay,
+            success: () => resolve(orderNo),
+            fail: (err) => reject(err || new Error('支付失败')),
+          });
+        });
+      })
+      .then((no) => this.pollEventSignupPaid(no, 6))
+      .then((paid) => {
+        if (!paid) {
+          wx.showToast({ title: '支付处理中，请稍后在我的活动中查看', icon: 'none' });
+        } else {
+          wx.showToast({ title: '报名成功', icon: 'success' });
+        }
+        wx.navigateTo({
+          url: '/pages/me/my-activities/my-activities',
+        });
+      });
+  },
+
   onSubmit() {
     const { eventId, event, ticketIndex, form, agree, submitting } = this.data;
     if (submitting) return;
@@ -152,14 +232,21 @@ Page({
           wx.showToast({ title: result.error || '报名失败', icon: 'none' });
           return;
         }
+        if (result.needPay && result.orderNo) {
+          return this.runEventPay(result.orderNo);
+        }
         wx.showToast({ title: '报名成功', icon: 'success' });
-        // 跳到我的活动
         wx.navigateTo({
           url: '/pages/me/my-activities/my-activities',
         });
       })
       .catch((err) => {
-        wx.showToast({ title: err.message || '报名失败', icon: 'none' });
+        const msg = (err && (err.errMsg || err.message)) || '';
+        if (msg.includes('cancel')) {
+          wx.showToast({ title: '已取消支付', icon: 'none' });
+          return;
+        }
+        wx.showToast({ title: msg || '报名失败', icon: 'none' });
       })
       .finally(() => this.setData({ submitting: false }));
   },

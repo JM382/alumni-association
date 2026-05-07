@@ -231,3 +231,10 @@
   font-size: 32rpx;
   color: #999;
 }
+
+/* 使用 me-page 的表单页：输入框文字色显式指定（避免 color:inherit 链上无颜色） */
+.me-page input,
+.me-page textarea {
+  color: #333;
+  -webkit-text-fill-color: #333;
+}
