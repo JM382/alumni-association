@@ -1,13 +1,18 @@
-/**app.wxss - 校友服务小程序 */
+/** app.wxss - 校友服务小程序（红色主题） */
 page {
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 28rpx;
   color: #333;
-  background: #f5f7fb;
+  background: #fff5f5;
   box-sizing: border-box;
-}
-
-page {
-  box-sizing: border-box;
+  /* TDesign 主色覆盖为红色 */
+  --td-brand-color: #c41e3a;
+  --td-primary-color-7: #c41e3a;
+  --td-primary-color-6: #d32f2f;
+  --td-primary-color-5: #e64545;
+  --td-primary-color-4: #ef5350;
+  --td-primary-color-3: #ff8a80;
+  --td-primary-color-2: #ffcdd2;
+  --td-primary-color-1: #ffebee;
 }

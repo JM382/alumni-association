@@ -5,8 +5,6 @@
     "t-textarea": "tdesign-miniprogram/textarea/textarea",
     "t-upload": "tdesign-miniprogram/upload/upload",
     "t-button": "tdesign-miniprogram/button/button",
-    "t-tag": "tdesign-miniprogram/tag/tag",
-    "t-switch": "tdesign-miniprogram/switch/switch",
-    "t-icon": "tdesign-miniprogram/icon/icon"
+    "t-switch": "tdesign-miniprogram/switch/switch"
   }
 }

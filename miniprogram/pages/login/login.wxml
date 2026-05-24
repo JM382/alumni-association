@@ -1,0 +1,42 @@
+<!-- pages/login/login.wxml - 仅微信一键登录 -->
+<view class="login-page">
+  <!-- 顶部红色背景 -->
+  <view class="login-header">
+    <!-- 这里的 logo 可以换成你云存储里的图片地址 -->
+    <image class="login-logo" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/logo_%E9%80%8F%E6%98%8E.png?sign=7194d375746b5c805ed2a88a39073bf9&t=1773056090"></image>
+    <text class="login-title">哈军工北京校友会</text>
+    <text class="login-subtitle">校友服务平台</text>
+  </view>
+
+  <!-- 中间一键登录按钮 -->
+  <view class="login-body">
+    <button
+      class="btn-wechat"
+      bindtap="wechatLogin"
+      hover-class="btn-hover"
+      loading="{{loading}}"
+      disabled="{{loading || !agreed}}"
+    >
+      <!-- 这里的微信图标同样可以换成云存储地址 -->
+      <image class="btn-icon" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E6%A0%87.png?sign=ca87c9a904fa69b250be1eabe9c1c6af&t=1773056153"></image>
+      <text>微信一键登录</text>
+    </button>
+  </view>
+
+  <!-- 底部协议勾选 -->
+  <view class="login-footer">
+    <checkbox-group bindchange="onAgreementChange">
+      <label class="agreement-label">
+        <checkbox value="agreed" checked="{{agreed}}"/>
+        <text class="agreement-text">登录即代表同意</text>
+        <text class="agreement-link" bindtap="showAgreement">《用户协议》</text>
+        <text class="agreement-text">和</text>
+        <text class="agreement-link" bindtap="showPrivacy">《隐私政策》</text>
+      </label>
+      <label class="agreement-label admin-label">
+        <checkbox value="adminMode" checked="{{adminMode}}"/>
+        <text class="agreement-text">以管理员身份登录</text>
+      </label>
+    </checkbox-group>
+  </view>
+</view>

@@ -1,0 +1,53 @@
+<view class="me-page">
+  <view class="section-card">
+    <view class="section-row">
+      <text class="section-title">票种选择与报名</text>
+    </view>
+  </view>
+
+  <block wx:if="{{event}}">
+    <view class="ticket-section">
+      <view class="ticket-title">请选择票种</view>
+      <block wx:for="{{event.ticketOptions}}" wx:key="ticketId">
+        <view class="ticket-card {{index === ticketIndex ? 'active' : ''}}" data-index="{{index}}" bindtap="onChooseTicket">
+          <view class="ticket-row">
+            <text class="ticket-name">{{item.name}}</text>
+            <text class="ticket-price">{{item.price > 0 ? ('¥' + item.price) : '免费'}}</text>
+          </view>
+          <text wx:if="{{item.desc}}" class="ticket-desc">{{item.desc}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="form-card">
+      <view class="form-title">填写报名信息</view>
+      <input class="form-input" placeholder="姓名" value="{{form.realName}}" bindinput="onRealNameInput" />
+      <input class="form-input" placeholder="手机号" type="number" value="{{form.mobile}}" bindinput="onMobileInput" />
+      <input class="form-input" placeholder="参加人数（默认1）" type="number" value="{{form.peopleCount}}" bindinput="onPeopleCountInput" />
+      <textarea class="form-textarea" placeholder="备注（可选）" value="{{form.remark}}" bindinput="onRemarkInput" />
+
+      <view class="protocol-card">
+        <view class="protocol-row" bindtap="onToggleProtocol">
+          <text class="protocol-title">报名协议</text>
+          <text class="protocol-action">{{showProtocol ? '收起' : '展开'}}</text>
+        </view>
+        <view wx:if="{{showProtocol}}" class="protocol-text">
+          <text>{{event.protocolText || '（暂无协议内容）'}}</text>
+        </view>
+        <view class="agree-row" bindtap="onAgreeChange">
+          <view class="agree-box {{agree ? 'checked' : ''}}"></view>
+          <text class="agree-text">我已阅读并同意报名协议</text>
+        </view>
+      </view>
+
+      <button class="submit-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">
+        提交报名
+      </button>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="empty-tip">活动信息加载中...</view>
+  </block>
+</view>
+

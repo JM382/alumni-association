@@ -1,0 +1,58 @@
+<view class="privacy-page">
+  <!-- 资料可见范围 -->
+  <view class="card">
+    <view class="section-header">资料可见范围</view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">手机号对校友可见</text>
+        <text class="setting-desc">关闭后仅自己可见</text>
+      </view>
+      <switch checked="{{settings.phoneVisible}}" color="#b01e2b" data-key="phoneVisible" bindchange="onSwitchChange" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">邮箱对校友可见</text>
+        <text class="setting-desc">关闭后仅自己可见</text>
+      </view>
+      <switch checked="{{settings.emailVisible}}" color="#b01e2b" data-key="emailVisible" bindchange="onSwitchChange" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">工作信息对校友可见</text>
+        <text class="setting-desc">包括单位、职位等</text>
+      </view>
+      <switch checked="{{settings.workVisible}}" color="#b01e2b" data-key="workVisible" bindchange="onSwitchChange" />
+    </view>
+  </view>
+
+  <!-- 被搜索与联系 -->
+  <view class="card">
+    <view class="section-header">被搜索与联系</view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">允许通过姓名/手机号搜索到我</text>
+        <text class="setting-desc">关闭后只能通过通讯录或组织找到你</text>
+      </view>
+      <switch checked="{{settings.searchable}}" color="#b01e2b" data-key="searchable" bindchange="onSwitchChange" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">允许非好友给我发私信</text>
+        <text class="setting-desc">关闭后仅好友可私信你</text>
+      </view>
+      <switch checked="{{settings.dmFromNonFriend}}" color="#b01e2b" data-key="dmFromNonFriend" bindchange="onSwitchChange" />
+    </view>
+  </view>
+
+  <!-- 校友圈隐私 -->
+  <view class="card">
+    <view class="section-header">校友圈隐私</view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-title">校友圈动态仅好友可见</text>
+        <text class="setting-desc">开启后非好友无法查看你的动态详情</text>
+      </view>
+      <switch checked="{{settings.circleFriendsOnly}}" color="#b01e2b" data-key="circleFriendsOnly" bindchange="onSwitchChange" />
+    </view>
+  </view>
+</view>

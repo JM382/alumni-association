@@ -35,7 +35,11 @@
           <text>{{item.category}} · {{item.date}}</text>
           <text>浏览 {{item.views}} · 评论 {{item.comments}}</text>
         </view>
+        <view wx:if="{{item.isMine}}" class="news-actions">
+          <text class="news-delete" catchtap="onDeleteNews" data-id="{{item.id}}">删除</text>
+        </view>
       </view>
     </view>
+    <view wx:if="{{newsList.length === 0}}" class="empty-tip">该分类下暂无资讯</view>
   </scroll-view>
 </view>

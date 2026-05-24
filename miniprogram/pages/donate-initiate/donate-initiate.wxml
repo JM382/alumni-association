@@ -1,0 +1,36 @@
+<!--pages/donate-initiate/donate-initiate.wxml-->
+<scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
+  <view class="intro">
+    <text class="intro-title">发起捐赠（配置）</text>
+    <text class="intro-desc">在「捐赠通道」中新增一条筹款项目：填写名称、说明与筹款目标资金。保存后不产生支付；校友通过各项目的「我要捐赠」完成微信支付。</text>
+    <text class="intro-tip">云函数环境变量 DONATION_ADMIN_OPENIDS 可限制仅指定 openid 可保存；未配置则任意用户可创建（测试用，正式环境请配置）。</text>
+  </view>
+
+  <view class="card">
+    <text class="section-title">项目名称</text>
+    <t-input value="{{form.name}}" placeholder="例如：助学基金" maxlength="{{40}}" clearable bind:change="onNameChange" />
+  </view>
+
+  <view class="card">
+    <text class="section-title">项目说明</text>
+    <t-input value="{{form.desc}}" placeholder="简要说明资金用途（选填）" maxlength="{{200}}" clearable bind:change="onDescChange" />
+  </view>
+
+  <view class="card">
+    <text class="section-title">筹款目标资金（元）</text>
+    <text class="section-hint">本项目计划筹集的总金额，用于进度条；与单笔捐款金额无关。</text>
+    <t-input type="digit" value="{{form.targetYuan}}" placeholder="例如 1000000" clearable bind:change="onTargetYuanChange" />
+  </view>
+
+  <t-button
+    theme="primary"
+    block
+    size="large"
+    class="submit-btn"
+    loading="{{submitting}}"
+    disabled="{{submitting}}"
+    bindtap="onSaveProject"
+  >
+    保存筹款项目
+  </t-button>
+</scroll-view>

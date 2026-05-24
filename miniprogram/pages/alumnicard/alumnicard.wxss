@@ -1,0 +1,107 @@
+/* pages/alumnicard/alumnicard.wxss */
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #c41e3a 0%, #ffebee 30%);
+  padding: 48rpx 32rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(196, 30, 58, 0.15);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #c41e3a 0%, #e64545 100%);
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 500;
+  text-align: center;
+  padding: 24rpx;
+}
+
+.card-body {
+  padding: 40rpx 32rpx;
+}
+
+.avatar-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 4rpx solid #ffebee;
+}
+
+.avatar-placeholder {
+  background: #ffebee;
+  color: #c41e3a;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-list {
+  border-top: 1rpx solid #eee;
+  padding-top: 24rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #999;
+  width: 160rpx;
+}
+
+.value {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+  flex: 1;
+  text-align: right;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 32rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 48rpx;
+}
+
+.empty-btn {
+  padding: 20rpx 48rpx;
+  background: #c41e3a;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+}

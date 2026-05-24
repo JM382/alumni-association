@@ -1,0 +1,12 @@
+function payLabel(mode, fen, customStr) {
+  if (mode === 'custom') {
+    var s = customStr
+    if (s == null || s === '') return '--'
+    return s
+  }
+  var f = fen
+  if (f == null) f = 5000
+  return (f / 100).toFixed(2)
+}
+
+module.exports = { payLabel: payLabel }

@@ -1,0 +1,45 @@
+<view class="me-page">
+  <view class="section-card">
+    <view class="section-row">
+      <text class="section-title">历史捐赠记录</text>
+    </view>
+  </view>
+
+  <view class="donation-list">
+    <block wx:if="{{!list.length}}">
+      <view class="empty-tip">暂时没有捐赠记录～</view>
+    </block>
+    <block wx:for="{{list}}" wx:key="_id">
+      <view class="donation-card">
+        <view class="donation-header">
+          <text class="donation-project">{{item.projectName}}</text>
+          <text class="donation-amount">¥{{item.amountText}}</text>
+        </view>
+        <view class="donation-body">
+          <text class="donation-time">{{item.createdAtText}}</text>
+          <text class="donation-status">{{item.statusText}}</text>
+        </view>
+        <view
+          wx:if="{{item.certImages && item.certImages.length}}"
+          class="donation-cert-row"
+        >
+          <scroll-view class="cert-scroll" scroll-x="true">
+            <view class="cert-list">
+              <block wx:for="{{item.certImages}}" wx:key="*this">
+                <image
+                  class="cert-thumb"
+                  src="{{item}}"
+                  mode="aspectFill"
+                  data-urls="{{item.certImages}}"
+                  data-current="{{item}}"
+                  bindtap="onPreviewCert"
+                />
+              </block>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+

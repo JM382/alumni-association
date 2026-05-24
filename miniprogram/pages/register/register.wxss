@@ -1,0 +1,36 @@
+/* pages/register/register.wxss */
+.page {
+  min-height: 100vh;
+  background: #fff5f5;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.form {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.form-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 32rpx;
+}
+
+.form-group {
+  margin-bottom: 28rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.submit-btn {
+  margin-top: 48rpx;
+}

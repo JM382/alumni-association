@@ -1,0 +1,118 @@
+<view class="page">
+  <block wx:if="{{post}}">
+    <view class="post-card">
+      <view class="post-header">
+        <image
+          class="avatar"
+          src="{{post.user.avatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}"
+          mode="aspectFill"
+          data-user-id="{{post.userId || post.user.userId}}"
+          bindtap="onTapUser"
+        />
+        <view class="meta">
+          <text class="name">{{post.user.nickname || '校友'}}</text>
+          <text class="sub">{{post.user.enterYear || ''}}级 {{post.user.major || ''}}</text>
+        </view>
+        <view class="tag" wx:if="{{post.tag}}">{{post.tag}}</view>
+      </view>
+
+      <text class="title">{{post.title}}</text>
+      <text class="content">{{post.content}}</text>
+
+      <view wx:if="{{post.images && post.images.length}}" class="images">
+        <block wx:for="{{post.images}}" wx:key="*this">
+          <image
+            class="img"
+            src="{{item}}"
+            mode="aspectFill"
+            data-url="{{item}}"
+            data-urls="{{post.images}}"
+            bindtap="onPreviewImage"
+          />
+        </block>
+      </view>
+
+      <view wx:if="{{post.video}}" class="video-wrap">
+        <video class="video" src="{{post.video.fileID || post.video.url}}" controls></video>
+      </view>
+
+      <view class="contact">
+        <text class="contact-label">联系方式：</text>
+        <text class="contact-value">{{post.contact}}</text>
+      </view>
+
+      <view class="actions">
+        <view class="action" bindtap="onToggleLike">
+          <text class="icon">{{post.hasLiked ? '♥' : '♡'}}</text>
+          <text class="text">{{post.likeCount || 0}}</text>
+        </view>
+        <view class="action">
+          <text class="icon">💬</text>
+          <text class="text">{{post.commentCount || 0}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-title">回复</view>
+    <view class="comment-list">
+      <block wx:if="{{!comments.length}}">
+        <view class="empty-tip">还没有回复，快来留言～</view>
+      </block>
+      <block wx:for="{{comments}}" wx:key="_id">
+        <view class="comment-card">
+          <image
+            class="c-avatar"
+            src="{{item.user.avatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}"
+            mode="aspectFill"
+            data-user-id="{{item.userId || item.user.userId}}"
+            bindtap="onTapUser"
+          />
+          <view class="c-body">
+            <view class="c-top">
+              <text class="c-name">{{item.user.nickname}}</text>
+              <text
+                class="c-reply"
+                data-parent-id="{{item._id}}"
+                data-reply-to-user-id="{{item.userId}}"
+                data-nickname="{{item.user.nickname}}"
+                bindtap="onTapReply"
+              >
+                回复
+              </text>
+            </view>
+            <text class="c-content">{{item.content}}</text>
+            <view wx:if="{{item.replies && item.replies.length}}" class="replies">
+              <block wx:for="{{item.replies}}" wx:key="_id">
+                <view class="reply-item">
+                  <text class="reply-name">{{item.user.nickname}}：</text>
+                  <text class="reply-content">{{item.content}}</text>
+                  <text
+                    class="reply-action"
+                    data-parent-id="{{item.parentId}}"
+                    data-reply-to-user-id="{{item.userId}}"
+                    data-nickname="{{item.user.nickname}}"
+                    bindtap="onTapReply"
+                  >
+                    回复
+                  </text>
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </block>
+
+  <view class="bottom">
+    <view wx:if="{{replyingTo}}" class="replying">
+      <text class="replying-text">{{replyingTo.hint}}</text>
+      <text class="replying-cancel" bindtap="onCancelReply">取消</text>
+    </view>
+    <view class="input-row">
+      <input class="input" placeholder="写回复..." value="{{input}}" bindinput="onInput" />
+      <button class="send" size="mini" loading="{{sending}}" disabled="{{sending}}" bindtap="onSubmit">发送</button>
+    </view>
+  </view>
+</view>
+

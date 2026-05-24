@@ -2,19 +2,26 @@
   "pages": [
     "pages/home/home",
     "pages/services/services",
+    "pages/donate-initiate/donate-initiate",
+    "pages/donate-pay/donate-pay",
     "pages/news/news",
     "pages/news-detail/news-detail",
-    "pages/news-publish/news-publish"
+    "pages/news-publish/news-publish",
+    "pages/register/register",
+    "pages/profile/profile",
+    "pages/alumnicard/alumnicard",
+    "pages/service-orders/service-orders",
+    "pages/benefit-web/benefit-web"
   ],
   "window": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "校友之家",
-    "navigationBarBackgroundColor": "#0052D9",
-    "backgroundColor": "#F5F7FB"
+    "navigationBarBackgroundColor": "#C41E3A",
+    "backgroundColor": "#FFF5F5"
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#0052D9",
+    "selectedColor": "#C41E3A",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [

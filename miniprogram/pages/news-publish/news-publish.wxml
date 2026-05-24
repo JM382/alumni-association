@@ -2,28 +2,32 @@
 <scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
   <view class="form">
     <view class="form-tip">
-      <t-icon name="info-circle" size="32rpx" />
-      <text>当前身份：会员账号 · 仅支持发布「校友故事」</text>
+      <text class="form-tip-icon">ℹ️</text>
+      <text>所有用户均可发布资讯，请选择分类并填写内容。</text>
     </view>
 
     <view class="form-group">
       <text class="form-label">新闻分类</text>
-      <view class="category-tags">
-        <t-tag theme="primary" size="medium" class="category-tag">校友故事</t-tag>
-        <t-tag variant="outline" size="medium" class="category-tag disabled">母校新闻（管理员）</t-tag>
-        <t-tag variant="outline" size="medium" class="category-tag disabled">校友会通知（管理员）</t-tag>
-      </view>
+      <picker mode="selector" range="{{categoryOptions}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="picker-row">
+          <text class="picker-label">当前分类</text>
+          <text class="picker-value">{{categoryOptions[categoryIndex]}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
     </view>
 
     <view class="form-group">
       <text class="form-label">标题</text>
-      <t-input placeholder="请输入 10~40 字以内的标题" maxlength="{{40}}" clearable />
+      <t-input value="{{form.title}}" placeholder="请输入 10~40 字以内的标题" maxlength="{{40}}" clearable bind:change="onTitleChange" />
     </view>
 
     <view class="form-group">
       <text class="form-label">正文内容</text>
       <t-textarea
-        placeholder="在此输入正文内容，支持加粗、换行、插入图片等富文本样式……"
+        value="{{form.content}}"
+        bind:change="onContentChange"
+        placeholder="在此输入正文内容……"
         maxlength="{{2000}}"
         indicator
         autosize
@@ -41,27 +45,43 @@
       />
     </view>
 
-    <view class="form-group admin-only">
-      <text class="form-label">高级设置（管理员）</text>
+    <view class="form-group">
+      <text class="form-label">高级设置</text>
       <view class="admin-row">
         <text>置顶显示</text>
-        <t-switch disabled />
+        <t-switch value="{{pinned}}" bind:change="onPinnedChange" />
       </view>
       <view class="admin-row">
         <text>推荐到首页 Banner</text>
-        <t-switch disabled />
+        <t-switch value="{{banner}}" bind:change="onBannerChange" />
       </view>
       <view class="admin-row">
         <text>定时发布</text>
-        <t-button theme="default" size="small" variant="outline">选择时间</t-button>
+        <t-switch value="{{scheduleEnabled}}" bind:change="onScheduleEnabledChange" />
+      </view>
+      <view wx:if="{{scheduleEnabled}}" class="schedule-pickers">
+        <picker mode="date" value="{{publishDate}}" start="{{today}}" bindchange="onPublishDateChange">
+          <view class="picker-row">
+            <text class="picker-label">发布日期</text>
+            <text class="picker-value">{{publishDate || '请选择日期'}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+        <picker mode="time" value="{{publishTime}}" bindchange="onPublishTimeChange">
+          <view class="picker-row">
+            <text class="picker-label">发布时间</text>
+            <text class="picker-value">{{publishTime}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
       </view>
     </view>
 
     <view class="form-footer">
-      <text class="footer-tip">提交后将进入审核流程，审核通过后对全体校友展示。</text>
+      <text class="footer-tip">草稿保存在本机，换设备不可同步；提交成功后草稿会自动清除。提交后即时发布；若开启定时发布，则在设定时间后对全体校友展示。</text>
       <view class="footer-btns">
         <t-button theme="default" variant="outline" size="medium" bindtap="onSaveDraft">保存草稿</t-button>
-        <t-button theme="primary" size="medium" bindtap="onSubmit">提交发布</t-button>
+        <t-button theme="primary" size="medium" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">提交发布</t-button>
       </view>
     </view>
   </view>

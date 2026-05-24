@@ -1,0 +1,5 @@
+<!-- 需在小程序后台「开发管理 → 开发设置 → 业务域名」中配置下方网页域名 -->
+<web-view wx:if="{{safeUrl}}" src="{{safeUrl}}"></web-view>
+<view wx:else class="empty">
+  <text class="empty-text">{{hint}}</text>
+</view>

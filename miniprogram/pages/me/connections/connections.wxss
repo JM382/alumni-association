@@ -1,0 +1,20 @@
+@import "../me.wxss";
+@import "../../circle/circle.wxss";
+
+.section-sub {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.alumni-list {
+  padding: 20rpx;
+}
+
+.alumni-card {
+  margin-bottom: 20rpx;
+}
+
+.small-btn {
+  margin-left: 16rpx;
+}
+

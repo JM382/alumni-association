@@ -1,0 +1,43 @@
+<!--pages/profile/profile.wxml-->
+<view class="page">
+  <view class="user-card">
+    <view class="user-avatar-wrap">
+      <image wx:if="{{avatarUrl}}" class="user-avatar" src="{{avatarUrl}}" mode="aspectFill" />
+      <view wx:else class="user-avatar user-avatar-placeholder">
+        <t-icon name="user" size="64rpx" />
+      </view>
+    </view>
+    <text class="user-nickname">{{userNickName || '校友'}}</text>
+  </view>
+
+  <!-- 未完善资料时显示“完善资料”入口 -->
+  <view wx:if="{{!hasProfile}}" class="menu-block">
+    <t-cell title="完善校友资料" note="填写校友卡号、院系、联系方式" arrow bindtap="onEditProfile" />
+  </view>
+
+  <!-- 已完善资料时显示当前资料概要 -->
+  <view wx:elif="{{hasProfile}}" class="info-block">
+    <view class="info-row">
+      <text class="label">姓名</text>
+      <text class="value">{{profile.nickName || userNickName || '校友'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="label">校友卡号</text>
+      <text class="value">{{profile.alumniCardNo || '未填写'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="label">院系</text>
+      <text class="value">{{profile.department || '未填写'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="label">入学年份</text>
+      <text class="value">{{profile.enrollYear || '未填写'}}</text>
+    </view>
+  </view>
+
+  <view class="footer">
+    <t-button theme="default" variant="outline" block size="large" bindtap="onLogout">
+      退出登录
+    </t-button>
+  </view>
+</view>

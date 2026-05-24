@@ -1,0 +1,267 @@
+<view class="auth-page">
+  <view class="auth-header">
+    <view class="auth-title">{{title}}</view>
+    <view class="auth-subtitle">请选择认证类型并填写信息提交审核</view>
+  </view>
+
+  <view class="auth-tabs">
+    <view class="auth-tab {{activeCategory === 'alumni' ? 'active' : ''}}" data-type="alumni" bindtap="onSwitchTab">
+      校友认证
+    </view>
+    <view class="auth-tab {{activeCategory === 'company' ? 'active' : ''}}" data-type="company" bindtap="onSwitchTab">
+      企业认证
+    </view>
+    <view class="auth-tab {{activeCategory === 'expert' ? 'active' : ''}}" data-type="expert" bindtap="onSwitchTab">
+      专家认证
+    </view>
+  </view>
+
+  <!-- 校友认证 -->
+  <view wx:if="{{activeCategory === 'alumni'}}" class="auth-section">
+    <view class="status-tip">
+      当前状态：<text class="status-text status-{{status.alumni.status || 'none'}}">{{statusTextAlumni}}</text>
+    </view>
+    <view class="card">
+      <view class="section-header">基础信息</view>
+      <view class="form-row">
+        <text class="label">姓名</text>
+        <input class="input" placeholder="真实姓名" value="{{formAlumni.realName}}" data-category="alumni" data-field="realName" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">学号</text>
+        <input class="input" placeholder="学号 / 工号" value="{{formAlumni.studentId}}" data-category="alumni" data-field="studentId" bindinput="onFieldInput" />
+      </view>
+      <picker mode="selector" range="{{schoolOptions}}" value="{{schoolIndex}}" bindchange="onSchoolChange">
+        <view class="form-row">
+          <text class="label">学校</text>
+          <text class="value {{!formAlumni.school ? 'placeholder' : ''}}">{{formAlumni.school || '请选择学校'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{alumniCollegeOptions}}" value="{{alumniCollegeIndex}}" bindchange="onAlumniCollegeChange">
+        <view class="form-row">
+          <text class="label">学院</text>
+          <text class="value {{!formAlumni.college ? 'placeholder' : ''}}">{{formAlumni.college || '请选择学院'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{alumniMajorOptions}}" value="{{alumniMajorIndex}}" bindchange="onAlumniMajorChange">
+        <view class="form-row">
+          <text class="label">专业</text>
+          <text class="value {{!formAlumni.major ? 'placeholder' : ''}}">{{formAlumni.major || '请选择专业'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{degreeOptions}}" value="{{degreeIndex}}" bindchange="onDegreeChange">
+        <view class="form-row">
+          <text class="label">学位</text>
+          <text class="value {{!formAlumni.degree ? 'placeholder' : ''}}">{{formAlumni.degree || '请选择学位'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <view class="form-row">
+        <text class="label">入学年份</text>
+        <input class="input" placeholder="例如 2018" value="{{formAlumni.enterYear}}" data-category="alumni" data-field="enterYear" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">毕业年份</text>
+        <input class="input" placeholder="选填" value="{{formAlumni.gradYear}}" data-category="alumni" data-field="gradYear" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">校区</text>
+        <input class="input" placeholder="选填" value="{{formAlumni.campus}}" data-category="alumni" data-field="campus" bindinput="onFieldInput" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-header">联系方式</view>
+      <view class="form-row">
+        <text class="label">手机</text>
+        <input class="input" type="number" maxlength="11" placeholder="用于管理员联系你" value="{{formAlumni.contactMobile}}" data-category="alumni" data-field="contactMobile" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">邮箱</text>
+        <input class="input" placeholder="用于接收通知" value="{{formAlumni.contactEmail}}" data-category="alumni" data-field="contactEmail" bindinput="onFieldInput" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-header">证明材料</view>
+      <view class="form-row textarea-row">
+        <text class="label">说明</text>
+        <textarea class="textarea" placeholder="可补充说明在校经历等" value="{{formAlumni.extra}}" data-category="alumni" data-field="extra" bindinput="onFieldInput" />
+      </view>
+      <view class="image-row">
+        <view class="image-list">
+          <block wx:for="{{formAlumni.certImages}}" wx:key="*this">
+            <view class="image-item">
+              <image class="image-thumb" src="{{item}}" mode="aspectFill" />
+              <view class="image-remove" data-category="alumni" data-index="{{index}}" bindtap="onRemoveImage">×</view>
+            </view>
+          </block>
+          <view class="image-add" data-category="alumni" data-type="multi" bindtap="onChooseImage">
+            +
+          </view>
+        </view>
+        <view class="image-tip">上传学生证、毕业证等照片，最多 6 张</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 企业认证 -->
+  <view wx:elif="{{activeCategory === 'company'}}" class="auth-section">
+    <view class="status-tip">
+      当前状态：<text class="status-text status-{{status.company.status || 'none'}}">{{statusTextCompany}}</text>
+    </view>
+    <view class="card">
+      <view class="section-header">企业信息</view>
+      <view class="form-row">
+        <text class="label">公司名称</text>
+        <input class="input" placeholder="营业执照上的名称" value="{{formCompany.companyName}}" data-category="company" data-field="companyName" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">统一社会信用代码</text>
+        <input class="input" placeholder="18 位代码" value="{{formCompany.uscc}}" data-category="company" data-field="uscc" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">行业</text>
+        <input class="input" placeholder="例如 互联网、教育等" value="{{formCompany.industry}}" data-category="company" data-field="industry" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">规模</text>
+        <input class="input" placeholder="例如 50-200 人" value="{{formCompany.scale}}" data-category="company" data-field="scale" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">城市</text>
+        <input class="input" placeholder="所在城市" value="{{formCompany.city}}" data-category="company" data-field="city" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">地址</text>
+        <input class="input" placeholder="详细地址" value="{{formCompany.address}}" data-category="company" data-field="address" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">官网</text>
+        <input class="input" placeholder="选填，公司官网链接" value="{{formCompany.website}}" data-category="company" data-field="website" bindinput="onFieldInput" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-header">联系人信息</view>
+      <view class="form-row">
+        <text class="label">姓名</text>
+        <input class="input" placeholder="联系人姓名" value="{{formCompany.contactName}}" data-category="company" data-field="contactName" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">职位</text>
+        <input class="input" placeholder="例如 HR / 负责人" value="{{formCompany.position}}" data-category="company" data-field="position" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">手机</text>
+        <input class="input" type="number" maxlength="11" placeholder="用于联系你" value="{{formCompany.contactMobile}}" data-category="company" data-field="contactMobile" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">邮箱</text>
+        <input class="input" placeholder="选填" value="{{formCompany.contactEmail}}" data-category="company" data-field="contactEmail" bindinput="onFieldInput" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-header">营业执照</view>
+      <view class="image-row">
+        <view class="image-list">
+          <block wx:if="{{formCompany.licenseImage}}">
+            <view class="image-item">
+              <image class="image-thumb" src="{{formCompany.licenseImage}}" mode="aspectFill" />
+              <view class="image-remove" data-category="company" data-type="single" bindtap="onChooseImage">重选</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="image-add" data-category="company" data-type="single" bindtap="onChooseImage">
+              +
+            </view>
+          </block>
+        </view>
+        <view class="image-tip">请上传清晰的营业执照照片</view>
+      </view>
+      <view class="form-row textarea-row">
+        <text class="label">备注</text>
+        <textarea class="textarea" placeholder="可补充企业介绍、用人需求等" value="{{formCompany.extra}}" data-category="company" data-field="extra" bindinput="onFieldInput" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 专家认证 -->
+  <view wx:elif="{{activeCategory === 'expert'}}" class="auth-section">
+    <view class="status-tip">
+      当前状态：<text class="status-text status-{{status.expert.status || 'none'}}">{{statusTextExpert}}</text>
+    </view>
+    <view class="card">
+      <view class="section-header">基础信息</view>
+      <view class="form-row">
+        <text class="label">姓名</text>
+        <input class="input" placeholder="真实姓名" value="{{formExpert.realName}}" data-category="expert" data-field="realName" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">所在单位</text>
+        <input class="input" placeholder="学校 / 公司 / 机构" value="{{formExpert.organization}}" data-category="expert" data-field="organization" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">职称/职务</text>
+        <input class="input" placeholder="教授 / 高工 / 总监等" value="{{formExpert.title}}" data-category="expert" data-field="title" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">所在城市</text>
+        <input class="input" placeholder="选填" value="{{formExpert.city}}" data-category="expert" data-field="city" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">从业年限</text>
+        <input class="input" placeholder="选填，例如 10 年" value="{{formExpert.experienceYears}}" data-category="expert" data-field="experienceYears" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">领域标签</text>
+        <input class="input" placeholder="例如：人工智能、教育、投资（用、分隔）" value="{{formExpert.fieldTags}}" data-category="expert" data-field="fieldTags" bindinput="onFieldInput" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-header">联系方式</view>
+      <view class="form-row">
+        <text class="label">手机</text>
+        <input class="input" type="number" maxlength="11" placeholder="用于联系你" value="{{formExpert.contactMobile}}" data-category="expert" data-field="contactMobile" bindinput="onFieldInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">邮箱</text>
+        <input class="input" placeholder="用于接收通知" value="{{formExpert.contactEmail}}" data-category="expert" data-field="contactEmail" bindinput="onFieldInput" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-header">履历与证明</view>
+      <view class="form-row textarea-row">
+        <text class="label">个人简介</text>
+        <textarea class="textarea" placeholder="可填写主要经历、代表成果等" value="{{formExpert.resume}}" data-category="expert" data-field="resume" bindinput="onFieldInput" />
+      </view>
+      <view class="image-row">
+        <view class="image-list">
+          <block wx:for="{{formExpert.certImages}}" wx:key="*this">
+            <view class="image-item">
+              <image class="image-thumb" src="{{item}}" mode="aspectFill" />
+              <view class="image-remove" data-category="expert" data-index="{{index}}" bindtap="onRemoveImage">×</view>
+            </view>
+          </block>
+          <view class="image-add" data-category="expert" data-type="multi" bindtap="onChooseImage">
+            +
+          </view>
+        </view>
+        <view class="image-tip">可上传职称证书、获奖证书等，最多 6 张</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提交按钮 -->
+  <view class="save-wrap">
+    <button class="save-btn" loading="{{saving}}" disabled="{{saving || !hasChanged}}" bindtap="onSubmit">
+      保存并提交
+    </button>
+  </view>
+</view>

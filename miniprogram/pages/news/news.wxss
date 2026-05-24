@@ -3,7 +3,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f5f7fb;
+  background: #fff5f5;
 }
 
 .header {
@@ -91,4 +91,23 @@
   color: #999;
   display: flex;
   justify-content: space-between;
+}
+
+.news-actions {
+  margin-top: 12rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.news-delete {
+  font-size: 24rpx;
+  color: #c41e3a;
+  padding: 8rpx 16rpx;
+}
+
+.empty-tip {
+  padding: 80rpx 32rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
 }

@@ -1,0 +1,46 @@
+<view class="me-page">
+  <view class="tabs order-tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab-item {{index === currentTab ? 'active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onChangeTab"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <view class="order-list">
+    <block wx:if="{{!list.length}}">
+      <view class="empty-tip">暂时没有相关订单～</view>
+    </block>
+    <block wx:for="{{list}}" wx:key="_id">
+      <view class="order-card" data-id="{{item._id}}" bindtap="onTapOrder">
+        <view class="order-header">
+          <view class="order-type-pill">{{item.businessTypeText}}</view>
+          <text class="order-status">{{item.statusText}}</text>
+        </view>
+        <view class="order-body">
+          <view class="order-title">{{item.title || (item.businessTypeText + '订单')}}</view>
+          <text class="order-partner">{{item.partnerName || ''}}</text>
+          <text class="order-time">{{item.createdAtText}}</text>
+        </view>
+        <view class="order-footer">
+          <text class="order-amount">¥{{item.totalAmountText}}</text>
+          <button
+            wx:if="{{item.partnerAppId}}"
+            class="order-btn"
+            size="mini"
+            data-appid="{{item.partnerAppId}}"
+            data-path="{{item.partnerPath}}"
+            bindtap="onGoPartner"
+          >
+            去合作方查看
+          </button>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+

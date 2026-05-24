@@ -1,0 +1,58 @@
+@import "../../me/me.wxss";
+
+.interact-list {
+  padding: 16rpx 24rpx 24rpx;
+}
+
+.interact-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 18rpx 20rpx;
+  margin-bottom: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  background: #eee;
+}
+
+.content {
+  flex: 1;
+}
+
+.line {
+  display: block;
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #b01e2b;
+  position: absolute;
+  right: 18rpx;
+  top: 18rpx;
+}
+
+.empty-tip {
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
+  padding: 80rpx 0;
+}
+

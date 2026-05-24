@@ -1,0 +1,4 @@
+<!--pages/welfare/welfare.wxml-->
+<view class="welfare-page">
+  <text>pages/welfare/welfare.wxml</text>
+</view>

@@ -1,0 +1,26 @@
+<!--pages/service-orders/service-orders.wxml-->
+<view class="page">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text class="loading-text">加载中...</text>
+  </view>
+  <block wx:elif="{{list.length === 0}}">
+    <t-empty description="暂无服务单" />
+  </block>
+  <scroll-view wx:else scroll-y class="list" enhanced show-scrollbar="{{false}}">
+    <view class="order-card" wx:for="{{list}}" wx:key="_id">
+      <view class="order-header">
+        <text class="order-type">{{item._displayType}}</text>
+        <text class="order-time">{{item._displayTime}}</text>
+      </view>
+      <view class="order-body" wx:if="{{item.type === 'return_visit'}}">
+        <view class="order-row"><text class="label">姓名</text><text class="value">{{item.data.name || '—'}}</text></view>
+        <view class="order-row"><text class="label">校友卡号</text><text class="value">{{item.data.alumniCardNo || '—'}}</text></view>
+        <view class="order-row"><text class="label">到访日期</text><text class="value">{{item.data.visitDate || '—'}}</text></view>
+        <view class="order-row"><text class="label">同行人数</text><text class="value">{{item.data.companionCount === 0 || item.data.companionCount === '0' ? '仅本人' : (item.data.companionCount + ' 人')}}</text></view>
+      </view>
+      <view class="order-body" wx:else>
+        <text class="order-raw">{{item.data}}</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

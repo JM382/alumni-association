@@ -1,0 +1,33 @@
+<view class="review-page">
+  <view class="tabs">
+    <block wx:for="{{tabs}}" wx:key="key">
+      <view class="tab {{category === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSwitchCategory">
+        {{item.label}}
+      </view>
+    </block>
+  </view>
+
+  <view class="status-tabs">
+    <block wx:for="{{statusTabs}}" wx:key="key">
+      <view class="status-tab {{status === item.key ? 'active' : ''}}" data-status="{{item.key}}" bindtap="onSwitchStatus">
+        {{item.label}}
+      </view>
+    </block>
+  </view>
+
+  <view class="list">
+    <block wx:if="{{!loading && !list.length}}">
+      <view class="empty">暂无记录</view>
+    </block>
+    <block wx:for="{{list}}" wx:key="_id">
+      <view class="card" data-id="{{item._id}}" bindtap="onTapItem">
+        <view class="row">
+          <text class="name">{{item.displayName}}</text>
+          <text class="badge badge-{{item.status}}">{{item.status === 'pending' ? '待审核' : item.status === 'approved' ? '已通过' : '已打回'}}</text>
+        </view>
+        <view class="sub">{{item.displaySub || '—'}}</view>
+        <view class="time">更新时间：{{item.updatedAtText}}</view>
+      </view>
+    </block>
+  </view>
+</view>

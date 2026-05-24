@@ -1,6 +1,12 @@
 <!--pages/news-detail/news-detail.wxml-->
 <scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
-  <view class="article">
+  <view wx:if="{{loading}}" class="state-wrap">
+    <text class="state-text">加载中...</text>
+  </view>
+  <view wx:elif="{{loadError}}" class="state-wrap">
+    <text class="state-text">{{loadError}}</text>
+  </view>
+  <view wx:else class="article">
     <view class="article-header">
       <text class="article-title">{{detail.title}}</text>
       <view class="article-meta">
@@ -27,6 +33,12 @@
         <t-icon name="share" size="40rpx" />
         <text>分享</text>
       </button>
+    </view>
+
+    <view wx:if="{{canDelete}}" class="article-owner-actions">
+      <text class="delete-link {{deleting ? 'delete-link--disabled' : ''}}" bindtap="onDeleteNews">
+        {{deleting ? '删除中…' : '删除资讯'}}
+      </text>
     </view>
 
     <t-divider>精彩评论（仅会员可评论）</t-divider>

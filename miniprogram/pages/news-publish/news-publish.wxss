@@ -1,7 +1,7 @@
 /* pages/news-publish/news-publish.wxss */
 .page {
   height: 100vh;
-  background: #f5f7fb;
+  background: #fff5f5;
 }
 
 .form {
@@ -11,14 +11,20 @@
 
 .form-tip {
   display: flex;
-  align-items: center;
-  gap: 16rpx;
+  align-items: flex-start;
+  gap: 12rpx;
   padding: 20rpx 24rpx;
-  background: #e8f3ff;
+  background: #ffebee;
   border-radius: 12rpx;
   font-size: 24rpx;
-  color: #0052d9;
+  color: #c41e3a;
   margin-bottom: 24rpx;
+  line-height: 1.5;
+}
+
+.form-tip-icon {
+  flex-shrink: 0;
+  font-size: 28rpx;
 }
 
 .form-group {
@@ -37,6 +43,41 @@
   margin-bottom: 16rpx;
 }
 
+.picker-row {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.picker-row:last-child {
+  border-bottom: none;
+}
+
+.picker-label {
+  color: #666;
+  width: 180rpx;
+  flex-shrink: 0;
+}
+
+.picker-value {
+  flex: 1;
+  color: #333;
+  text-align: right;
+}
+
+.picker-arrow {
+  margin-left: 12rpx;
+  color: #ccc;
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.schedule-pickers {
+  margin-top: 8rpx;
+}
+
 .category-tags {
   display: flex;
   flex-wrap: wrap;
@@ -45,14 +86,6 @@
 
 .category-tag {
   margin-right: 0;
-}
-
-.category-tag.disabled {
-  opacity: 0.6;
-}
-
-.admin-only {
-  opacity: 0.8;
 }
 
 .admin-row {

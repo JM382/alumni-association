@@ -1,0 +1,60 @@
+<!-- 个人中心 - 红色顶栏 + 功能网格 + 设置列表 -->
+<view class="me-page page-with-tabbar">
+  <!-- 红色顶栏（含状态栏区域） -->
+  <view class="me-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="header-nav">
+      <view class="nav-placeholder"></view>
+      <text class="nav-title">我的</text>
+      <view class="nav-actions">
+        <view class="nav-icon" bindtap="onMoreTap">⋯</view>
+        <view class="nav-icon" bindtap="onSettingsTap">⊙</view>
+      </view>
+    </view>
+    <view class="user-block">
+      <view class="avatar-wrap">
+        <image wx:if="{{userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onAvatarError" />
+        <view wx:else class="avatar avatar-placeholder">头像</view>
+      </view>
+      <view class="user-meta">
+        <view class="user-name-row">
+          <text class="user-name">{{userInfo.nickName || '微信用户'}}</text>
+          <image
+            wx:if="{{userInfo.membershipLevel && userInfo.membershipBadgeImage}}"
+            class="membership-badge-img"
+            src="{{userInfo.membershipBadgeImage}}"
+            mode="aspectFit"
+          />
+        </view>
+        <text class="user-status">{{userInfo.identityText || '游客'}}</text>
+        <text class="user-college">所属学校：{{userInfo.schoolName || ''}}</text>
+      </view>
+      <image class="header-emblem" src="https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/logo_%E9%80%8F%E6%98%8E.png?sign=e11f45497c883df7d6d8d12d7ce6c996&t=1773143399"></image>
+    </view>
+
+    <!-- 电子校友卡入口 -->
+    <view class="alumni-card-entry" bindtap="goToCardPackage">
+      <view class="alumni-card-left">
+        <text class="alumni-card-title">电子校友卡</text>
+        <text class="alumni-card-sub">点击查看你的专属校友卡</text>
+      </view>
+      <view class="alumni-card-tag">查看</view>
+    </view>
+  </view>
+
+  <!-- 功能网格（白底），图标资源在 images/me/ 下可替换 -->
+  <view class="function-grid">
+    <view class="grid-item" wx:for="{{gridItems}}" wx:key="label" wx:if="{{!item.adminOnly || isAdmin}}" data-method="{{item.method}}" bindtap="onGridTap">
+      <image class="grid-icon" src="{{item.icon}}" mode="aspectFit" />
+      <text class="grid-label">{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 设置列表（白底），图标资源在 images/me/ 下可替换 -->
+  <view class="settings-list">
+    <view class="setting-item" wx:for="{{settingItems}}" wx:key="label" data-method="{{item.method}}" bindtap="onSettingTap">
+      <image class="setting-icon-img" src="{{item.icon}}" mode="aspectFit" />
+      <text class="setting-text">{{item.label}}</text>
+      <text class="setting-arrow">›</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,26 @@
+<view class="event-page">
+  <block wx:if="{{event}}">
+    <image wx:if="{{event.coverImage}}" class="event-cover" src="{{event.coverImage}}" mode="aspectFill" />
+    <view class="event-main">
+      <text class="event-title">{{event.title}}</text>
+      <text wx:if="{{event.startTimeText}}" class="event-sub">时间：{{event.startTimeText}}</text>
+      <text wx:if="{{event.location}}" class="event-sub">地点：{{event.location}}</text>
+      <view class="event-brief" wx:if="{{event.brief}}">
+        <text>{{event.brief}}</text>
+      </view>
+      <view class="event-content">
+        <text>{{event.content || ''}}</text>
+      </view>
+    </view>
+    <view class="event-footer">
+      <button class="event-btn" bindtap="onGoTickets">
+        {{hasSignedUp ? '已报名' : '阅读协议并报名'}}
+      </button>
+    </view>
+  </block>
+
+  <block wx:elif="{{!loading}}">
+    <view class="empty-tip">活动信息加载失败</view>
+  </block>
+</view>
+

@@ -1,0 +1,73 @@
+/* pages/service-orders/service-orders.wxss */
+.page {
+  min-height: 100vh;
+  background: #fff5f5;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+.loading-wrap {
+  padding: 80rpx;
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.list {
+  height: calc(100vh - 48rpx);
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx 32rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.order-type {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #c41e3a;
+}
+
+.order-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.order-body {
+  font-size: 26rpx;
+}
+
+.order-row {
+  display: flex;
+  margin-bottom: 12rpx;
+}
+
+.order-row .label {
+  width: 140rpx;
+  color: #999;
+}
+
+.order-row .value {
+  flex: 1;
+  color: #333;
+}
+
+.order-raw {
+  font-size: 24rpx;
+  color: #666;
+}

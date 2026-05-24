@@ -1,0 +1,76 @@
+/* styles/reset.wxss - 微信小程序样式核武器 */
+
+/* 1. 基础元素重置，统一盒模型 */
+page, view, text, button, input, textarea, image, navigator, label, picker, slider, switch, radio, checkbox {
+  box-sizing: border-box; /* 确保padding和border不撑大元素 */
+  margin: 0;
+  padding: 0;
+}
+
+/* 2. 彻底清除万恶的button默认样式（重中之重！） */
+button {
+  position: relative; /* 为后续伪元素定位做准备 */
+  margin: 0;
+  padding: 0;
+  border: 0; /* 清除边框 */
+  border-radius: 0; /* 清除圆角 */
+  background: none; /* 清除背景 */
+  line-height: normal; /* 重置行高 */
+  font-size: inherit; /* 继承父级字体大小 */
+  font-weight: inherit;
+  color: inherit;
+  text-align: inherit;
+  outline: none; /* 清除聚焦轮廓 */
+  -webkit-appearance: none; /* 去除iOS默认样式 */
+  appearance: none;
+  overflow: visible; /* 防止内容被裁剪 */
+}
+/* 彻底杀死button的::after伪元素边框（关键！） */
+button::after {
+  display: none !important; /* 直接禁用伪元素 */
+  border: none !important;
+  content: none !important;
+}
+
+/* 3. 表单元素重置 */
+input, textarea {
+  border: 0;
+  outline: none;
+  background: none;
+  -webkit-appearance: none;
+  appearance: none;
+  /* 勿用 inherit：父级未设 color 时部分机型输入文字会与背景同色而不可见 */
+  font-size: inherit;
+  color: #333;
+  -webkit-text-fill-color: #333;
+}
+/* 统一占位符颜色 */
+input::placeholder, textarea::placeholder {
+  color: #999;
+  opacity: 1; /* Firefox的placeholder默认opacity较低 */
+}
+
+/* 4. 通用图片设置 */
+image {
+  display: block; /* 避免图片底部留白 */
+  width: 100%;
+  height: auto;
+}
+
+/* 5. 链接样式 */
+navigator {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 6. 状态栏占位通用类（可直接在WXML使用） */
+.status-bar {
+  height: var(--status-bar-height, 20px);
+}
+
+/* 7. 统一禁用状态视觉效果 */
+[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

@@ -1,0 +1,68 @@
+<view class="detail-page">
+  <block wx:if="{{detail}}">
+    <view class="card">
+      <view class="title">申请信息</view>
+      <view class="row">
+        <text class="label">类型</text>
+        <text class="value">{{detail.category === 'alumni' ? '校友认证' : detail.category === 'company' ? '企业认证' : '专家认证'}}</text>
+      </view>
+      <view class="row">
+        <text class="label">状态</text>
+        <text class="value">{{detail.status}}</text>
+      </view>
+      <view class="row">
+        <text class="label">更新时间</text>
+        <text class="value">{{detail.updatedAtText}}</text>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{detail.category === 'alumni'}}">
+      <view class="title">校友资料</view>
+      <view class="row"><text class="label">姓名</text><text class="value">{{detail.alumniInfo.realName}}</text></view>
+      <view class="row"><text class="label">学号</text><text class="value">{{detail.alumniInfo.studentId}}</text></view>
+      <view class="row"><text class="label">学校</text><text class="value">{{detail.alumniInfo.school}}</text></view>
+      <view class="row"><text class="label">学院</text><text class="value">{{detail.alumniInfo.college}}</text></view>
+      <view class="row"><text class="label">专业</text><text class="value">{{detail.alumniInfo.major}}</text></view>
+      <view class="row"><text class="label">入学年份</text><text class="value">{{detail.alumniInfo.enterYear}}</text></view>
+      <view class="images" wx:if="{{detail.alumniInfo.certImages && detail.alumniInfo.certImages.length}}">
+        <block wx:for="{{detail.alumniInfo.certImages}}" wx:key="*this">
+          <image class="img" src="{{item}}" mode="aspectFill" data-urls="{{detail.alumniInfo.certImages}}" data-current="{{item}}" bindtap="onPreviewImage" />
+        </block>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{detail.category === 'company'}}">
+      <view class="title">企业资料</view>
+      <view class="row"><text class="label">公司名称</text><text class="value">{{detail.companyInfo.companyName}}</text></view>
+      <view class="row"><text class="label">统一信用代码</text><text class="value">{{detail.companyInfo.uscc}}</text></view>
+      <view class="row"><text class="label">联系人</text><text class="value">{{detail.companyInfo.contactName}}</text></view>
+      <view class="row"><text class="label">联系电话</text><text class="value">{{detail.companyInfo.contactMobile}}</text></view>
+      <view class="images" wx:if="{{detail.companyInfo.licenseImage}}">
+        <image class="img" src="{{detail.companyInfo.licenseImage}}" mode="aspectFill" data-urls="{{[detail.companyInfo.licenseImage]}}" data-current="{{detail.companyInfo.licenseImage}}" bindtap="onPreviewImage" />
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{detail.category === 'expert'}}">
+      <view class="title">专家资料</view>
+      <view class="row"><text class="label">姓名</text><text class="value">{{detail.expertInfo.realName}}</text></view>
+      <view class="row"><text class="label">单位</text><text class="value">{{detail.expertInfo.organization}}</text></view>
+      <view class="row"><text class="label">职称</text><text class="value">{{detail.expertInfo.title}}</text></view>
+      <view class="row"><text class="label">联系电话</text><text class="value">{{detail.expertInfo.contactMobile}}</text></view>
+      <view class="row"><text class="label">邮箱</text><text class="value">{{detail.expertInfo.contactEmail}}</text></view>
+      <view class="images" wx:if="{{detail.expertInfo.certImages && detail.expertInfo.certImages.length}}">
+        <block wx:for="{{detail.expertInfo.certImages}}" wx:key="*this">
+          <image class="img" src="{{item}}" mode="aspectFill" data-urls="{{detail.expertInfo.certImages}}" data-current="{{item}}" bindtap="onPreviewImage" />
+        </block>
+      </view>
+    </view>
+
+    <view class="actions" wx:if="{{detail.status === 'pending'}}">
+      <button class="btn reject" loading="{{submitting}}" bindtap="onReject">打回</button>
+      <button class="btn approve" loading="{{submitting}}" bindtap="onApprove">通过认证</button>
+    </view>
+  </block>
+
+  <block wx:elif="{{!loading}}">
+    <view class="empty">加载失败</view>
+  </block>
+</view>

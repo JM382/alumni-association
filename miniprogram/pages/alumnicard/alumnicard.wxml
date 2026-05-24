@@ -1,0 +1,35 @@
+<!--pages/alumnicard/alumnicard.wxml-->
+<view class="page">
+  <block wx:if="{{hasProfile}}">
+    <view class="card">
+      <view class="card-header">校友之家 · 电子校友卡</view>
+      <view class="card-body">
+        <view class="avatar-wrap">
+          <image wx:if="{{profile.avatarUrl}}" class="avatar" src="{{profile.avatarUrl}}" mode="aspectFill" />
+          <view wx:else class="avatar avatar-placeholder">头像</view>
+        </view>
+        <view class="info-list">
+          <view class="info-row">
+            <text class="label">姓名</text>
+            <text class="value">{{profile.nickName || '—'}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">校友卡号</text>
+            <text class="value">{{profile.alumniCardNo || '—'}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">院系</text>
+            <text class="value">{{profile.department || '—'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="empty">
+      <text class="empty-text">暂无校友卡信息</text>
+      <text class="empty-hint">请先登录并完善校友资料后查看</text>
+      <navigator open-type="switchTab" url="/pages/home/home" class="empty-btn">去首页登录</navigator>
+    </view>
+  </block>
+</view>

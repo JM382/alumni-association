@@ -1,0 +1,76 @@
+@import "../me.wxss";
+
+.donation-list {
+  padding: 16rpx 24rpx 24rpx;
+}
+
+.donation-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.donation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.donation-project {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.donation-amount {
+  font-size: 30rpx;
+  color: #b01e2b;
+  font-weight: 600;
+}
+
+.donation-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.donation-time {
+  color: #999;
+}
+
+.donation-status {
+  color: #4caf50;
+}
+
+.donation-cert-row {
+  margin-top: 12rpx;
+}
+
+.cert-scroll {
+  white-space: nowrap;
+}
+
+.cert-list {
+  display: inline-flex;
+}
+
+.cert-thumb {
+  width: 140rpx;
+  height: 90rpx;
+  border-radius: 8rpx;
+  margin-right: 12rpx;
+  background: #f0f0f0;
+}
+
+.empty-tip {
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
+  padding: 60rpx 0;
+}
+

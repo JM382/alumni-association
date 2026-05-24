@@ -1,0 +1,65 @@
+<wxs src="./donate-pay.wxs" module="fmt" />
+<scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
+  <view wx:if="{{loadError}}" class="state-wrap">
+    <text class="state-text">{{loadError}}</text>
+  </view>
+  <block wx:else>
+    <view class="intro">
+      <text class="intro-title">{{projectName}}</text>
+      <text class="intro-desc">{{projectDesc}}</text>
+    </view>
+
+    <view class="card">
+      <text class="section-title">捐赠金额</text>
+      <text class="section-hint">可选 50 / 100 / 200 元，或点「自定义」输入（¥0.10～¥50000.00）</text>
+      <view class="donate-amounts">
+        <view
+          class="amount-chip {{amountMode === 'preset' && selectedFen === 5000 ? 'amount-chip--active' : ''}}"
+          bindtap="onAmountPreset"
+          data-fen="5000"
+        >
+          <text>50 元</text>
+        </view>
+        <view
+          class="amount-chip {{amountMode === 'preset' && selectedFen === 10000 ? 'amount-chip--active' : ''}}"
+          bindtap="onAmountPreset"
+          data-fen="10000"
+        >
+          <text>100 元</text>
+        </view>
+        <view
+          class="amount-chip {{amountMode === 'preset' && selectedFen === 20000 ? 'amount-chip--active' : ''}}"
+          bindtap="onAmountPreset"
+          data-fen="20000"
+        >
+          <text>200 元</text>
+        </view>
+        <view class="amount-chip {{amountMode === 'custom' ? 'amount-chip--active' : ''}}" bindtap="onAmountCustom">
+          <text>自定义</text>
+        </view>
+      </view>
+      <view wx:if="{{amountMode === 'custom'}}" class="custom-box">
+        <text class="custom-hint">请输入金额（元）</text>
+        <t-input type="digit" value="{{customYuanStr}}" placeholder="例如 88.00" clearable bind:change="onCustomYuanChange" />
+      </view>
+    </view>
+
+    <t-button
+      theme="primary"
+      block
+      size="large"
+      class="submit-btn"
+      loading="{{paying}}"
+      disabled="{{paying || !projectId}}"
+      bindtap="onPay"
+    >
+      确认支付（¥{{fmt.payLabel(amountMode, selectedFen, customYuanStr)}}）
+    </t-button>
+
+    <view class="pay-footer">
+      <text class="pay-footer-label">支付方式</text>
+      <t-icon name="logo-wechatpay" size="40rpx" />
+      <text class="pay-footer-name">微信支付</text>
+    </view>
+  </block>
+</scroll-view>

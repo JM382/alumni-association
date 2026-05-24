@@ -1,0 +1,92 @@
+.review-page {
+  min-height: 100vh;
+  background: #fff7f8;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.tabs,
+.status-tabs {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.tab,
+.status-tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  border-radius: 999rpx;
+  background: #fff;
+  color: #666;
+  font-size: 26rpx;
+  border: 1rpx solid #f1d5d8;
+}
+
+.tab.active,
+.status-tab.active {
+  background: #b01e2b;
+  color: #fff;
+  border-color: #b01e2b;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 14rpx;
+  border: 1rpx solid rgba(176, 30, 43, 0.12);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.name {
+  font-size: 30rpx;
+  color: #222;
+  font-weight: 600;
+}
+
+.sub {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.time {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.badge {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+.badge-pending {
+  background: #fde6e8;
+  color: #b01e2b;
+}
+
+.badge-approved {
+  background: #e6f6ea;
+  color: #2e7d32;
+}
+
+.badge-rejected {
+  background: #f2f2f2;
+  color: #666;
+}
+
+.empty {
+  text-align: center;
+  margin-top: 80rpx;
+  color: #999;
+  font-size: 28rpx;
+}

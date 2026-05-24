@@ -1,100 +1,129 @@
 <!--pages/services/services.wxml-->
-<scroll-view scroll-y class="page" enhanced show-scrollbar="{{false}}">
-  <view class="header">
-    <view class="header-content">
-      <view>
-        <text class="header-subtitle">服务中心</text>
-        <text class="header-main">校友服务</text>
+<view class="services-page">
+  <scroll-view
+    scroll-y
+    class="page"
+    enhanced
+    show-scrollbar="{{false}}"
+    refresher-enabled="{{true}}"
+    refresher-triggered="{{donateRefreshing}}"
+    bindrefresherrefresh="onDonateRefresh"
+  >
+    <view class="header">
+      <view class="header-content">
+        <view>
+          <text class="header-subtitle">服务中心</text>
+          <text class="header-main">校友服务</text>
+        </view>
+        <t-button theme="light" size="small" variant="outline" bindtap="onMyOrdersTap">我的服务单</t-button>
       </view>
-      <t-button theme="light" size="small" variant="outline">我的服务单</t-button>
     </view>
-  </view>
 
-  <t-tabs value="{{activeTab}}" bind:change="onTabChange" class="service-tabs">
-    <t-tab-panel label="校友福利" value="benefit">
-      <view class="benefit-list">
-        <view class="benefit-card" wx:for="{{benefitList}}" wx:key="id">
-          <view class="benefit-header">
-            <view class="benefit-logo">{{item.shortName}}</view>
-            <view class="benefit-info">
-              <text class="benefit-title">{{item.name}}</text>
-              <t-tag theme="primary" variant="light" size="small" wx:if="{{item.tag}}">{{item.tag}}</t-tag>
+    <t-tabs value="{{activeTab}}" bind:change="onTabChange" class="service-tabs" swipeable="{{false}}">
+      <t-tab-panel label="校友福利" value="benefit">
+        <view class="benefit-list">
+          <view class="benefit-card" wx:for="{{benefitList}}" wx:key="id">
+            <view class="benefit-header">
+              <view class="benefit-logo">{{item.shortName}}</view>
+              <view class="benefit-info">
+                <text class="benefit-title">{{item.name}}</text>
+                <t-tag theme="primary" variant="light" size="small" wx:if="{{item.tag}}">{{item.tag}}</t-tag>
+              </view>
+            </view>
+            <text class="benefit-desc">{{item.desc}}</text>
+            <view class="benefit-footer">
+              <text class="benefit-meta">{{item.meta}}</text>
+              <view class="benefit-use-btn" hover-class="benefit-use-btn--hover" catchtap="onBenefitUseTap" data-id="{{item.id}}">
+                <text>立即使用</text>
+              </view>
             </view>
           </view>
-          <text class="benefit-desc">{{item.desc}}</text>
-          <view class="benefit-footer">
-            <text class="benefit-meta">{{item.meta}}</text>
-            <t-button theme="primary" size="small">立即使用</t-button>
+        </view>
+      </t-tab-panel>
+
+      <t-tab-panel label="返校服务" value="return">
+        <view class="return-section">
+          <view class="card-title">预约入校</view>
+          <view class="form-group">
+            <text class="form-label">姓名</text>
+            <t-input value="{{returnForm.name}}" placeholder="请输入姓名" clearable bind:change="onReturnNameInput" />
           </view>
-        </view>
-      </view>
-    </t-tab-panel>
-
-    <t-tab-panel label="返校服务" value="return">
-      <view class="return-section">
-        <view class="card-title">预约入校</view>
-        <view class="form-group">
-          <text class="form-label">姓名</text>
-          <t-input placeholder="请输入姓名" clearable />
-        </view>
-        <view class="form-group">
-          <text class="form-label">校友卡号</text>
-          <t-input placeholder="请输入校友卡号" clearable />
-        </view>
-        <t-cell title="预计到访时间" note="请选择日期" arrow="{{true}}" bindtap="onPickDate" />
-        <t-cell title="同行人数" note="请选择" arrow="{{true}}" bindtap="onPickCount" />
-        <t-button theme="primary" block class="submit-btn">提交预约</t-button>
-
-        <view class="card-title">校园导览</view>
-        <view class="map-placeholder">
-          <t-icon name="location" size="64rpx" />
-          <text>电子地图标注教学楼、食堂、纪念馆、招待所</text>
-        </view>
-
-        <view class="card-title">住宿推荐</view>
-        <t-cell title="校内招待所" note="预订" arrow="{{true}}" />
-        <t-cell title="合作酒店合集" note="查看优惠" arrow="{{true}}" />
-      </view>
-    </t-tab-panel>
-
-    <t-tab-panel label="捐赠通道" value="donate">
-      <view class="donate-section">
-        <view class="donate-card" wx:for="{{donateProjects}}" wx:key="id">
-          <view class="donate-header">
-            <text class="donate-title">{{item.name}}</text>
-            <text class="donate-target">目标 {{item.target}}</text>
+          <view class="form-group">
+            <text class="form-label">校友卡号</text>
+            <t-input value="{{returnForm.alumniCardNo}}" placeholder="请输入校友卡号" clearable bind:change="onReturnCardNoInput" />
           </view>
-          <text class="donate-desc">{{item.desc}}</text>
-          <view class="donate-progress">
-            <t-progress percentage="{{item.percentage}}" theme="plump" stroke-width="8" />
-            <view class="donate-meta">
-              <text>已筹集 {{item.raised}}</text>
-              <text>进度 {{item.percentage}}%</text>
+          <picker mode="date" value="{{returnForm.visitDate}}" start="{{today}}" bindchange="onDateChange">
+            <t-cell title="预计到访时间" note="{{returnForm.visitDate || '请选择日期'}}" arrow="{{true}}" />
+          </picker>
+          <picker mode="selector" range="{{companionCountOptions}}" value="{{returnForm.companionCount}}" bindchange="onCountChange">
+            <t-cell title="同行人数" note="{{returnForm.companionCount === 0 ? '仅本人' : (returnForm.companionCount + ' 人')}}" arrow="{{true}}" />
+          </picker>
+          <t-button theme="primary" block class="submit-btn" loading="{{returnSubmitting}}" disabled="{{returnSubmitting}}" bindtap="submitReturnVisit">提交预约</t-button>
+
+          <view class="card-title">校园导览</view>
+          <view class="campus-map-card">
+            <view class="campus-map-wrap" catchtouchmove="onCampusMapCatchTouchMove">
+              <map
+                id="campusMap"
+                class="campus-map"
+                latitude="{{campusMap.latitude}}"
+                longitude="{{campusMap.longitude}}"
+                scale="{{campusMap.scale}}"
+                markers="{{campusMap.markers}}"
+                show-location="{{false}}"
+                enable-3D="{{false}}"
+                enable-overlooking="{{false}}"
+                enable-zoom="{{true}}"
+                enable-scroll="{{true}}"
+                bindmarkertap="onCampusMarkerTap"
+              />
+            </view>
+            <text class="campus-map-tip">可拖动、缩放地图；点击标注点查看说明。若位置不准，请在「services.ts」中修改 CAMPUS_MAP。</text>
+          </view>
+
+          <view class="card-title">住宿推荐</view>
+          <t-cell title="校内招待所" note="预订" arrow="{{true}}" />
+          <t-cell title="合作酒店合集" note="查看优惠" arrow="{{true}}" />
+        </view>
+      </t-tab-panel>
+
+      <t-tab-panel label="捐赠通道" value="donate">
+        <view class="donate-section">
+          <view class="donate-intro">
+            <text class="donate-intro-title">捐赠通道</text>
+            <text class="donate-intro-desc">「发起捐赠」用于新增筹款项目配置（不产生支付）。校友点各项目「我要捐赠」完成微信支付。下拉可刷新进度。</text>
+          </view>
+          <t-button theme="light" variant="outline" block size="medium" class="donate-launch-btn" bindtap="onDonateInitiateTap">发起捐赠（配置项目）</t-button>
+
+          <view class="donate-card" wx:for="{{donateProjects}}" wx:key="id">
+            <view class="donate-header">
+              <text class="donate-title">{{item.name}}</text>
+              <text class="donate-target">目标 {{item.targetLabel}}</text>
+            </view>
+            <text class="donate-desc">{{item.desc}}</text>
+            <view class="donate-progress">
+              <t-progress percentage="{{item.percentage}}" theme="plump" stroke-width="8" />
+              <view class="donate-meta">
+                <text>已筹集 {{item.raisedLabel}}</text>
+                <text>进度 {{item.percentage}}%</text>
+              </view>
+            </view>
+            <t-button theme="primary" block size="medium" class="donate-pay-btn" bindtap="onDonatePayTap" data-id="{{item.id}}">我要捐赠</t-button>
+            <view class="donate-payment">
+              <text class="payment-label">支付方式：</text>
+              <t-icon name="logo-wechatpay" size="40rpx" />
+              <text class="payment-name">微信支付</text>
             </view>
           </view>
-          <view class="donate-amounts">
-            <t-tag wx:for="{{item.amounts}}" wx:key="*this" wx:for-item="amt" variant="outline" class="amount-tag">{{amt}}</t-tag>
-            <t-tag variant="outline" class="amount-tag">自定义</t-tag>
-          </view>
-          <t-button theme="primary" block size="medium">去捐赠</t-button>
-          <view class="donate-payment">
-            <text class="payment-label">支付方式：</text>
-            <t-icon name="logo-wechatpay" size="40rpx" />
-            <text class="payment-name">微信</text>
-            <t-icon name="logo-wechatpay" size="40rpx" />
-            <text class="payment-name">支付宝</text>
-            <t-icon name="logo-wechatpay" size="40rpx" />
-            <text class="payment-name">银联</text>
-          </view>
         </view>
-      </view>
-    </t-tab-panel>
+      </t-tab-panel>
 
-    <t-tab-panel label="其他服务" value="other">
-      <view class="empty-tip">
-        <t-icon name="info-circle" size="80rpx" />
-        <text>更多服务敬请期待</text>
-      </view>
-    </t-tab-panel>
-  </t-tabs>
-</scroll-view>
+      <t-tab-panel label="其他服务" value="other">
+        <view class="empty-tip">
+          <t-icon name="info-circle" size="80rpx" />
+          <text>更多服务敬请期待</text>
+        </view>
+      </t-tab-panel>
+    </t-tabs>
+  </scroll-view>
+</view>

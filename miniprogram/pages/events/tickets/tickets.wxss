@@ -1,0 +1,169 @@
+@import "../../me/me.wxss";
+
+.empty-tip {
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
+  padding: 80rpx 0;
+}
+
+.ticket-section {
+  padding: 16rpx 24rpx 0;
+}
+
+.ticket-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.ticket-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  border: 2rpx solid transparent;
+}
+
+.ticket-card.active {
+  border-color: #b01e2b;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ticket-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.ticket-price {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #b01e2b;
+}
+
+.ticket-desc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.form-card {
+  margin: 16rpx 24rpx 24rpx;
+  padding: 24rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.form-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #eee;
+  font-size: 28rpx;
+  line-height: 1.5;
+  margin-bottom: 16rpx;
+  box-sizing: border-box;
+  color: #333;
+  -webkit-text-fill-color: #333;
+  background: #fff;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 160rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #eee;
+  font-size: 28rpx;
+  line-height: 1.5;
+  margin-bottom: 16rpx;
+  box-sizing: border-box;
+  color: #333;
+  -webkit-text-fill-color: #333;
+  background: #fff;
+}
+
+.protocol-card {
+  background: #f8f8f8;
+  border-radius: 16rpx;
+  padding: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.protocol-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.protocol-title {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.protocol-action {
+  font-size: 24rpx;
+  color: #b01e2b;
+}
+
+.protocol-text {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.agree-row {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+}
+
+.agree-box {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid #ccc;
+  margin-right: 12rpx;
+  background: #fff;
+}
+
+.agree-box.checked {
+  border-color: #b01e2b;
+  background: #b01e2b;
+}
+
+.agree-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 999rpx;
+  background: #b01e2b;
+  color: #fff;
+  font-size: 30rpx;
+}
+

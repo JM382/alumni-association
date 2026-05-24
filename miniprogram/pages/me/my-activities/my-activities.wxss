@@ -1,0 +1,24 @@
+@import "../me.wxss";
+@import "../../circle/circle.wxss";
+
+.activity-list {
+  padding: 16rpx 24rpx 24rpx;
+}
+
+.activity-card.active {
+  border: 2rpx solid rgba(176, 30, 43, 0.2);
+}
+
+.activity-card.pending {
+  border: 2rpx solid rgba(230, 162, 60, 0.45);
+}
+
+.activity-card.canceled {
+  border: 2rpx solid #e5e5e5;
+  background: #fafafa;
+}
+
+.activity-card.canceled .activity-title,
+.activity-card.canceled .activity-sub {
+  color: #8a8a8a;
+}

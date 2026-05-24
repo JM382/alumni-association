@@ -7,7 +7,7 @@
         <text class="header-subtitle">校友服务</text>
         <text class="header-main">校友之家</text>
       </view>
-      <t-button theme="light" size="small" variant="outline" class="login-btn">登录 / 注册</t-button>
+      <view wx:if="{{userNickName}}" class="user-name" bindtap="onUserNameTap">{{userNickName}}</view>
     </view>
     <view class="header-search">
       <t-icon name="search" size="32rpx" />
@@ -21,14 +21,25 @@
       <text class="section-title">母校动态 · 校友活动</text>
       <text class="section-more">查看更多</text>
     </view>
-    <t-swiper
-      list="{{bannerList}}"
-      height="280rpx"
+    <swiper
+      class="home-banner-swiper"
       autoplay
+      circular
       interval="4000"
       duration="500"
-      navigation="{{ { type: 'dots', showControls: false } }}"
-    />
+      indicator-dots
+      indicator-color="rgba(0,0,0,0.25)"
+      indicator-active-color="#c41e3a"
+    >
+      <swiper-item
+        wx:for="{{bannerList}}"
+        wx:key="index"
+        bindtap="onBannerItemTap"
+        data-index="{{index}}"
+      >
+        <image class="home-banner-img" src="{{item.value}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
   </view>
 
   <!-- 快捷功能入口 8个 -->
@@ -49,19 +60,25 @@
     </t-grid>
   </view>
 
-  <!-- 动态推送区 -->
+  <!-- 动态推送区（数据来自云数据库 news_posts） -->
   <view class="section">
     <view class="section-header">
       <text class="section-title">动态推送</text>
-      <view class="section-tags">
-        <text>校友故事</text>
-        <text class="divider">|</text>
-        <text>母校新闻</text>
-        <text class="divider">|</text>
-        <text>招聘 · 活动</text>
+      <view class="section-header-right">
+        <view class="section-tags">
+          <text>校友故事</text>
+          <text class="divider">|</text>
+          <text>母校新闻</text>
+          <text class="divider">|</text>
+          <text>招聘 · 活动</text>
+        </view>
+        <text class="section-more" bindtap="onNewsMoreTap">更多</text>
       </view>
     </view>
-    <view class="feed-list">
+    <view wx:if="{{feedList.length === 0}}" class="feed-empty">
+      <text>暂无资讯，请稍后在「资讯」页查看或发布校友动态</text>
+    </view>
+    <view wx:else class="feed-list">
       <view
         class="feed-item"
         wx:for="{{feedList}}"

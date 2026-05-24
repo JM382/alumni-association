@@ -1,0 +1,54 @@
+<view class="me-page">
+  <view class="res-topbar">
+    <text class="res-top-title">资源发布</text>
+    <button class="res-publish-btn" size="mini" bindtap="onGoPublish">发布资源</button>
+  </view>
+
+  <view class="res-list">
+    <block wx:if="{{!list.length && !loading}}">
+      <view class="empty-tip">还没有内容～点击右上角发布第一条吧</view>
+    </block>
+    <block wx:for="{{list}}" wx:key="_id">
+      <view class="res-card">
+        <view class="res-header">
+          <view class="res-user" data-user-id="{{item.userId || item.user.userId}}" bindtap="onTapUser">
+            <image class="res-avatar" src="{{item.user.avatarUrl || 'https://636c-cloud1-7g1x07md7360212c-1406143873.tcb.qcloud.la/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.png?sign=102ca8fc2040a7e360a77f4e14a812fa&t=1774595119'}}" mode="aspectFill" />
+            <view class="res-user-meta">
+              <text class="res-name">{{item.user.nickname || '校友'}}</text>
+              <text class="res-sub">{{item.user.enterYear || ''}}级 {{item.user.major || ''}}</text>
+            </view>
+          </view>
+          <view wx:if="{{item.tag}}" class="res-tag">{{item.tag}}</view>
+        </view>
+
+        <text class="res-title">{{item.title}}</text>
+        <text class="res-content">{{item.content}}</text>
+
+        <view wx:if="{{item.images && item.images.length}}" class="res-images">
+          <block wx:for="{{item.images}}" wx:key="*this">
+            <image class="res-img" src="{{item}}" mode="aspectFill" />
+          </block>
+        </view>
+
+        <view wx:if="{{item.video}}" class="res-video-tip">[视频]</view>
+
+        <view class="res-contact">
+          <text class="res-contact-label">联系方式：</text>
+          <text class="res-contact-value">{{item.contact}}</text>
+        </view>
+
+        <view class="res-actions">
+          <view class="res-action" data-id="{{item._id}}" bindtap="onToggleLike">
+            <text class="res-icon">{{item.hasLiked ? '♥' : '♡'}}</text>
+            <text class="res-text">{{item.likeCount || 0}}</text>
+          </view>
+          <view class="res-action" data-id="{{item._id}}" bindtap="onGoDetail">
+            <text class="res-icon">💬</text>
+            <text class="res-text">{{item.commentCount || 0}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+

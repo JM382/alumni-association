@@ -1,0 +1,240 @@
+/* 个人中心 - 红色主题 #b01e2b，与设计图一致 */
+.me-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: calc(120rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+/* ---------- 红色顶栏 ---------- */
+.me-header {
+  background: linear-gradient(180deg, #8b1a24 0%, #b01e2b 30%, #c42d3a 100%);
+  color: #fff;
+  padding-bottom: 40rpx;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 88rpx;
+  padding: 0 24rpx 0 32rpx;
+}
+
+.nav-placeholder {
+  width: 80rpx;
+}
+
+.nav-title {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.nav-icon {
+  font-size: 40rpx;
+  line-height: 1;
+  opacity: 0.95;
+}
+
+/* 用户信息块 */
+.user-block {
+  display: flex;
+  align-items: flex-start;
+  padding: 0 32rpx;
+  position: relative;
+}
+
+.avatar-wrap {
+  position: relative;
+  margin-right: 28rpx;
+}
+
+.avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 4rpx solid rgba(255,255,255,0.25);
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.8);
+}
+
+.badge {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -8rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  white-space: nowrap;
+}
+
+.badge-unverified {
+  background: #f5d547;
+  color: #333;
+}
+
+.user-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding-top: 8rpx;
+}
+
+.user-name {
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.membership-badge-img {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.user-status,
+.user-college {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.85);
+}
+
+.header-emblem {
+  width: 120rpx;
+  height: 120rpx;
+  margin-top: 20rpx;
+  background: rgba(255,255,255,0.12);
+  border: 2rpx solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+}
+
+/* 电子校友卡入口 */
+.alumni-card-entry {
+  margin: 36rpx 32rpx 0;
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  background-color: #e5ab44;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alumni-card-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.alumni-card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #3b2500;
+}
+
+.alumni-card-sub {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: rgba(59, 37, 0, 0.8);
+}
+
+.alumni-card-tag {
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  border: 2rpx solid rgba(255,255,255,0.9);
+  font-size: 22rpx;
+  color: #fff;
+}
+
+/* ---------- 功能网格（白底） ---------- */
+.function-grid {
+  background: #fff;
+  margin: 24rpx;
+  border-radius: 20rpx;
+  padding: 32rpx 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.grid-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-bottom: 12rpx;
+}
+
+.grid-label {
+  font-size: 24rpx;
+  color: #333;
+}
+
+/* ---------- 设置列表（白底） ---------- */
+.settings-list {
+  background: #fff;
+  margin: 0 24rpx 24rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 28rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-icon-img {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.setting-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.setting-arrow {
+  font-size: 32rpx;
+  color: #999;
+}
+
+/* 使用 me-page 的表单页：输入框文字色显式指定（避免 color:inherit 链上无颜色） */
+.me-page input,
+.me-page textarea {
+  color: #333;
+  -webkit-text-fill-color: #333;
+}

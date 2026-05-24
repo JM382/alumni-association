@@ -1,0 +1,84 @@
+/* pages/profile/profile.wxss */
+.page {
+  min-height: 100vh;
+  background: #fff5f5;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.user-card {
+  background: linear-gradient(135deg, #c41e3a 0%, #e64545 100%);
+  border-radius: 16rpx;
+  padding: 48rpx 32rpx;
+  margin-bottom: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-avatar-wrap {
+  margin-bottom: 24rpx;
+}
+
+.user-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.user-nickname {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+.menu-block {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.info-block {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.value {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.footer {
+  padding: 0 16rpx;
+}

@@ -1,7 +1,20 @@
 /* pages/news-detail/news-detail.wxss */
 .page {
   height: 100vh;
-  background: #f5f7fb;
+  background: #fff5f5;
+}
+
+.state-wrap {
+  padding: 120rpx 48rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.state-text {
+  font-size: 28rpx;
+  color: #999;
+  text-align: center;
+  line-height: 1.6;
 }
 
 .article {
@@ -68,6 +81,20 @@
 
 .share-btn::after {
   border: none;
+}
+
+.article-owner-actions {
+  padding: 8rpx 0 24rpx;
+}
+
+.delete-link {
+  font-size: 26rpx;
+  color: #c41e3a;
+}
+
+.delete-link--disabled {
+  color: #999;
+  pointer-events: none;
 }
 
 .comment-list {

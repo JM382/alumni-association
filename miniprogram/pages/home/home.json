@@ -1,11 +1,8 @@
 {
   "navigationBarTitleText": "校友之家",
   "usingComponents": {
-    "t-swiper": "tdesign-miniprogram/swiper/swiper",
     "t-grid": "tdesign-miniprogram/grid/grid",
     "t-grid-item": "tdesign-miniprogram/grid-item/grid-item",
-    "t-button": "tdesign-miniprogram/button/button",
-    "t-cell": "tdesign-miniprogram/cell/cell",
     "t-icon": "tdesign-miniprogram/icon/icon",
     "t-tag": "tdesign-miniprogram/tag/tag"
   }

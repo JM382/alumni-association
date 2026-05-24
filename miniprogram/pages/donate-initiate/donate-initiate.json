@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "发起捐赠（配置）",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-input": "tdesign-miniprogram/input/input"
+  }
+}
